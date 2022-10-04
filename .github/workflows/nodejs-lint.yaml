@@ -1,0 +1,20 @@
+name: Lint
+
+on:
+  workflow_call:
+    inputs:
+      max-warnings:
+        required: false
+        type: number
+        default: 0
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        uses: dvsa/.github/.github/actions/install-deps@main
+      - name: Lint
+        run: npm run lint -- --max-warnings ${{ inputs.max-warnings }}

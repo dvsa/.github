@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        type: string
+      upload-artifact:
+        required: false
+        type: boolean
+        default: false
+      dist-folder:
+        required: false
+        type: string
+        default: 'dist'
+      retention-days:
+        required: false
+        type: number
+        default: 7
+      build-command:
+        required: false
+        type: string
+        default: 'package'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        uses: dvsa/.github/.github/actions/install-deps@main
+      - name: Build
+        run: npm run ${{ inputs.build-command }}
+      - name: Upload artifact
+        if: inputs.upload-artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.dist-folder }}
+          retention-days: ${{ inputs.retention-days }}

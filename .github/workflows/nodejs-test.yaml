@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  workflow_call:
+    inputs:
+      test_command:
+        required: false
+        type: string
+        default: 'test'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        uses: dvsa/.github/.github/actions/install-deps@main
+      - name: Test
+        run: npm run ${{ inputs.test_command }}

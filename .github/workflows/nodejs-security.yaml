@@ -1,0 +1,25 @@
+name: Synk Security run
+on:
+  workflow_call:
+    inputs:
+      args:
+        required: false
+        type: string
+        default: '--dev --all-projects'
+    secrets:
+      SNYK_TOKEN:
+        required: true
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: false
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: ${{ inputs.args }}
