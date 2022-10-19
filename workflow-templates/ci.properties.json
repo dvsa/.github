@@ -1,6 +1,6 @@
 {
     "name": "DVSA Organization Workflow",
-    "description": "DVSA Organization CI starter workflow.",
+    "description": "DVSA Organization CI starter workflow. This workflow runs lint, test, security, build and upload to s3. See the README for running instruction and configuration options.",
     "categories": [
         "node"
     ]
