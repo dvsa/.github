@@ -32,7 +32,7 @@ jobs:
       id-token: write
     steps:
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GithubActionsRole
           role-session-name: GithubActionsSession
