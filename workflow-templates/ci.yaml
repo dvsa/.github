@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  lint:
+    uses: dvsa/.github/.github/workflows/lint.yaml@main
+
+  test:
+    uses: dvsa/.github/.github/workflows/test.yaml@main
+
+  security:
+    uses: dvsa/.github/.github/workflows/security.yaml@main
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  build-names:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      short_sha: ${{ steps.sha.outputs.SHORT_SHA }}
+      archive_name: ${{ steps.archive.outputs.ARCHIVE_NAME }}
+      steps:
+        - uses: actions/checkout@v3
+        - name: Set short sha output
+          id: sha
+          run: echo "SHORT_SHA=$(git rev-parse --short=11 HEAD)" >> $GITHUB_OUTPUT
+        - name: Set archive name output
+          id: archive
+          run: |
+            export PRETTY_BRANCH_NAME=$(tr '/' '-' <<< ${{ github.ref_name }})
+            echo "ARCHIVE_NAME=${PRETTY_BRANCH_NAME}.zip" >> $GITHUB_OUTPUT
+
+  build:
+    uses: dvsa/.github/workflows/build.yaml@main
+    needs: [ build-names ]
+    with:
+      upload-artifact: ${{ github.ref_name == 'main' }}
+      artifact-name: ${{ needs.build-names.outputs.archive_name }}
+      dist-folder: dist/dist.zip
+      retention-days: 7
+      build-command: build:prod
+
+  upload-main-to-s3:
+    if: ${{ github.ref_name == 'main' }}
+    uses: dvsa/.github/workflows/upload-to-s3.yaml@main
+    needs: [ lint, test, build, build-names ]
+    with:
+      environment: dev
+      short_commit: ${{  needs.build-names.outputs.short_sha }}
+      artifact_name: ${{  needs.build-names.outputs.archive_name }}
+      dist-folder: dist.zip
+    permissions:
+      id-token: write
+    secrets:
+      AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+      BUCKET_PATH: ${{ GITHUB_REPOSITORY }}

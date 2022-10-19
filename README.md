@@ -3,7 +3,13 @@ Driver and Vehicle Standards Agency  Shared resources for all teams.
 
 ## NodeJS Workflows
 
-The following workflows for NodeJS are in the `workflows` directory:
+The following workflows for NodeJS are in the `workflows` directory
+
+## Starter Workflow
+
+Starter workflows are in the [workflow-templates](workflow-templates/ci.yaml) directory.
+
+The `ci.yaml` workflow has the following steps:
 
 1. Lint
     - optional argument `max-warnings` sets how many warnings are allowed. Default is 0.
@@ -21,7 +27,6 @@ The following workflows for NodeJS are in the `workflows` directory:
         - retention-days. How many days to save the archive for if it's stored. Default 7 days.
         - build-command. What npm command is ran to build the project. Defaults to `package`.
 1. Upload to s3
-
     Workflow downloads the archive created from the build workflow and pushes it to s3 with the commit id as a tag
     - required arguments:
         - environment. This is used for ensuring the correct secrets are being used
@@ -34,6 +39,6 @@ The following workflows for NodeJS are in the `workflows` directory:
         - bucket_name: The name of the bucket the archive is being uploaded to
         - bucket_path: The bucket path or key of where the archive is being uploaded. Example: `lambda-archives/<lambda-name>`
 
-## Coming soon
+To read more about sharing workflows within the organization, see the [GitHub docs](https://docs.github.com/en/actions/using-workflows/sharing-workflows-secrets-and-runners-with-your-organization).
 
-- Starter workflows
+To read about using Starter Workflows, see [here](https://docs.github.com/en/actions/using-workflows/using-starter-workflows).

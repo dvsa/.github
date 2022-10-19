@@ -1,0 +1,7 @@
+{
+    "name": "DVSA Snyk Monitor Workflow",
+    "description": "Set Snyk to monitors the projects main branch for security vulnerabilities on a weekly basis",
+    "categories": [
+        "node"
+    ]
+}
