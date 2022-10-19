@@ -1,15 +1,15 @@
 # .github
 Driver and Vehicle Standards Agency  Shared resources for all teams.
 
-## NodeJS Workflows
-
-The following workflows for NodeJS are in the `workflows` directory
-
 ## Starter Workflow
 
 Starter workflows are in the [workflow-templates](workflow-templates/ci.yaml) directory.
 
-The `ci.yaml` workflow has the following steps:
+The workflow expects a Snyk token to be available. You may need to contact the organisation administrators to enable this.
+
+Uploading to an s3 bucket requires AWS permissions and the relevant token to be stored in the repository environment secrets. See [here](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) for creating environments and adding secrets.
+
+## The NodeJS `ci.yaml` workflow has the following steps:
 
 1. Lint
     - optional argument `max-warnings` sets how many warnings are allowed. Default is 0.
@@ -25,9 +25,12 @@ The `ci.yaml` workflow has the following steps:
         - upload-artifact. Defaults to false if the archive doesn't need to be saved
         - dist-folder. The location of the build file. This is usually configured in the package.json
         - retention-days. How many days to save the archive for if it's stored. Default 7 days.
-        - build-command. What npm command is ran to build the project. Defaults to `package`.
+        - build-command. The npm command to run to build the project. Defaults to `package`.
 1. Upload to s3
-    Workflow downloads the archive created from the build workflow and pushes it to s3 with the commit id as a tag
+    Workflow downloads the archive created from the build workflow and pushes it to s3 with the commit id as a tag. Default only running on master branch. If you want to include other branches, here's an example:
+    ```
+    if: startsWith( github.ref, 'refs/heads/feature/') || startsWith( github.ref, 'refs/heads/fix/') || ${{ github.ref_name == 'main' }}
+    ```
     - required arguments:
         - environment. This is used for ensuring the correct secrets are being used
         - short_commit. This is to tag the object with
