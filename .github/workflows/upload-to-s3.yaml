@@ -8,21 +8,22 @@ on:
       short_commit:
         required: true
         type: string
-      artifact_name:
+      artifact:
         required: true
         type: string
-      dist-folder:
+      bucket_key:
+        required: true
+        type: string
+      build_folder:
         required: false
         type: string
-        default: 'dist'
+        default: dist
     secrets:
       AWS_ACCOUNT:
         required: true
       AWS_REGION:
         required: true
       BUCKET_NAME:
-        required: true
-      BUCKET_PATH:
         required: true
 jobs:
   upload:
@@ -41,11 +42,11 @@ jobs:
         id: download
         uses: actions/download-artifact@v3
         with:
-          name: ${{ inputs.artifact_name }}
+          name: ${{ inputs.build_folder }}
       - name: Upload to s3
         run: >
           aws s3api put-object
-          --tagging commit=${{ inputs.short_commit }}
+          --tagging short_commit_id=${{ inputs.short_commit }}
           --bucket ${{ secrets.BUCKET_NAME }}
-          --key ${{ secrets.BUCKET_PATH }}/${{ inputs.artifact_name }}
-          --body ${{steps.download.outputs.download-path}}/${{ inputs.dist-folder }}
+          --key ${{ inputs.bucket_key }}
+          --body ${{steps.download.outputs.download-path}}/${{ inputs.artifact }}
