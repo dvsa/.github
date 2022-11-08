@@ -5,13 +5,13 @@ on:
 
 jobs:
   lint:
-    uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@main
+    uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@v2
 
   test:
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@main
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2
 
   security:
-    uses: dvsa/.github/.github/workflows/nodejs-security.yaml@main
+    uses: dvsa/.github/.github/workflows/nodejs-security.yaml@v2
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
@@ -20,41 +20,38 @@ jobs:
     timeout-minutes: 10
     outputs:
       short_sha: ${{ steps.sha.outputs.SHORT_SHA }}
-      archive_name: ${{ steps.archive.outputs.ARCHIVE_NAME }}
+      pretty_branch_name: ${{ steps.branch.outputs.NAME }}
     steps:
       - uses: actions/checkout@v3
       - name: Set short sha output
         id: sha
         run: echo "SHORT_SHA=$(git rev-parse --short=11 HEAD)" >> $GITHUB_OUTPUT
       - name: Set archive name output
-        id: archive
+        id: branch
         run: |
           export PRETTY_BRANCH_NAME=$(tr '/' '-' <<< ${{ github.ref_name }})
-          echo "ARCHIVE_NAME=${PRETTY_BRANCH_NAME}.zip" >> $GITHUB_OUTPUT
+          echo "NAME=${PRETTY_BRANCH_NAME}.zip" >> $GITHUB_OUTPUT
 
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@main
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v2
     needs: [ build-names ]
     with:
-      upload-artifact: ${{ github.ref_name == 'main' }}
-      artifact-name: ${{ needs.build-names.outputs.archive_name }}
-      dist-folder: dist/dist.zip
-      retention-days: 7
-      build-command: build:prod
+      upload_artifact: ${{ github.ref_name == 'main' }}
+      build_folder: dist
+      build_command: build:prod
 
-  upload-main-to-s3:
+  upload-to-s3:
     if: ${{ github.ref_name == github.event.repository.default_branch }}
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@main
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2
     needs: [ lint, test, build, build-names ]
     with:
       environment: dev
-      short_commit: ${{  needs.build-names.outputs.short_sha }}
-      artifact_name: ${{  needs.build-names.outputs.archive_name }}
-      dist-folder: dist.zip
+      short_commit: ${{ needs.build-names.outputs.short_sha }}
+      artifact: dist.zip
+      bucket_key: <location-in-bucket>/${{ needs.build-names.outputs.pretty_branch_name }}.zip
     permissions:
       id-token: write
     secrets:
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
-      BUCKET_PATH: ${{ github.repository }}
