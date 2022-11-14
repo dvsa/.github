@@ -30,7 +30,7 @@ jobs:
         id: branch
         run: |
           export PRETTY_BRANCH_NAME=$(tr '/' '-' <<< ${{ github.ref_name }})
-          echo "NAME=${PRETTY_BRANCH_NAME}.zip" >> $GITHUB_OUTPUT
+          echo "NAME=${PRETTY_BRANCH_NAME}" >> $GITHUB_OUTPUT
 
   build:
     uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v2
