@@ -4,10 +4,10 @@ Driver and Vehicle Standards Agency  Shared resources for all teams.
 
 ## Versions
 
-Currently on Version2.
+Currently on Version2.1.
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2.1
 ```
 
 If using the first version of the workflows, specify v1.0.0.
@@ -19,6 +19,8 @@ Starter workflows are in the [workflow-templates](workflow-templates/ci.yaml) di
 The workflow expects a Snyk token to be available. You may need to contact the organisation administrators to enable this.
 
 Uploading to an s3 bucket requires AWS permissions and the relevant token to be stored in the repository environment secrets. See [here](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) for creating environments and adding secrets.
+
+Publishing to NPM requires permissions and the relevant token to be stored in the repository environment secrets. See [here](https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages) for more information about publishing Node.JS packages with Github Actions. When creating your token at npmjs.com, you must ensure it is created as an 'Automation' token - 'Publish' tokens require 2FA which is not suitable for automation.
 
 ## The NodeJS `ci.yaml` workflow has the following steps:
 
@@ -58,6 +60,14 @@ Uploading to an s3 bucket requires AWS permissions and the relevant token to be 
 To read more about sharing workflows within the organization, see the [GitHub docs](https://docs.github.com/en/actions/using-workflows/sharing-workflows-secrets-and-runners-with-your-organization).
 
 To read about using Starter Workflows, see [here](https://docs.github.com/en/actions/using-workflows/using-starter-workflows).
+
+## The NodeJS `npm-publish.yaml` has the following steps:
+
+1. Publish
+    - optional arguments:
+        - `node-version`: The version of Node the package is to be published with. This is defaulted to the latest version of NodeJS 16.
+    - secrets:
+        - `NPM_AUTH_TOKEN`: the authorisation token to be used to publish the package to the NPMJS site. 
 
 ## Examples
 

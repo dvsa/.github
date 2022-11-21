@@ -1,0 +1,13 @@
+name: NPM Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    uses: dvsa/.github/.github/workflows/nodejs-publish.yaml@v2.1
+    with:
+      node-version: '16.x'
+    secrets:
+      NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
