@@ -1,0 +1,7 @@
+{
+    "name": "DVSA NPM Publish Workflow",
+    "description": "DVSA Organization workflow for publishing a package to NPM. See the README for running instruction and configuration options.",
+    "categories": [
+        "node"
+    ]
+}
