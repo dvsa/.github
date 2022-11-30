@@ -32,4 +32,4 @@ jobs:
           role-session-name: GithubActionsSession
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Update lambda function code
-        run: aws lambda update-function-code --function-name ${{ inputs.lambda_function_name }} --s3-bucket "${{ secrets.BUCKET_NAME }}" --s3-key "${{ inputs.bucket_key }}" --publish
+        run: aws lambda update-function-code --function-name ${{ inputs.lambda_function_name }} --s3-bucket "${{ secrets.BUCKET_NAME }}" --s3-key "${{ inputs.bucket_key }}" --publish --query FunctionName
