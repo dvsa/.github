@@ -1,0 +1,35 @@
+name: Update lambda code action
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      lambda_function_name:
+        required: true
+        type: string
+      bucket_key:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCOUNT:
+        required: true
+      AWS_REGION:
+        required: true
+      BUCKET_NAME:
+        required: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      id-token: write
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@05b148adc31e091bafbaf404f745055d4d3bc9d2
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GithubActionsRole
+          role-session-name: GithubActionsSession
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Update lambda function code
+        run: aws lambda update-function-code --function-name ${{ inputs.lambda_function_name }} --s3-bucket "${{ secrets.BUCKET_NAME }}" --s3-key "${{ inputs.bucket_key }}" --publish
