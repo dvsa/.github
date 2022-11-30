@@ -4,10 +4,10 @@ Driver and Vehicle Standards Agency  Shared resources for all teams.
 
 ## Versions
 
-Currently on Version2.1.
+Currently on Version2.2
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2.1
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2.2
 ```
 
 If using the first version of the workflows, specify v1.0.0.
@@ -43,6 +43,7 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
         - `retention_days`. How many days to save the archive for if it's stored. (upload-artifact: `true`). Default is `7` days.
         - build-command. The npm command to run to build the project. Defaults to `package`.
 1. Upload to s3
+
     Workflow downloads the archive created from the build workflow and pushes it to s3 with the commit id as a tag. Default only running on master branch. See examples before for more information.
 
     - required arguments:
@@ -52,6 +53,18 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
         - `bucket_key`: The file name and path in s3 where the object should be uploaded to. See [s3 docs](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
     - optional arguments:
         - `build_folder`. The name of the folder where the archive zip is located. For example `dist`. This is used to download the archive that was uploaded during the build step. Defaults to `dist`.
+    - secrets:
+        - `aws_account`: the account number for the aws environment the archive is to be uploaded to.
+        - `aws_region`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place
+        - `bucket_name`: The name of the bucket the archive is being uploaded to
+1. Update Lambda Function Code
+
+    Workflow to update the Lambda on AWS to use the newly updated code from S3.
+
+    - required arguments:
+        - `environment`. This is used for ensuring the correct secrets are being used
+        - `lambda_function_name`. The name of the Lambda function to update
+        - `bucket_key`: The file name and path in s3 where the object should be uploaded to. See [s3 docs](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
     - secrets:
         - `aws_account`: the account number for the aws environment the archive is to be uploaded to.
         - `aws_region`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place
