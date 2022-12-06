@@ -19,6 +19,9 @@ on:
         required: false
         type: string
         default: 'dist'
+      args:
+        required: false
+        type: string
     secrets:
       NPM_AUTH_TOKEN:
         required: true
@@ -40,6 +43,8 @@ jobs:
           name: ${{ inputs.build_folder }}
           path: ${{ inputs.build_folder_path }}
       - name: Publish to npm.js
-        run: npm publish --access=public
+        run: npm publish
+        with:
+          args: ${{ inputs.args }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
