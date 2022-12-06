@@ -9,5 +9,8 @@ jobs:
     uses: dvsa/.github/.github/workflows/nodejs-publish.yaml@v2.3
     with:
       node-version: '16.x'
+      download_artifact: true
+      build_folder: package
+      build_folder_path: dist
     secrets:
       NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
