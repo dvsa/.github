@@ -43,8 +43,6 @@ jobs:
           name: ${{ inputs.build_folder }}
           path: ${{ inputs.build_folder_path }}
       - name: Publish to npm.js
-        run: npm publish
-        with:
-          args: ${{ inputs.args }}
+        run: npm publish ${{ inputs.args }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
