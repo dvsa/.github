@@ -7,6 +7,21 @@ on:
         required: false
         type: string
         default: '16.x'
+      download_artifact:
+        required: false
+        type: boolean
+        default: false
+      build_folder:
+        required: false
+        type: string
+        default: 'package'
+      build_folder_path:
+        required: false
+        type: string
+        default: 'dist'
+      args:
+        required: false
+        type: string
     secrets:
       NPM_AUTH_TOKEN:
         required: true
@@ -21,7 +36,13 @@ jobs:
         with:
           node-version: ${{ inputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
+      - name: Download build artifact
+        if: inputs.download_artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.build_folder }}
+          path: ${{ inputs.build_folder_path }}
       - name: Publish to npm.js
-        run: npm publish --access=public
+        run: npm publish ${{ inputs.args }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

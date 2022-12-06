@@ -4,10 +4,10 @@ Driver and Vehicle Standards Agency  Shared resources for all teams.
 
 ## Versions
 
-Currently on Version2.2
+Currently on Version2.3
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2.2
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2.3
 ```
 
 If using the first version of the workflows, specify v1.0.0.
@@ -79,6 +79,10 @@ To read about using Starter Workflows, see [here](https://docs.github.com/en/act
 1. Publish
     - optional arguments:
         - `node-version`: The version of Node the package is to be published with. This is defaulted to the latest version of NodeJS 16.
+        - `download_artifact`: Optional boolean value, to be used when building package separately prior to publishing.
+        - `build_folder`: The folder to download the built package from.
+        - `build_folder_path`: The path of the folder to download the built package to.
+        - `args`: optional arguments for the npm publish command, such as --dry-run or --access=public.
     - secrets:
         - `NPM_AUTH_TOKEN`: the authorisation token to be used to publish the package to the NPMJS site. 
 
@@ -151,7 +155,7 @@ The build and upload-to-s3 steps would have the following inputs:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@main
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v2.3
     with:
       upload_artifact: true
       build_folder: build
@@ -159,7 +163,7 @@ The build and upload-to-s3 steps would have the following inputs:
       build_command: build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2.3
     with:
       environment: dev
       short_commit: ${{ needs.build-names.outputs.short_sha }}
@@ -195,7 +199,7 @@ The upload-to-s3 action with a matrix strategy defined:
 
 ```YAML
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2.3
     strategy:
       matrix:
         buildName: [
