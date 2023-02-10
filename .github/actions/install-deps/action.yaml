@@ -6,6 +6,10 @@ inputs:
     description: Node version used to install dependencies
     required: false
     default: '16.16'
+  npm_version:
+    description: NPM version used to install dependencies
+    required: false
+    default: 'latest'
 
 runs:
   using: 'composite'
@@ -15,7 +19,7 @@ runs:
       with:
         node-version: ${{ inputs.node_version }}
         cache: 'npm'
-    - run: npm i -g npm@latest
+    - run: npm i -g npm@${{ inputs.npm_version }}
       shell: bash
 
     - name: Cache dependencies
