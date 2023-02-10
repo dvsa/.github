@@ -26,7 +26,9 @@ on:
       node_version:
         required: false
         type: string
-
+      npm_version:
+        required: false
+        type: string
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,6 +39,7 @@ jobs:
         uses: dvsa/.github/.github/actions/install-deps@feature/VOL-3681-node-version-definable
         with:
           node_version: ${{ inputs.node_version }}
+          npm_version: ${{ inputs.npm_version }}
       - name: Build
         run: npm run ${{ inputs.build_command }}
       - name: Upload artifact
