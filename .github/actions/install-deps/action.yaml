@@ -2,7 +2,7 @@ name: Install dependencies
 description: install all project dependencies.
 
 inputs:
-  node-version:
+  node_version:
     description: Node version used to install dependencies
     required: false
     default: '16.16'
