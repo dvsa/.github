@@ -23,6 +23,9 @@ on:
         required: false
         type: string
         default: 'package'
+      node_version:
+        required: false
+        type: string
 
 jobs:
   build:
@@ -32,6 +35,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install dependencies
         uses: dvsa/.github/.github/actions/install-deps@main
+        with:
+          node_version: ${{ inputs.node_version }}
       - name: Build
         run: npm run ${{ inputs.build_command }}
       - name: Upload artifact
