@@ -22,7 +22,7 @@ on:
       build_command:
         required: false
         type: string
-        default: 'package'
+        default: 'npm run package'
       node_version:
         required: false
         type: string
@@ -41,7 +41,7 @@ jobs:
           node_version: ${{ inputs.node_version }}
           npm_version: ${{ inputs.npm_version }}
       - name: Build
-        run: npm run ${{ inputs.build_command }}
+        run: ${{ inputs.build_command }}
       - name: Upload artifact
         if: inputs.upload_artifact
         uses: actions/upload-artifact@v3
