@@ -18,14 +18,12 @@ on:
         required: false
         type: string
         default: dist
-      role_name_to_assume:
-        required: false
-        type: string
-        default: 'GithubActionsRole'
     secrets:
       AWS_ACCOUNT:
         required: true
       AWS_REGION:
+        required: true
+      AWS_ROLE_TO_ASSUME_ARN:
         required: true
       BUCKET_NAME:
         required: true
@@ -39,7 +37,7 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/${{ inputs.role_name_to_assume }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
           role-session-name: GithubActionsSession
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Download build artifact
