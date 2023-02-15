@@ -20,7 +20,9 @@ runs:
         node-version: ${{ inputs.node_version }}
         cache: 'npm'
     - run: node --version
+      shell: bash
     - run: npm --version
+      shell: bash
 
     - name: Cache dependencies
       uses: actions/cache@v3
