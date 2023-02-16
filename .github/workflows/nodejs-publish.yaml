@@ -6,7 +6,7 @@ on:
       node_version:
         required: false
         type: string
-        default: '16.x'
+        default: '18.x'
       download_artifact:
         required: false
         type: boolean
