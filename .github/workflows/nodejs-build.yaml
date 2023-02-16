@@ -37,7 +37,6 @@ jobs:
         uses: dvsa/.github/.github/actions/install-deps@v3.0.0
         with:
           node_version: ${{ inputs.node_version }}
-          npm_version: ${{ inputs.npm_version }}
       - name: Build
         run: ${{ inputs.build_command }}
       - name: Upload artifact
