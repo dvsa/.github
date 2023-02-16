@@ -3,7 +3,7 @@ name: Lint
 on:
   workflow_call:
     inputs:
-      max-warnings:
+      max_warnings:
         required: false
         type: number
         default: 0
@@ -23,4 +23,4 @@ jobs:
           node_version: ${{ inputs.node_version }}
           npm_version: ${{ inputs.npm_version }}
       - name: Lint
-        run: npm run lint -- --max-warnings ${{ inputs.max-warnings }}
+        run: npm run lint -- --max-warnings ${{ inputs.max_warnings }}
