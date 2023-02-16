@@ -5,11 +5,7 @@ inputs:
   node_version:
     description: Node version used to install dependencies
     required: false
-    default: '16.16'
-  npm_version:
-    description: NPM version used to install dependencies
-    required: false
-    default: 'latest'
+    default: '18.x'
 
 runs:
   using: 'composite'
