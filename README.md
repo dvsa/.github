@@ -26,10 +26,12 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
 
 1. Lint
     - optional argument:
-        - `max-warnings`: Sets how many warnings are allowed. Default is `0`.
+        - `max_warnings`: Sets how many warnings are allowed. Default is `0`.
+        - `node_version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
 1. Test
     - optional argument:
         - `test_command`: Sets the command used during the Test step. Default is `npm run test`.
+        - `node_version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
 1. Security
     - required secret `SNYK_TOKEN` requires the organization or repo snyk token secret
     - optional argument `args` allows passing in any extra args to the snyk command. Note, the default behavior is to test all projects including all dev dependencies. If you don't want to test dev dependencies, pass in args: `--all-projects` to override the default args.
@@ -41,7 +43,8 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
         - `build_folder`. The location of the build file. This is usually configured in the package.json or webpack config. Defaults to `dist`.
         - `build_folder_path`. If only a subset of directories want to be saved provide the path to those files. For example `dist/artifact`. Defaults to `dist`.
         - `retention_days`. How many days to save the archive for if it's stored. (upload-artifact: `true`). Default is `7` days.
-        - build-command. The npm command to run to build the project. Defaults to `package`.
+        - `build_command`. The command to run to build the project. Defaults to `npm run package`.
+        - `node_version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
 1. Upload to s3
 
     Workflow downloads the archive created from the build workflow and pushes it to s3 with the commit id as a tag. Default only running on master branch. See examples before for more information.
@@ -54,9 +57,10 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
     - optional arguments:
         - `build_folder`. The name of the folder where the archive zip is located. For example `dist`. This is used to download the archive that was uploaded during the build step. Defaults to `dist`.
     - secrets:
-        - `aws_account`: the account number for the aws environment the archive is to be uploaded to.
-        - `aws_region`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place
-        - `bucket_name`: The name of the bucket the archive is being uploaded to
+        - `AWS_ACCOUNT`: the account number for the aws environment the archive is to be uploaded to.
+        - `AWS_REGION`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place.
+        - `BUCKET_NAME`: The name of the bucket the archive is being uploaded to.
+        - `AWS_ROLE_TO_ASSUME_ARN`: The ARN for the role assume when uploading the archive to S3.
 1. Update Lambda Function Code
 
     Workflow to update the Lambda on AWS to use the newly updated code from S3.
@@ -78,7 +82,7 @@ To read about using Starter Workflows, see [here](https://docs.github.com/en/act
 
 1. Publish
     - optional arguments:
-        - `node-version`: The version of Node the package is to be published with. This is defaulted to the latest version of NodeJS 16.
+        - `node_version`: The version of Node the package is to be published with. This is defaulted to the latest version of NodeJS 18.
         - `download_artifact`: Optional boolean value, to be used when building package separately prior to publishing.
         - `build_folder`: The folder to download the built package from.
         - `build_folder_path`: The path of the folder to download the built package to.
