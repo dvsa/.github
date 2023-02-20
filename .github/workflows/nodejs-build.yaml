@@ -43,11 +43,11 @@ jobs:
           node-version: ${{ inputs.node-version }}
           npm-version: ${{ inputs.npm-version }}
       - name: Build
-        run: ${{ inputs.build_command }}
+        run: ${{ inputs.build-command }}
       - name: Upload artifact
-        if: inputs.upload_artifact
+        if: inputs.upload-artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.build_folder }}
-          path: ${{ inputs.build_folder_path }}
-          retention-days: ${{ inputs.retention_days }}
+          name: ${{ inputs.build-folder }}
+          path: ${{ inputs.build-folder-path }}
+          retention-days: ${{ inputs.retention-days }}
