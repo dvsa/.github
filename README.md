@@ -4,10 +4,10 @@ Driver and Vehicle Standards Agency  Shared resources for all teams.
 
 ## Versions
 
-Currently on Version2.3
+Currently on Version 3.0.0
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.0.0
 ```
 
 If using the first version of the workflows, specify v1.0.0.
@@ -26,36 +26,39 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
 
 1. Lint
     - optional argument:
-        - `max_warnings`: Sets how many warnings are allowed. Default is `0`.
-        - `node_version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
+        - `max-warnings`: Sets how many warnings are allowed. Default is `0`.
+        - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
+        - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
 1. Test
     - optional argument:
-        - `test_command`: Sets the command used during the Test step. Default is `npm run test`.
-        - `node_version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
+        - `test-command`: Sets the command used during the Test step. Default is `npm run test`.
+        - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
+        - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
 1. Security
     - required secret `SNYK_TOKEN` requires the organization or repo snyk token secret
     - optional argument `args` allows passing in any extra args to the snyk command. Note, the default behavior is to test all projects including all dev dependencies. If you don't want to test dev dependencies, pass in args: `--all-projects` to override the default args.
 1. Build
     - required arguments:
-        - `artifact_name`: The name of the archive to store.
+        - `artifact-name`: The name of the archive to store.
     - optional arguments:
-        - `upload_artifact`. If true the build archive will be stored in github. Defaults to `false` if the archive doesn't need to be saved. Must be true if upload to s3 is required.
-        - `build_folder`. The location of the build file. This is usually configured in the package.json or webpack config. Defaults to `dist`.
-        - `build_folder_path`. If only a subset of directories want to be saved provide the path to those files. For example `dist/artifact`. Defaults to `dist`.
-        - `retention_days`. How many days to save the archive for if it's stored. (upload-artifact: `true`). Default is `7` days.
-        - `build_command`. The command to run to build the project. Defaults to `npm run package`.
-        - `node_version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
+        - `upload-artifact`. If true the build archive will be stored in github. Defaults to `false` if the archive doesn't need to be saved. Must be true if upload to s3 is required.
+        - `build-folder`. The location of the build file. This is usually configured in the package.json or webpack config. Defaults to `dist`.
+        - `build-folder-path`. If only a subset of directories want to be saved provide the path to those files. For example `dist/artifact`. Defaults to `dist`.
+        - `retention-days`. How many days to save the archive for if it's stored. (upload-artifact: `true`). Default is `7` days.
+        - `build-command`. The command to run to build the project. Defaults to `npm run package`.
+        - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
+        - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
 1. Upload to s3
 
     Workflow downloads the archive created from the build workflow and pushes it to s3 with the commit id as a tag. Default only running on master branch. See examples before for more information.
 
     - required arguments:
         - `environment`. This is used for ensuring the correct secrets are being used
-        - `short_commit`. This is to tag the object with
+        - `short-commit`. This is to tag the object with
         - `artifact`. The name of the archive from the build step. For example, `package.zip`.
-        - `bucket_key`: The file name and path in s3 where the object should be uploaded to. See [s3 docs](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
+        - `bucket-key`: The file name and path in s3 where the object should be uploaded to. See [s3 docs](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
     - optional arguments:
-        - `build_folder`. The name of the folder where the archive zip is located. For example `dist`. This is used to download the archive that was uploaded during the build step. Defaults to `dist`.
+        - `build-folder`. The name of the folder where the archive zip is located. For example `dist`. This is used to download the archive that was uploaded during the build step. Defaults to `dist`.
     - secrets:
         - `AWS_ACCOUNT`: the account number for the aws environment the archive is to be uploaded to.
         - `AWS_REGION`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place.
@@ -67,12 +70,12 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
 
     - required arguments:
         - `environment`. This is used for ensuring the correct secrets are being used
-        - `lambda_function_name`. The name of the Lambda function to update
-        - `bucket_key`: The file name and path in s3 where the object should be uploaded to. See [s3 docs](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
+        - `lambda-function-name`. The name of the Lambda function to update
+        - `bucket-key`: The file name and path in s3 where the object should be uploaded to. See [s3 docs](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
     - secrets:
-        - `aws_account`: the account number for the aws environment the archive is to be uploaded to.
-        - `aws_region`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place
-        - `bucket_name`: The name of the bucket the archive is being uploaded to
+        - `AWS_ACCOUNT`: the account number for the aws environment the archive is to be uploaded to.
+        - `AWS_REGION`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place
+        - `BUCKET_NAME`: The name of the bucket the archive is being uploaded to
 
 To read more about sharing workflows within the organization, see the [GitHub docs](https://docs.github.com/en/actions/using-workflows/sharing-workflows-secrets-and-runners-with-your-organization).
 
@@ -82,10 +85,10 @@ To read about using Starter Workflows, see [here](https://docs.github.com/en/act
 
 1. Publish
     - optional arguments:
-        - `node_version`: The version of Node the package is to be published with. This is defaulted to the latest version of NodeJS 18.
-        - `download_artifact`: Optional boolean value, to be used when building package separately prior to publishing.
-        - `build_folder`: The folder to download the built package from.
-        - `build_folder_path`: The path of the folder to download the built package to.
+        - `node_-version`: The version of Node the package is to be published with. This is defaulted to the latest version of NodeJS 18.
+        - `download-artifact`: Optional boolean value, to be used when building package separately prior to publishing.
+        - `build-folder`: The folder to download the built package from.
+        - `build-folder-path`: The path of the folder to download the built package to.
         - `args`: optional arguments for the npm publish command, such as --dry-run or --access=public.
     - secrets:
         - `NPM_AUTH_TOKEN`: the authorisation token to be used to publish the package to the NPMJS site. 

@@ -23,10 +23,14 @@ on:
         required: false
         type: string
         default: 'npm run package'
-      node_version:
-        required: false
+      node-version:
         type: string
+        required: false
         default: '18.x'
+      npm-version:
+        type: string
+        required: false
+        default: 'latest'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,7 +40,8 @@ jobs:
       - name: Install dependencies
         uses: dvsa/.github/.github/actions/install-deps@v3.0.0
         with:
-          node_version: ${{ inputs.node_version }}
+          node-version: ${{ inputs.node-version }}
+          npm-version: ${{ inputs.npm-version }}
       - name: Build
         run: ${{ inputs.build_command }}
       - name: Upload artifact

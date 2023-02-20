@@ -3,14 +3,18 @@ name: Test
 on:
   workflow_call:
     inputs:
-      test_command:
+      test-command:
         required: false
         type: string
-        default: 'test'
-      node_version:
+        default: 'npm run test'
+      node-version:
         required: false
         type: string
         default: '18.x'
+      npm-version:
+        required: false
+        type: string
+        default: 'latest'
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -20,6 +24,7 @@ jobs:
       - name: Install dependencies
         uses: dvsa/.github/.github/actions/install-deps@v3.0.0
         with:
-          node_version: ${{ inputs.node_version }}
+          node-version: ${{ inputs.node-version }}
+          npm-version: ${{ inputs.npm-version }}
       - name: Test
-        run: npm run ${{ inputs.test_command }}
+        run: ${{ inputs.test-command }}

@@ -5,7 +5,7 @@ on:
       args:
         required: false
         type: string
-      continue_on_error:
+      continue-on-error:
         required: false
         type: boolean
         default: false
@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
-        continue-on-error: ${{ inputs.continue_on_error }}
+        continue-on-error: ${{ inputs.continue-on-error }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:

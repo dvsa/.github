@@ -3,14 +3,18 @@ name: Lint
 on:
   workflow_call:
     inputs:
-      max_warnings:
+      max-warnings:
         required: false
         type: number
         default: 0
-      node_version:
-        required: false
+      node-version:
         type: string
+        required: false
         default: '18.x'
+      npm-version:
+        type: string
+        required: false
+        default: 'latest'
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -20,6 +24,7 @@ jobs:
       - name: Install dependencies
         uses: dvsa/.github/.github/actions/install-deps@v3.0.0
         with:
-          node_version: ${{ inputs.node_version }}
+          node-version: ${{ inputs.node-version }}
+          npm-version: ${{ inputs.npm-version }}
       - name: Lint
-        run: npm run lint -- --max-warnings ${{ inputs.max_warnings }}
+        run: npm run lint -- --max-warnings ${{ inputs.max-warnings }}
