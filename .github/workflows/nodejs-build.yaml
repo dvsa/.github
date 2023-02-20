@@ -3,23 +3,23 @@ name: Build
 on:
   workflow_call:
     inputs:
-      upload_artifact:
+      upload-artifact:
         required: false
         type: boolean
         default: false
-      build_folder:
+      build-folder:
         required: false
         type: string
         default: 'dist'
-      build_folder_path:
+      build-folder-path:
         required: false
         type: string
         default: 'dist'
-      retention_days:
+      retention-days:
         required: false
         type: number
         default: 3
-      build_command:
+      build-command:
         required: false
         type: string
         default: 'npm run package'
