@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
-        uses: dvsa/.github/.github/actions/install-deps@v3.0.0
+        uses: dvsa/.github/.github/actions/install-deps@feature/VOL-3681-node-version-definable
         with:
           node-version: ${{ inputs.node-version }}
           npm-version: ${{ inputs.npm-version }}
