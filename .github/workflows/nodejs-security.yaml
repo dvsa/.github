@@ -5,7 +5,10 @@ on:
       args:
         required: false
         type: string
-        default: '--dev --all-projects'
+      continue-on-error:
+        required: false
+        type: boolean
+        default: false
     secrets:
       SNYK_TOKEN:
         required: true
@@ -17,7 +20,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
-        continue-on-error: false
+        continue-on-error: ${{ inputs.continue-on-error }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:

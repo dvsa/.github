@@ -1,11 +1,17 @@
 name: Install dependencies
-description: install all project dependencies.
+description: Install Node, NPM and all project dependencies.
 
 inputs:
   node-version:
     description: Node version used to install dependencies
+    type: string
     required: false
-    default: '16.16'
+    default: '18.x'
+  npm-version:
+    description: NPM version to be installed and used
+    type: string
+    required: false
+    default: 'latest'
 
 runs:
   using: 'composite'
@@ -15,7 +21,11 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'npm'
-    - run: npm i -g npm@latest
+    - run: npm i -g npm@${{ inputs.npm-version }}
+      shell: bash
+    - run: node --version
+      shell: bash
+    - run: npm --version
       shell: bash
 
     - name: Cache dependencies

@@ -3,27 +3,34 @@ name: Build
 on:
   workflow_call:
     inputs:
-      upload_artifact:
+      upload-artifact:
         required: false
         type: boolean
         default: false
-      build_folder:
+      build-folder:
         required: false
         type: string
         default: 'dist'
-      build_folder_path:
+      build-folder-path:
         required: false
         type: string
         default: 'dist'
-      retention_days:
+      retention-days:
         required: false
         type: number
         default: 3
-      build_command:
+      build-command:
         required: false
         type: string
-        default: 'package'
-
+        default: 'npm run package'
+      node-version:
+        type: string
+        required: false
+        default: '18.x'
+      npm-version:
+        type: string
+        required: false
+        default: 'latest'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,13 +38,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
-        uses: dvsa/.github/.github/actions/install-deps@main
+        uses: dvsa/.github/.github/actions/install-deps@v3.0.0
+        with:
+          node-version: ${{ inputs.node-version }}
+          npm-version: ${{ inputs.npm-version }}
       - name: Build
-        run: npm run ${{ inputs.build_command }}
+        run: ${{ inputs.build-command }}
       - name: Upload artifact
-        if: inputs.upload_artifact
+        if: inputs.upload-artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.build_folder }}
-          path: ${{ inputs.build_folder_path }}
-          retention-days: ${{ inputs.retention_days }}
+          name: ${{ inputs.build-folder }}
+          path: ${{ inputs.build-folder-path }}
+          retention-days: ${{ inputs.retention-days }}

@@ -5,16 +5,16 @@ on:
       environment:
         required: true
         type: string
-      short_commit:
+      short-commit:
         required: true
         type: string
       artifact:
         required: true
         type: string
-      bucket_key:
+      bucket-key:
         required: true
         type: string
-      build_folder:
+      build-folder:
         required: false
         type: string
         default: dist
@@ -22,6 +22,8 @@ on:
       AWS_ACCOUNT:
         required: true
       AWS_REGION:
+        required: true
+      AWS_ROLE_TO_ASSUME_ARN:
         required: true
       BUCKET_NAME:
         required: true
@@ -35,18 +37,18 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GithubActionsRole
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
           role-session-name: GithubActionsSession
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Download build artifact
         id: download
         uses: actions/download-artifact@v3
         with:
-          name: ${{ inputs.build_folder }}
+          name: ${{ inputs.build-folder }}
       - name: Upload to s3
         run: >
           aws s3api put-object
-          --tagging short_commit_id=${{ inputs.short_commit }}
+          --tagging short_commit_id=${{ inputs.short-commit }}
           --bucket ${{ secrets.BUCKET_NAME }}
-          --key ${{ inputs.bucket_key }}
+          --key ${{ inputs.bucket-key }}
           --body ${{steps.download.outputs.download-path}}/${{ inputs.artifact }}

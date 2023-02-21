@@ -3,19 +3,19 @@ name: Publish
 on:
   workflow_call:
     inputs:
-      node_version:
-        required: false
+      node-version:
         type: string
-        default: '16.x'
-      download_artifact:
+        required: false
+        default: '18.x'
+      download-artifact:
         required: false
         type: boolean
         default: false
-      build_folder:
+      build-folder:
         required: false
         type: string
         default: 'package'
-      build_folder_path:
+      build-folder-path:
         required: false
         type: string
         default: 'dist'
@@ -31,17 +31,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build on Node.js ${{ inputs.node_version }}
+      - name: Build on Node.js ${{ inputs.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ inputs.node_version }}
+          node-version: ${{ inputs.node-version }}
           registry-url: 'https://registry.npmjs.org'
       - name: Download build artifact
-        if: inputs.download_artifact
+        if: inputs.download-artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ inputs.build_folder }}
-          path: ${{ inputs.build_folder_path }}
+          name: ${{ inputs.build-folder }}
+          path: ${{ inputs.build-folder-path }}
       - name: Publish to npm.js
         run: npm publish ${{ inputs.args }}
         env:

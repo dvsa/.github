@@ -5,10 +5,10 @@ on:
       environment:
         required: true
         type: string
-      lambda_function_name:
+      lambda-function-name:
         required: true
         type: string
-      bucket_key:
+      bucket-key:
         required: true
         type: string
     secrets:
@@ -17,6 +17,8 @@ on:
       AWS_REGION:
         required: true
       BUCKET_NAME:
+        required: true
+      AWS_ROLE_TO_ASSUME_ARN:
         required: true
 jobs:
   deploy:
@@ -28,8 +30,8 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@05b148adc31e091bafbaf404f745055d4d3bc9d2
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GithubActionsRole
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
           role-session-name: GithubActionsSession
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Update lambda function code
-        run: aws lambda update-function-code --function-name ${{ inputs.lambda_function_name }} --s3-bucket "${{ secrets.BUCKET_NAME }}" --s3-key "${{ inputs.bucket_key }}" --publish --query FunctionName
+        run: aws lambda update-function-code --function-name ${{ inputs.lambda-function-name }} --s3-bucket "${{ secrets.BUCKET_NAME }}" --s3-key "${{ inputs.bucket-key }}" --publish --query FunctionName
