@@ -1,0 +1,82 @@
+name: Static analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 1'
+
+jobs:
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          extensions: mbstring, intl
+
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress
+
+      - name: Install PHPStan
+        run: composer bin phpstan update --no-interaction --no-progress
+
+      - name: Execute PHPStan
+        run: vendor/bin/phpstan analyze --no-progress
+
+  php-codesniffer:
+    name: PHP-CodeSniffer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          extensions: mbstring
+
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress
+
+      - name: Install PHP CodeSniffer
+        run: composer bin php-codesniffer update --no-interaction --no-progress
+
+      - name: Execute PHP CodeSniffer
+        run: vendor/bin/phpcs -q
+
+  psalm:
+    name: Psalm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          extensions: mbstring, intl
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Install Psalm
+        run: composer bin psalm update --no-interaction --no-progress
+
+      - name: Execute Psalm
+        run: vendor/bin/psalm --no-progress --output-format=github
