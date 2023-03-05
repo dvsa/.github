@@ -2,6 +2,10 @@
 
 Driver and Vehicle Standards Agency  Shared resources for all teams.
 
+This repository contains shared templates and actions for use throughout the DVSA. 
+
+> hint: As this README.md is quite large use the [github table of contents](https://github.blog/changelog/2021-04-13-table-of-contents-support-in-markdown-files/) feature to navigate
+
 ## Versions
 
 Currently on Version 3.0.0
@@ -11,6 +15,8 @@ Currently on Version 3.0.0
 ```
 
 If using the first version of the workflows, specify v1.0.0.
+
+## NodeJS Actions
 
 ## Starter Workflow
 
@@ -227,3 +233,19 @@ The upload-to-s3 action with a matrix strategy defined:
 ```
 
 In the s3 bucket, the objects have been uploaded to the specified location: `backend/lambdaA/feature-new-frontend.zip` and `backend/lambdaB/feature-new-frontend.zip`.
+
+## PHP Actions
+
+### php-security 
+This action carries out scans of dependencies introduced by composer using SNYK tooling to help identify any vulnerabilities. 
+This action will run on push to main and pull requests and schedule.
+
+Requires a `SNYK_TOKEN` secret - one can be inherited from the organisation - contact shaun.hare@dvsa.gov.uk or a DVSA member of your team to get that enabled.
+
+### php-static 
+
+This action is for static code analysis using PSALM and will rull on PR and schedule. For advice contact a DVSA member of your team.
+
+### php-tests 
+
+This action will run the phpunit tests on the project on PR and schedule. 
