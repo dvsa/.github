@@ -59,7 +59,7 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
         - `bucket-key`: The file name and path in s3 where the object should be uploaded to. See [s3 docs](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
     - optional arguments:
         - `build-folder`: The name of the folder where the archive zip is located. For example `dist`. This is used to download the archive that was uploaded during the build step. Defaults to `dist`.
-        - `optional-tags`: Additional tags to be applied to the object. These must be in URL query form, for example `Key1=Value1`. Multiple tags MUST be joined with an &, for example `Key1=Value1&Key2=Value2`. See documentation linked above for further information.
+        - `optional-tags`: Additional tags to be applied to the object. These must be in URL query form, for example `Key1=Value1`. Multiple tags MUST be joined with an &, for example `Key1=Value1&Key2=Value2`. See put-object tagging [documentation](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html) for more information.
     - secrets:
         - `AWS_ACCOUNT`: the account number for the aws environment the archive is to be uploaded to.
         - `AWS_REGION`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place.
