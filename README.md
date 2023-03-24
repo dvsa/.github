@@ -228,3 +228,42 @@ The upload-to-s3 action with a matrix strategy defined:
 ```
 
 In the s3 bucket, the objects have been uploaded to the specified location: `backend/lambdaA/feature-new-frontend.zip` and `backend/lambdaB/feature-new-frontend.zip`.
+
+## The Java `java-security.yaml` workflow has the following steps:
+
+This workflow can be used to update a Java project within Snyk, typically invoked after a merge has been approved.
+
+Due to a limitation with GitHub integration for Java projects, this workflow will ensure the results from snyk-cli and
+IDE integration matches those on the Snyk website.
+
+1. Security
+   - optional arguments:
+      - `java_version`: The version of Java required to compile the repository. Default is 11.
+      - `snyk_project`: Unique project name that snyk monitor will use to publish results to.
+   - secrets:
+      - `SNYK_TOKEN`: The authorisation token required for snyk. 
+      - `USER_NAME`: Relevant GitHub username required to access private packages.
+      - `ACCESS_TOKEN`: Relevant GitHub access token required to access private packages.
+      - `PACKAGE_REPO`: Repo to use to retrieve packages from.
+
+## Examples
+
+```YAML
+   on:
+     pull_request:
+       types:
+         - closed
+   
+   jobs:
+     security:
+       if: github.event.pull_request.merged == true
+       uses: dvsa/.github/.github/workflowsjava-security.yaml@version
+       with:
+         java_version: 11
+         snyk_project: smc-w53
+       secrets:
+         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+         USER_NAME: ${{ secrets.SMC_USER_NAME }}
+         ACCESS_TOKEN: ${{ secrets.SMC_ACCESS_TOKEN }}
+         PACKAGE_REPO: ${{ secrets.SMC_PACKAGE_REPO }}
+```

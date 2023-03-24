@@ -4,8 +4,9 @@ on:
   workflow_call:
     inputs:
       java_version:
-        required: true
+        required: false
         type: string
+        default: '11'
       snyk_project:
         required: true
         type: string
