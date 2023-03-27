@@ -1,0 +1,25 @@
+name: "AWS Auth"
+
+inputs:
+  aws_role:
+    type: string
+    desc: "Role name used by Github in AWS Account" 
+  aws_account_id:
+    type: string
+    desc: "Account ID for AWS Account " 
+  aws_region:
+    type: string
+    desc: "Region in AWS Account" 
+
+permissions:
+  id-token: write
+  contents: read
+
+runs:
+  using: 'composite'
+  steps:        
+  - name: Infra AWS Authenication 
+    uses: aws-actions/configure-aws-credentials@v1-node16
+    with:
+      role-to-assume: "arn:aws:iam::${{ inputs.aws_account_id }}:role/${{ inputs.aws_role }}" #
+      aws-region: "${{ inputs.aws_region }}"

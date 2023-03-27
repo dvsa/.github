@@ -1,0 +1,32 @@
+name: Terraform Workspace
+
+inputs:
+  terraform_version:
+    type: number
+    default: '1.3.7'
+    description: Terraform Version to install on runner
+  terraform_workspace_name:
+    type: string
+    description: Name for Teraform Workspace e.g dev01 or uat01
+
+runs:
+  using: 'composite'
+  steps:
+  - uses: actions/checkout@v3
+  - uses: hashicorp/setup-terraform@v2
+    with:
+      terraform_version:  ${{ inputs.terraform_version }}
+
+  - name: Create Terraform Workspace Default
+    if: ${{ inputs.terraform_workspace_name == null }} 
+    run: |
+      terraform workspace select "${{ github.actor }}" || terraform workspace new "${{ github.actor }}"
+      echo "WORKSPACE=${{ github.actor }}" >> $GITHUB_ENV
+    shell: bash
+
+  - name: Create Terraform Workspace
+    if: ${{ inputs.terraform_workspace_name != null }} 
+    run: |
+      terraform workspace select "${{ inputs.terraform_workspace_name }}" || terraform workspace new "${{ inputs.terraform_workspace_name }}"
+      echo "WORKSPACE=${{ inputs.terraform_workspace_name }}" >> $GITHUB_ENV
+    shell: bash
