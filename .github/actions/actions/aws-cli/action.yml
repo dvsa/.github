@@ -1,0 +1,17 @@
+name: aws-cli
+
+inputs:
+  command:
+    type: string
+    description: Command to be invoked by AWS CLI
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Invoke AWS CLI command
+      run: aws ${{ inputs.command }}
+      shell: bash
