@@ -7,8 +7,9 @@ on:
         required: true
         type: string
       java_version:
-        required: true
+        required: false
         type: string
+        default: '11'
     secrets:
       USER_NAME:
         required: true

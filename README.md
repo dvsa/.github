@@ -237,16 +237,32 @@ Due to a limitation with GitHub integration for Java projects, this workflow wil
 IDE integration matches those on the Snyk website.
 
 1. Security
-   - optional arguments:
+   - arguments:
       - `java_version`: The version of Java required to compile the repository. Default is 11.
-      - `snyk_project`: Unique project name that snyk monitor will use to publish results to.
+      - `snyk_project`: Unique project name that snyk monitor will use to publish results for.
    - secrets:
       - `SNYK_TOKEN`: The authorisation token required for snyk. 
       - `USER_NAME`: Relevant GitHub username required to access private packages.
       - `ACCESS_TOKEN`: Relevant GitHub access token required to access private packages.
       - `PACKAGE_REPO`: Repo to use to retrieve packages from.
 
-## Examples
+2. Steps
+   - Checkout Project
+     - Checkout branch from GitHub.
+   - Install Java 
+     - Install the specified version of AWS Corretto, default is version 11.
+   - Generate Maven Settings
+     - Create a settings file inside the .m2 folder which is required to allow custom packages within the POM to be downloaded from GitHub Packages.
+   - Generate settings file
+     - Generate `settings.yaml` file within the project /config directory, to allow custom environment variables to be set.
+   - Install and Authorise Snyk-CLI
+     - Download and install the latest version of Snyk-CLI and authorise with the specific secret.
+   - Maven Compile
+     - Run `mvn clean compile` to download all dependencies require by the project.
+   - Run Snyk Monitor
+     - Run `snyk monitor` with the supplied `snyk_project` argument to push results to Snyk, typically after a PR has been approved.
+
+## Example
 
 ```YAML
    on:
@@ -257,7 +273,7 @@ IDE integration matches those on the Snyk website.
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflowsjava-security.yaml@version
+       uses: dvsa/.github/.github/workflows/java-security.yaml@[version]
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -266,4 +282,52 @@ IDE integration matches those on the Snyk website.
          USER_NAME: ${{ secrets.SMC_USER_NAME }}
          ACCESS_TOKEN: ${{ secrets.SMC_ACCESS_TOKEN }}
          PACKAGE_REPO: ${{ secrets.SMC_PACKAGE_REPO }}
+```
+
+## The Java `Java-test.yaml` workflow has the following steps:
+
+This workflow can be used to run unit tests against a repository.  Typically, this would run on
+push so the action result can be used to validate a branch restriction prior to merging.
+
+1. Test
+   - arguments:
+      - `config_file_contents`: Any specific values required to populate the `settings.yaml` file. 
+      - `java_version`: The version of Java required to run the unit tests. Default is 11.
+   - secrets:
+      - `USER_NAME`: Relevant GitHub username required to access private packages.
+      - `ACCESS_TOKEN`: Relevant GitHub access token required to access private packages.
+      - `PACKAGE_REPO`: Repo to use to retrieve packages from.
+
+2. Steps
+    - Checkout Project
+        - Checkout branch from GitHub.
+    - Install Java
+        - Install the specified version of AWS Corretto, default is version 11.
+    - Generate Maven Settings
+        - Create a settings file inside the .m2 folder which is required to allow custom packages within the POM to be downloaded from GitHub Packages.
+    - Generate settings file
+        - Generate `settings.yaml` file within the project /config directory, to allow custom environment variables to be set.
+    - Maven Test
+        - Run `mvn clean test` to run unit tests within the repository.
+
+## Example
+
+```YAML
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  unit-test:
+    uses: dvsa/.github/.github/workflows/java-test.yaml@[version]
+    with:
+      config_file_contents: |
+        environment: development
+        secretkey: default-secret-name
+      java_version: 11
+    secrets:
+      USER_NAME: ${{ secrets.SMC_USER_NAME }}
+      ACCESS_TOKEN: ${{ secrets.SMC_ACCESS_TOKEN }}
+      PACKAGE_REPO: ${{ secrets.SMC_PACKAGE_REPO }}
 ```
