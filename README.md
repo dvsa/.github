@@ -48,19 +48,12 @@ Action to provide ability to get the summary of a Gatling job
 
 [Gatling Job Summary](/.github/.github/actions/gatling-job-summary/README.md)
 
-## install-deps
-
-Action to provide ability to install and cache dependencies like nodejs and npm
-
-[Install Dependencies](/.github/.github/actions/install-deps/README.md)
-
 ## java-config
 
 Action to provide ability to configure Java
 
 [Java Config](/.github/.github/actions/java-config/README.md)
-
-## terraform-actions
+## terraform-action
 
 Action to provide ability to run Terraform commands
 
