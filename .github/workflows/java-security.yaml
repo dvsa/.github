@@ -87,4 +87,4 @@ jobs:
         run: mvn compile -DskipUTs=true
 
       - name: Run SNYK Test
-        run: test --severity-threshold=${{inputs.snyk_threshold}}
+        run: snyk test --severity-threshold=${{inputs.snyk_threshold}}
