@@ -1,4 +1,4 @@
-name: Snyk Update
+name: Security
 
 on:
   workflow_call:
@@ -87,4 +87,4 @@ jobs:
         run: mvn compile -DskipUTs=true
 
       - name: Run SNYK Monitor
-        run: test --severity-threshold=high
+        run: snyk monitor --org=${{inputs.snyk_project}}
