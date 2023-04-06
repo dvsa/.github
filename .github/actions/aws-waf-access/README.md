@@ -17,7 +17,7 @@ N/A
 ####  Usage     
 ```yaml
 - name: Allow WAF Access
-  uses: dvsa/.github/.github/actions/aws-waf-access@main
+  uses: dvsa/.github/.github/actions/aws-waf-access@3.2.0
   with:
     ip_set_name: dev-mot-waf-ipset
     rule_action: INSERT

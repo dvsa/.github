@@ -17,5 +17,5 @@ N/A
 ####  Usage     
 ```yaml
 - name: Build Names
-  uses: dvsa/.github/.github/actions/build-name@main
+  uses: dvsa/.github/.github/actions/build-name@3.2.0
 ```

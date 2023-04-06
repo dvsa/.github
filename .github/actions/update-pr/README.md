@@ -19,5 +19,5 @@ pr-update:
   needs: tf-plan
   runs-on: ubuntu-latest
   steps:
-  - uses: dvsa/.github/.github/actions/update-pr@main
+  - uses: dvsa/.github/.github/actions/update-pr@3.2.0
 ```

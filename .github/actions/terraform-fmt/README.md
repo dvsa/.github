@@ -16,5 +16,5 @@ N/A
 ####  Usage     
 ```yaml
 - name: terraform fmt
-  uses: dvsa/.github/.github/actions/terraform-fmt@main
+  uses: dvsa/.github/.github/actions/terraform-fmt@3.2.0
 ```

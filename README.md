@@ -7,7 +7,7 @@ Driver and Vehicle Standards Agency - Shared resources for all teams.
 Currently on Version 3.2.0
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.2.0
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.1.0
 ```
 
 If using the first version of the workflows, specify v1.0.0.
@@ -22,8 +22,6 @@ Action to provide ability to authenticate against AWS account
 
 /recalls-infra/.github/actions/aws-auth/README.md
 [AWS Authenication](/.github/.github/actions/aws-auth/README.md)
-
-Add version numbers to the examples in the READMEs instead of pointing @main so if there's breaking changes, everyones workflows won't brea
 
 ## aws-cli
 

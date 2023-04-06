@@ -24,7 +24,7 @@ N/A
 ####  Usage     
 ```yaml
 - name: Terraform - db
-  uses: dvsa/.github/.github/actions/terraform-action@main
+  uses: dvsa/.github/.github/actions/terraform-action@3.2.0
   with:
     action: plan
     environment: dev
