@@ -4,7 +4,7 @@ Driver and Vehicle Standards Agency - Shared resources for all teams.
 
 ## Versions
 
-Currently on Version 3.2.0
+Currently on Version 3.1.0
 
 ```yaml
     uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.1.0
