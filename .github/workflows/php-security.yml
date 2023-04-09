@@ -9,13 +9,12 @@ on:
     type: string
 
 jobs:
- strategy:
+ snyk:
+   runs-on: ubuntu-latest
+   strategy:
       matrix:
         php: ${{ fromJSON(inputs.php_version) }}
         stability: [prefer-lowest, prefer-stable]
-
- snyk:
-   runs-on: ubuntu-latest
 
    name: Snyk - ${{ matrix.stability }}
 
