@@ -8,14 +8,14 @@ on:
     default: "['7.4', '8.0', '8.1']"
     type: string
 
-jobs:
-  snyk:
-    runs-on: ubuntu-latest
-
-     strategy:
+strategy:
       matrix:
         php: ${{ fromJSON(inputs.php_version) }}
         stability: [prefer-lowest, prefer-stable]
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
 
     name: Snyk - ${{ matrix.stability }}
 
