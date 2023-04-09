@@ -8,42 +8,42 @@ on:
     default: "['7.4', '8.0', '8.1']"
     type: string
 
-strategy:
+jobs:
+ strategy:
       matrix:
         php: ${{ fromJSON(inputs.php_version) }}
         stability: [prefer-lowest, prefer-stable]
 
-jobs:
-  snyk:
-    runs-on: ubuntu-latest
+ snyk:
+   runs-on: ubuntu-latest
 
-    name: Snyk - ${{ matrix.stability }}
+   name: Snyk - ${{ matrix.stability }}
 
   
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+   steps:
+    - name: Checkout code
+       uses: actions/checkout@v2
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.version }}
-          coverage: none
-          extensions: mbstring
+    - name: Setup PHP
+       uses: shivammathur/setup-php@v2
+       with:
+         php-version: ${{ matrix.version }}
+         coverage: none
+         extensions: mbstring
 
-      - name: Install dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+    - name: Install dependencies
+       run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/php@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --sarif-file-output=snyk.sarif
+    - name: Run Snyk to check for vulnerabilities
+       uses: snyk/actions/php@master
+       env:
+         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+       with:
+         args: --sarif-file-output=snyk.sarif
 
-      - name: Upload result to GitHub Code Scanning
-        if: ${{ success() || failure() }}
-        continue-on-error: true
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
+    - name: Upload result to GitHub Code Scanning
+       if: ${{ success() || failure() }}
+       continue-on-error: true
+       uses: github/codeql-action/upload-sarif@v2
+       with:
+         sarif_file: snyk.sarif
