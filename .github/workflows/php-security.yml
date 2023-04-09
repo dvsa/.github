@@ -4,7 +4,7 @@ on:
  workflow_call:
   inputs:
    php_versions:
-    default: "['7.4', '8.0', '8.1']"
+    default: "[\"7.4\", \"8.0\", \"8.1\"]"
     type: string
   secrets:
       SNYK_TOKEN:
