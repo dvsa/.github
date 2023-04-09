@@ -4,7 +4,6 @@ on:
  workflow_call:
   inputs:
    php_versions:
-    required: true
     default: "['7.4', '8.0', '8.1']"
     type: string
   secrets:
