@@ -1,6 +1,6 @@
 {
     "name": "DVSA Organization Workflow - PHP Security",
-    "description": "DVSA Organization PHP Security starter workflow. This workflow runs lint, test, security, build and upload to s3. See the README for running instruction and configuration options.",
+    "description": "DVSA Organization PHP Security starter workflow. This workflow runs PHP security scanning. See the README for running instruction and configuration options.",
     "categories": [
         "php"
     ]
