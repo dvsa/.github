@@ -1,0 +1,15 @@
+name: PHP Unit Tests 
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 1'
+ 
+jobs:
+  static:
+    uses: dvsa/.github/.github/workflows/php-tests.yml@promote-php-actions
+    with: 
+     php_versions: "[\"7.4\",\"8.0\"]"
