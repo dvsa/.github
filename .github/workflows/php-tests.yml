@@ -4,8 +4,8 @@ on:
   workflow_call:
    inputs:
     php_versions:
-    required: true
-    type: string
+     required: true
+     type: string
 
 jobs:
   tests:
