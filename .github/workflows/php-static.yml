@@ -1,16 +1,20 @@
 name: Static analysis
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 0 * * 1'
+ workflow_call:
+ inputs:
+  php_versions:
+  required: true
+  type: string
 
 jobs:
   phpstan:
-    name: PHPStan
+    strategy:
+      matrix:
+        php: ${{ fromJSON(inputs.php_versions) }}
+        stability: [prefer-lowest, prefer-stable]
+
+    name: PHPStan - ${{ matrix.php }}
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +24,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: ${{ matrix.php }}
           coverage: none
           extensions: mbstring, intl
 
@@ -34,7 +38,7 @@ jobs:
         run: vendor/bin/phpstan analyze --no-progress
 
   php-codesniffer:
-    name: PHP-CodeSniffer
+    name: PHP-CodeSniffer - ${{ matrix.php }}
     runs-on: ubuntu-latest
 
     steps:
@@ -44,7 +48,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: ${{ matrix.php }}
           coverage: none
           extensions: mbstring
 
@@ -58,7 +62,7 @@ jobs:
         run: vendor/bin/phpcs -q
 
   psalm:
-    name: Psalm
+    name: Psalm - ${{ matrix.php }}
     runs-on: ubuntu-latest
 
     steps:
@@ -68,7 +72,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: ${{ matrix.php }}
           coverage: none
           extensions: mbstring, intl
 
