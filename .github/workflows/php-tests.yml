@@ -2,8 +2,8 @@ name: Tests
 
 on:
   workflow_call:
-  inputs:
-   php_versions:
+   inputs:
+    php_versions:
     required: true
     type: string
 
