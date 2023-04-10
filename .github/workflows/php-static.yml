@@ -38,6 +38,7 @@ jobs:
         run: vendor/bin/phpstan analyze --no-progress
 
   php-codesniffer:
+   strategy:
     matrix:
      php: ${{ fromJSON(inputs.php_versions) }}
      stability: [prefer-lowest, prefer-stable]
@@ -66,6 +67,7 @@ jobs:
         run: vendor/bin/phpcs -q
 
   psalm:
+   strategy:
     matrix:
      php: ${{ fromJSON(inputs.php_versions) }}
      stability: [prefer-lowest, prefer-stable]
