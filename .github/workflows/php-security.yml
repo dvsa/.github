@@ -17,7 +17,7 @@ jobs:
         php: ${{ fromJSON(inputs.php_versions) }}
         stability: [prefer-lowest, prefer-stable]
 
-   name: Snyk - ${{ matrix.php }}
+   name: Snyk - ${{ matrix.php }} - ${{ matrix.stability }}
 
    steps:
     - name: Checkout code
