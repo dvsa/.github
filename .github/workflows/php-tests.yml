@@ -1,12 +1,11 @@
 name: Tests
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 0 * * 1'
+  workflow_call:
+  inputs:
+   php_versions:
+    required: true
+    type: string
 
 jobs:
   tests:
@@ -14,10 +13,10 @@ jobs:
 
     strategy:
       matrix:
-        php: ['7.4', '8.0', '8.1']
+        php: ${{ fromJSON(inputs.php_versions) }}
         stability: [prefer-lowest, prefer-stable]
 
-    name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
+    name: PHP test ${{ matrix.php }} - ${{ matrix.stability }}
 
     steps:
       - name: Checkout code
