@@ -14,7 +14,7 @@ jobs:
    runs-on: ubuntu-latest
    strategy:
       matrix:
-        php: ${{ fromJSON(inputs.php_versions) }}
+        php: ${{ fromJSON(inputs.php-versions) }}
         stability: [prefer-lowest, prefer-stable]
 
    name: Snyk - ${{ matrix.php }} - ${{ matrix.stability }}
