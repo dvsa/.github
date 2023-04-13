@@ -3,7 +3,7 @@ name: Security
 on:
  workflow_call:
   inputs:
-   php_versions:
+   php-versions:
     required: true
     type: string
   secrets:
