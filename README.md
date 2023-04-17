@@ -287,10 +287,8 @@ IDE integration matches those on the Snyk website.
 
 ## The Java `java-security.yaml` workflow has the following steps:
 
-This workflow can be used to update a Java project within Snyk, typically invoked after a merge has been approved.
-
-Due to a limitation with GitHub integration for Java projects, this workflow will ensure the results from snyk-cli and
-IDE integration matches those on the Snyk website.
+This workflow can be used to check that the project does not contain any security vulnerabilities identified by Snyk.
+Typically, this would run on push so the action result can be used to validate a branch restriction prior to merging
 
 1. Security
     - arguments:
@@ -316,7 +314,7 @@ IDE integration matches those on the Snyk website.
     - Maven Compile
         - Run `mvn clean compile` to download all dependencies require by the project.
     - Run Snyk Monitor
-        - Run `snyk monitor` with the supplied `snyk_project` argument to push results to Snyk, typically after a PR has been approved.
+        - Run `snyk test` with the supplied `snyk_threshold`.
 
 ## Example
 
@@ -339,8 +337,6 @@ IDE integration matches those on the Snyk website.
          ACCESS_TOKEN: ${{ secrets.SMC_ACCESS_TOKEN }}
          PACKAGE_REPO: ${{ secrets.SMC_PACKAGE_REPO }}
 ```
-
-
 
 ## The Java `Java-test.yaml` workflow has the following steps:
 
