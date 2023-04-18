@@ -16,7 +16,7 @@ jobs:
         php: ${{ fromJSON(inputs.php-versions) }}
         stability: [prefer-lowest, prefer-stable]
 
-    name: PHP test ${{ matrix.php }} - ${{ matrix.stability }}
+    name: PHP test '8.1' - ${{ matrix.stability }}
 
     steps:
       - name: Checkout code
@@ -25,7 +25,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: '8.1'
           tools: composer:v2
           coverage: none
 

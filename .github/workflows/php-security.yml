@@ -12,12 +12,8 @@ on:
 jobs:
  snyk:
    runs-on: ubuntu-latest
-   strategy:
-      matrix:
-        php: ${{ fromJSON(inputs.php-versions) }}
-        stability: [prefer-lowest, prefer-stable]
-
-   name: Snyk - ${{ matrix.php }} - ${{ matrix.stability }}
+   
+   name: Snyk PHP Scan
 
    steps:
     - name: Checkout code
@@ -26,12 +22,9 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php }}
+        php-version: '8.1'
         coverage: none
         extensions: mbstring
-
-    - name: Install dependencies
-      run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/php@master

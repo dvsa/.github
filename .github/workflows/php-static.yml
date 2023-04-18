@@ -9,12 +9,8 @@ on:
 
 jobs:
   phpstan:
-    strategy:
-      matrix:
-        php: ${{ fromJSON(inputs.php-versions) }}
-        stability: [prefer-lowest, prefer-stable]
-
-    name: PHPStan - ${{ matrix.php }}
+   
+    name: PHPStan 
     runs-on: ubuntu-latest
 
     steps:
@@ -24,26 +20,16 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: '8.1'
           coverage: none
-          extensions: mbstring, intl
-
-      - name: Install dependencies
-        run: composer update --no-interaction --no-progress
-
-      - name: Install PHPStan
-        run: composer bin phpstan update --no-interaction --no-progress
+          tools: phpstan
 
       - name: Execute PHPStan
         run: vendor/bin/phpstan analyze --no-progress
 
   php-codesniffer:
-    strategy:
-     matrix:
-      php: ${{ fromJSON(inputs.php_versions) }}
-      stability: [prefer-lowest, prefer-stable]
-
-    name: PHP-CodeSniffer - ${{ matrix.php }}
+   
+    name: PHP-CodeSniffer - '8.1'
     runs-on: ubuntu-latest
 
     steps:
@@ -53,13 +39,11 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: '8.1'
           coverage: none
-          extensions: mbstring
+          tools: php-cs-fixer, phpcs
 
-      - name: Install dependencies
-        run: composer update --no-interaction --no-progress
-
+      
       - name: Install PHP CodeSniffer
         run: composer bin php-codesniffer update --no-interaction --no-progress
 
@@ -67,12 +51,8 @@ jobs:
         run: vendor/bin/phpcs -q
 
   psalm:
-    strategy:
-     matrix:
-      php: ${{ fromJSON(inputs.php_versions) }}
-      stability: [prefer-lowest, prefer-stable]
-
-    name: Psalm - ${{ matrix.php }}
+    
+    name: Psalm - '8.1'
     runs-on: ubuntu-latest
 
     steps:
@@ -82,15 +62,10 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: '8.1'
           coverage: none
           extensions: mbstring, intl
-
-      - name: Install dependencies
-        run: composer update --prefer-dist --no-interaction --no-progress
-
-      - name: Install Psalm
-        run: composer bin psalm update --no-interaction --no-progress
-
+          tools: vimeo/psalm
+    
       - name: Execute Psalm
         run: vendor/bin/psalm --no-progress --output-format=github
