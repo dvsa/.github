@@ -59,4 +59,4 @@ jobs:
           tools: vimeo/psalm
     
       - name: Execute Psalm
-        run: psalm --no-progress --output-format=github
+        run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}
