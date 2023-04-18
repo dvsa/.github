@@ -21,7 +21,7 @@ jobs:
           tools: phpstan
 
       - name: Execute PHPStan
-        run: vendor/bin/phpstan analyze --no-progress
+        run: phpstan analyze --no-progress
 
   php-codesniffer:
    
@@ -39,7 +39,7 @@ jobs:
           coverage: none
           tools: php-cs-fixer, phpcs
       - name: Execute PHP CodeSniffer
-        run: vendor/bin/phpcs -q
+        run: phpcs -q
 
   psalm:
     
@@ -59,4 +59,4 @@ jobs:
           tools: vimeo/psalm
     
       - name: Execute Psalm
-        run: vendor/bin/psalm --no-progress --output-format=github
+        run: psalm --no-progress --output-format=github
