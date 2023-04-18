@@ -16,7 +16,7 @@ jobs:
         php: ${{ fromJSON(inputs.php-versions) }}
         stability: [prefer-lowest, prefer-stable]
 
-    name: PHP test '8.1' - ${{ matrix.stability }}
+    name: PHP test ${{ matrix.php }} - ${{ matrix.stability }}
 
     steps:
       - name: Checkout code
