@@ -35,13 +35,6 @@ Action to provide ability to add/remove IP addresses from AWS WAF ACL
 
 [AWS-WAF Access](/.github/.github/actions/aws-waf-access/README.md)
 
-## build-name
-
-Action to provide ability to set the build name for a workflow
-
-[Build Name](/.github/.github/actions/build-name/README.md)
-
-
 ## gattling-job-summary
 
 Action to provide ability to get the summary of a Gatling job
