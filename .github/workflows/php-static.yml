@@ -2,10 +2,6 @@ name: Static analysis
 
 on:
  workflow_call:
-  inputs:
-   php-versions:
-    required: true
-    type: string
 
 jobs:
   phpstan:
@@ -42,11 +38,6 @@ jobs:
           php-version: '8.1'
           coverage: none
           tools: php-cs-fixer, phpcs
-
-      
-      - name: Install PHP CodeSniffer
-        run: composer bin php-codesniffer update --no-interaction --no-progress
-
       - name: Execute PHP CodeSniffer
         run: vendor/bin/phpcs -q
 

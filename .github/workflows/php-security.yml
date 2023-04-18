@@ -2,17 +2,12 @@ name: Security
 
 on:
  workflow_call:
-  inputs:
-   php-versions:
-    required: true
-    type: string
   secrets:
       SNYK_TOKEN:
         required: true
 jobs:
  snyk:
    runs-on: ubuntu-latest
-   
    name: Snyk PHP Scan
 
    steps:
