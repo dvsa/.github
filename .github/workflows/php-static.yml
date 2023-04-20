@@ -57,6 +57,9 @@ jobs:
           coverage: none
           extensions: mbstring, intl
           tools: vimeo/psalm
-    
+          
+      - name: Setup composer
+        run: composer install --no-progress
+
       - name: Execute Psalm
         run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}

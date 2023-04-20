@@ -278,8 +278,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  schedule:
-    - cron: '0 0 * * 1'
+  
  
 jobs:
   static:
@@ -301,8 +300,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  schedule:
-    - cron: '0 0 * * 1'
+  
  
 jobs:
   static:
