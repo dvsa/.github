@@ -15,7 +15,7 @@ jobs:
       matrix:
         php: ${{ fromJSON(inputs.php-versions) }}
         
-    name: PHP test ${{ matrix.php }} - ${{ matrix.stability }}
+    name: PHP test ${{ matrix.php }} 
 
     steps:
       - name: Checkout code
