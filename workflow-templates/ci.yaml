@@ -55,7 +55,8 @@ jobs:
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
-
+      AWS_ROLE_TO_ASSUME_ARN: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
+  
   update-lambda-code:
     if: ${{ github.ref_name == github.event.repository.default_branch }}
     uses: dvsa/.github/.github/workflows/update-lambda-function.yaml@v3.1.0
@@ -70,3 +71,4 @@ jobs:
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+      AWS_ROLE_TO_ASSUME_ARN: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
