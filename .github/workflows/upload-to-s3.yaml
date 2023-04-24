@@ -8,6 +8,10 @@ on:
       short-commit:
         required: true
         type: string
+      optional-tags:
+        required: false
+        type: string
+        default: ''
       artifact:
         required: true
         type: string
@@ -48,7 +52,7 @@ jobs:
       - name: Upload to s3
         run: >
           aws s3api put-object
-          --tagging short_commit_id=${{ inputs.short-commit }}
+          --tagging 'short_commit_id=${{ inputs.short-commit }}&${{ inputs.optional-tags }}'
           --bucket ${{ secrets.BUCKET_NAME }}
           --key ${{ inputs.bucket-key }}
           --body ${{steps.download.outputs.download-path}}/${{ inputs.artifact }}
