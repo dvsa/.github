@@ -33,10 +33,22 @@ jobs:
       with:
         args: --sarif-file-output=snyk.sarif
 
-    - name: check public repo 
-      run: |
-        echo "ispublic=$(jq -r '.repository.isPrivate' $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
-        
+    - name: isPrivate
+      uses: octokit/graphql-action@v2.x
+      id: isPrivate
+      with:
+        query: |
+          query($owner: String!, $repo: String!) {
+            repository(owner: $owner, name: $repo) {
+              isPrivate
+            }
+          }
+        owner: ${{ github.repository_owner }}
+        repo: ${{ github.event.repository.name }}
+        graphqlEndpoint: ${{ github.graphql_url }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - run: "echo 'latest release: ${{ steps.isPrivate.outputs.data }}'" 
+    
     - name: Upload result to GitHub Code Scanning
       if: ${{ inputs.upload-sarif }}
       continue-on-error: true
