@@ -28,8 +28,12 @@ jobs:
       with:
         args: --sarif-file-output=snyk.sarif
 
+    - name: check public repo 
+      run: |
+        echo "ispublic=$(jq -r '.repository.isPrivate' $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
+        
     - name: Upload result to GitHub Code Scanning
-      if: ${{ github.action_repository.private == false && (success() || failure() )}}
+      if: ${{ ispublic && (success() || failure() )}}
       continue-on-error: true
       uses: github/codeql-action/upload-sarif@v2
       with:
