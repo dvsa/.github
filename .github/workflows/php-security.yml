@@ -47,7 +47,7 @@ jobs:
         repo: ${{ github.event.repository.name }}
         graphqlEndpoint: ${{ github.graphql_url }}
         token: ${{ secrets.GITHUB_TOKEN }}
-    - run: "echo 'isPrivate: ${{ steps.isPrivate.outputs.data }}'" 
+    - run: "echo 'isPrivate = ${{ steps.isPrivate.outputs.data }}'" >> $GITHUB_OUTPUT
 
     - name: Upload result to GitHub Code Scanning
       if: ${{ fromJSON(needs.isPrivate.outputs.isPrivate.repository.isPrivate) == false && inputs.upload-sarif == true  }} 
