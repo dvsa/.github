@@ -1,0 +1,36 @@
+name: Terraform Format
+
+inputs:
+  terraform_version:
+    type: number
+    default: '1.3.7'
+  check:
+    required: false
+    type: boolean
+    default: true
+    description: Flag whether to only report errors without making changes
+  recursive:
+    required: false
+    default: true
+    description: Flag to trigger recursive checks into subfolders of project path
+  path:
+    required: false
+    type: string
+    description: Target directory in which to run fmt command
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+    - run: |
+        if ${{ inputs.CHECK }} == true; then
+          echo "CHECK='-check'" >> $GITHUB_ENV
+          fi
+        if ${{ inputs.RECURSIVE }} == true; then
+          echo "RECURSIVE='-recursive'" >> $GITHUB_ENV
+          fi
+      shell: bash
+    - run: terraform fmt ${{ env.CHECK }} ${{ env.RECURSIVE }} ${{ inputs.path }}
+      shell: bash
