@@ -38,11 +38,11 @@ jobs:
       id: isPrivate
       with:
         query: |
-          query visibility($owner: String!, $repo: String!) {
-            repository(owner: $owner, name: $repo) {
-              isPrivate
+          query is_private($owner: String!, $name: String!) {
+              repository(owner: $owner, name: $name) {
+                isPrivate
+              }
             }
-          }
         owner: ${{ github.repository_owner }}
         repo: ${{ github.event.repository.name }}
         graphqlEndpoint: ${{ github.graphql_url }}
