@@ -1,0 +1,23 @@
+name: Install dependencies
+description: install all project dependencies.
+
+inputs:
+  java-version:
+    description: Java version used to install dependencies
+    required: true
+    default: '17'
+  distribution:
+    description: "Java distribution to use"
+    default: "temurin"
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with: 
+        distribution: ${{ inputs.distribution }}
+        java-version: ${{ inputs.java-version }}
+    - run: java -version 
+      shell: bash

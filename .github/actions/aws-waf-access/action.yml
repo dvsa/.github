@@ -1,0 +1,23 @@
+name: aws-waf-access
+
+inputs:
+  ip_set_name:
+    type: string
+    description: Name of AWS WAF IP Set
+    required: true
+  rule_action:
+    type: string
+    description: Insert or Delete rule
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Allow WAF Access
+      run: |
+        export waf_change_token=$(aws waf get-change-token --output text)
+        export waf_ipset_id=$(aws waf list-ip-sets --region eu-west-1 --query "IPSets[?Name=='${{ inputs.ip_set_name }}'].IPSetId" --output text)
+        export allowed_ip=$(curl https://api.ipify.org)
+        echo "$allowed_ip"
+        aws waf update-ip-set --ip-set-id "$waf_ipset_id" --change-token "$waf_change_token" --updates Action="${{ inputs.rule_action }}",IPSetDescriptor='{Type='IPV4',Value='"${allowed_ip}/32"'}'
+      shell: bash

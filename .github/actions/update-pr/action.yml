@@ -1,0 +1,62 @@
+name: Publish Pull Request Comment with TF Plan
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Download Artifacts
+      id: download
+      uses: actions/download-artifact@v3
+      with:
+        path: plans
+    - name: Read artifacts
+      id: cat_artifact
+      run: |
+        export TFPLAN=$(sudo cat ${{ steps.download.outputs.download-path }}/**/*.txt | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan)' )
+        echo "OUTPUT_TFPLAN<<EOF" >> $GITHUB_ENV
+        echo "$TFPLAN" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV    
+      shell: bash
+    - name: PR comment
+      uses: actions/github-script@v6
+      env:
+        PLAN: ${{ env.OUTPUT_TFPLAN }}
+      with:
+        script: |
+          // 1. Retrieve existing bot comments for the PR
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          })
+          const botComment = comments.find(comment => {
+            return comment.user.type === 'Bot' && comment.body.includes('Terraform Plan')
+          })
+
+          // 2. Prepare format of the comment
+          const output = `#### Terraform Plan 📖\`Plan\`
+          <details><summary>Show Plan</summary>
+
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
+
+          </details>
+
+          *Pusher: @${{ github.actor }}, Workflow: \`${{ github.workflow }}\`*`;
+
+          // 3. If we have a comment, update it, otherwise create a new one
+          if (botComment) {
+            github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: output
+            })
+          } else {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+          }

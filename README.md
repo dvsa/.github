@@ -12,6 +12,64 @@ Currently on Version 3.2.0
 
 If using the first version of the workflows, specify v1.0.0.
 
+## Actions
+
+Github Actions are used to automate tasks within the repository. Here is a list of Github Actions that are used in the recalls-infra repository.
+
+## aws-auth
+
+Action to provide ability to authenticate against AWS account
+
+/recalls-infra/.github/actions/aws-auth/README.md
+[AWS Authenication](/.github/.github/actions/aws-auth/README.md)
+
+## aws-cli
+
+Action to provide ability to run AWS CLI commands
+
+[AWS Authenication](/.github/.github/actions/aws-cli/README.md)
+
+## aws-waf-access
+
+Action to provide ability to add/remove IP addresses from AWS WAF ACL
+
+[AWS-WAF Access](/.github/.github/actions/aws-waf-access/README.md)
+
+## gattling-job-summary
+
+Action to provide ability to get the summary of a Gatling job
+
+[Gatling Job Summary](/.github/.github/actions/gatling-job-summary/README.md)
+
+## java-config
+
+Action to provide ability to configure Java
+
+[Java Config](/.github/.github/actions/java-config/README.md)
+## terraform-action
+
+Action to provide ability to run Terraform commands
+
+[Terraform Actions](/.github/.github/actions/terraform-action/README.md)
+
+## terraform-fmt
+
+Action to provide ability to run Terraform fmt command
+
+[Terraform Fmt](/.github/.github/actions/terraform-fmt/README.md)
+
+## terraform-workspace
+
+Action to provide ability to run Terraform workspace commands
+
+[Terraform Workspace](/.github/.github/actions/terraform-workspace/README.md)
+
+## update-pull request
+
+Action to provide ability to update a pull request
+
+[Update Pull Request](/.github/.github/actions/update-pr/README.md)
+
 ## Starter Workflow
 
 Starter workflows are in the [workflow-templates](workflow-templates/ci.yaml) directory.
@@ -22,7 +80,7 @@ Uploading to an s3 bucket requires AWS permissions and the relevant token to be 
 
 Publishing to NPM requires permissions and the relevant token to be stored in the repository environment secrets. See [here](https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages) for more information about publishing Node.JS packages with Github Actions. When creating your token at npmjs.com, you must ensure it is created as an 'Automation' token - 'Publish' tokens require 2FA which is not suitable for automation.
 
-## The NodeJS `ci.yaml` workflow has the following steps:
+## The NodeJS `ci.yaml` workflow has the following steps
 
 1. Lint
     - optional argument:
@@ -82,7 +140,7 @@ To read more about sharing workflows within the organization, see the [GitHub do
 
 To read about using Starter Workflows, see [here](https://docs.github.com/en/actions/using-workflows/using-starter-workflows).
 
-## The NodeJS `npm-publish.yaml` has the following steps:
+## The NodeJS `npm-publish.yaml` has the following steps
 
 1. Publish
     - optional arguments:
@@ -92,7 +150,7 @@ To read about using Starter Workflows, see [here](https://docs.github.com/en/act
         - `build-folder-path`: The path of the folder to download the built package to.
         - `args`: optional arguments for the npm publish command, such as --dry-run or --access=public.
     - secrets:
-        - `NPM_AUTH_TOKEN`: the authorisation token to be used to publish the package to the NPMJS site. 
+        - `NPM_AUTH_TOKEN`: the authorisation token to be used to publish the package to the NPMJS site.
 
 ## Examples
 
