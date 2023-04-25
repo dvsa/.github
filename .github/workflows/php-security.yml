@@ -37,9 +37,9 @@ jobs:
       uses: octokit/graphql-action@v2.x
       id: isPrivate
       with:
-        query: |
-          query is_private($owner: String!, $name: String!) {
-              repository(owner: $owner, name: $name) {
+          query: |
+            query release($owner:String!,$repo:String!) {
+              repository(owner:$owner,name:$repo) {
                 isPrivate
               }
             }
