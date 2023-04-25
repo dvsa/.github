@@ -38,7 +38,7 @@ jobs:
       id: isPrivate
       with:
         query: |
-          query security($owner: String!, $repo: String!) {
+          query visibility ($owner: String!, $repo: String!) {
             repository(owner: $owner, name: $repo) {
               isPrivate
             }
