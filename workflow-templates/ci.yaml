@@ -5,13 +5,13 @@ on:
 
 jobs:
   lint:
-    uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@v3.1.0
 
   test:
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.1.0
 
   security:
-    uses: dvsa/.github/.github/workflows/nodejs-security.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-security.yaml@v3.1.0
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
@@ -35,40 +35,42 @@ jobs:
           echo "NAME=${PRETTY_BRANCH_NAME}" >> $GITHUB_OUTPUT
 
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v3.1.0
     needs: [ build-names ]
     with:
-      upload_artifact: ${{ github.ref_name == 'main' }}
-      build_folder: dist
-      build_command: build:prod
+      upload-artifact: ${{ github.ref_name == 'main' }}
+      build-folder: dist
+      build-command: build:prod
 
   upload-to-s3:
     if: ${{ github.ref_name == github.event.repository.default_branch }}
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v3.1.0
     needs: [ lint, test, build, build-names ]
     with:
       environment: dev
-      short_commit: ${{ needs.build-names.outputs.short_sha }}
+      short-commit: ${{ needs.build-names.outputs.short_sha }}
       artifact: dist.zip
-      bucket_key: <location-in-bucket>/${{ needs.build-names.outputs.pretty_branch_name }}.zip
+      bucket-key: <location-in-bucket>/${{ needs.build-names.outputs.pretty_branch_name }}.zip
     permissions:
       id-token: write
     secrets:
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
-
+      AWS_ROLE_TO_ASSUME_ARN: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
+  
   update-lambda-code:
     if: ${{ github.ref_name == github.event.repository.default_branch }}
-    uses: dvsa/.github/.github/workflows/update-lambda-function.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/update-lambda-function.yaml@v3.1.0
     needs: [ build-names, build, upload-s3 ]
     with:
       environment: dev
-      lambda_function_name: <function-name>
-      bucket_key: <location-in-bucket>/${{ needs.build-names.outputs.pretty_branch_name }}.zip
+      lambda-function-name: <function-name>
+      bucket-key: <location-in-bucket>/${{ needs.build-names.outputs.pretty_branch_name }}.zip
     permissions:
       id-token: write
     secrets:
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+      AWS_ROLE_TO_ASSUME_ARN: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
