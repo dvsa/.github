@@ -38,7 +38,7 @@ jobs:
       id: isPrivate
       with:
         query: |
-          query($owner: String!, $repo: String!) {
+          query() {
             repository(owner: $owner, name: $repo) {
               isPrivate
             }
