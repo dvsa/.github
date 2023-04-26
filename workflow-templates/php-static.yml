@@ -10,6 +10,6 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@promote-php-actions
+    uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.0
     with: 
      php_versions: "[\"7.4\"]"
