@@ -1,0 +1,90 @@
+name: Security
+
+on:
+  workflow_call:
+    inputs:
+      java_version:
+        required: false
+        type: string
+        default: '11'
+      snyk_project:
+        required: true
+        type: string
+    secrets:
+      SNYK_TOKEN:
+        required: true
+      USER_NAME:
+        required: true
+      ACCESS_TOKEN:
+        required: true
+      PACKAGE_REPO:
+        required: true
+
+jobs:
+  snyk-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project Branch from GitHub
+        uses: actions/checkout@master
+
+      - name: Install Java Corretto ${{inputs.java_version}}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '${{inputs.java_version}}'
+
+      - name: Generate Maven settings.xml file to access GitHub Packages
+        uses: whelk-io/maven-settings-xml-action@v21
+        with:
+          repositories: >
+            [
+              {
+                "id": "central",
+                "url": "https://repo1.maven.org/maven2"
+              },
+              {
+                "id": "github",
+                "url": "${{secrets.PACKAGE_REPO}}",
+                "releases": {
+                  "enabled": "true"
+                  },
+                "snapshots": {
+                  "enabled": "true"
+                }
+              }
+            ]
+          servers: >
+            [
+              {
+                "id": "github",
+                "username": "${{secrets.USER_NAME}}",
+                "password": "${{secrets.ACCESS_TOKEN}}"
+              }
+            ]
+          active_profiles: >
+            [
+              "github"
+            ]
+
+      - name: Generate settings.yaml File Inside Repository
+        uses: fertrig/create-file-action@1.0.2
+        with:
+          path: 'config'
+          file: 'settings.yaml'
+
+      - name: Install SNYK-CLI
+        run: |
+          curl -o ./snyk-linux https://static.snyk.io/cli/latest/snyk-linux && \
+          curl -o ./snyk-linux.sha256 https://static.snyk.io/cli/latest/snyk-linux.sha256 && \
+          sha256sum -c snyk-linux.sha256 && \
+          mv snyk-linux /usr/local/bin/snyk && \
+          chmod +x /usr/local/bin/snyk
+
+      - name: Authorise SNYK-CLI
+        run: snyk auth ${{secrets.SNYK_TOKEN}}
+
+      - name: Run Maven Compile to Download Project Dependencies
+        run: mvn compile -DskipUTs=true
+
+      - name: Run SNYK Monitor
+        run: snyk monitor --org=${{inputs.snyk_project}}
