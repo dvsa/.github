@@ -8,7 +8,7 @@ jobs:
     uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@v3.2.0
 
   test:
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.220
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.2.0
 
   security:
     uses: dvsa/.github/.github/workflows/nodejs-security.yaml@v3.2.0
