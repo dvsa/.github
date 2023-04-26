@@ -1,0 +1,7 @@
+{
+    "name": "DVSA Organization Workflow - PHP Unit Tests",
+    "description": "DVSA Organization PHP Unit test starter workflow. This workflow runs PHP unit tests. See the README for running instruction and configuration options.",
+    "categories": [
+        "php"
+    ]
+}
