@@ -2,6 +2,10 @@
 
 Driver and Vehicle Standards Agency - Shared resources for all teams.
 
+This repository contains shared templates and actions for use throughout the DVSA. 
+
+> hint: As this README.md is quite large use the [github table of contents](https://github.blog/changelog/2021-04-13-table-of-contents-support-in-markdown-files/) feature to navigate
+
 ## Versions
 
 Currently on Version 3.2.0
@@ -442,4 +446,74 @@ jobs:
       USER_NAME: ${{ secrets.SMC_USER_NAME }}
       ACCESS_TOKEN: ${{ secrets.SMC_ACCESS_TOKEN }}
       PACKAGE_REPO: ${{ secrets.SMC_PACKAGE_REPO }}
+```
+## PHP Actions
+
+### php-security 
+This action carries out scans of dependencies introduced by composer using SNYK tooling to help identify any vulnerabilities. 
+This action should be run on push to main and pull requests and schedule.
+Note you can pass in a json string as an array of php versions to run against
+
+```YAML
+  name: Security analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 1'
+ 
+jobs:
+  security:
+    uses: dvsa/.github/.github/workflows/php-security.yml@promote-php-actions
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+```
+
+
+Requires a `SNYK_TOKEN` secret - one can be inherited from the organisation - contact shaun.hare@dvsa.gov.uk or a DVSA member of your team to get that enabled.
+
+### php-static 
+
+This action is for static code analysis using PSALM and will rull on PR and schedule. For advice contact a DVSA member of your team.
+This action should be run on push to main and pull requests and schedule.
+Note you can pass in a json string as an array of php versions to run against
+
+```YAML
+name: Static analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  
+ 
+jobs:
+  static:
+    uses: dvsa/.github/.github/workflows/php-static.yml@promote-php-actions
+```
+
+### php-tests 
+ 
+This action should be run on push to main and pull requests and schedule.
+Note you can pass in a json string as an array of php versions to run against
+
+```YAML
+name: PHP Unit Tests 
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  
+ 
+jobs:
+  static:
+    uses: dvsa/.github/.github/workflows/php-tests.yml@promote-php-actions
+    with: 
+     php_versions: "[\"7.4\",\"8.0\"]"
 ```

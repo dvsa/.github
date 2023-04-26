@@ -1,0 +1,7 @@
+{
+    "name": "DVSA Organization Workflow - PHP Static Analyser",
+    "description": "DVSA Organization PHP static analyser starter workflow. This workflow runs PHP static analysis. See the README for running instruction and configuration options.",
+    "categories": [
+        "php"
+    ]
+}
