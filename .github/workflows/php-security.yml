@@ -43,10 +43,10 @@ jobs:
                 isPrivate
               }
             }
-      owner: ${{ github.repository_owner }}
-      repo: ${{ github.event.repository.name }}
-      graphqlEndpoint: ${{ github.graphql_url }}
-      token: ${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          graphqlEndpoint: ${{ github.graphql_url }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload result to GitHub Code Scanning
       if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false && inputs.upload-sarif == true  }} 
