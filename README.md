@@ -312,8 +312,6 @@ on:
 jobs:
   security:
     uses: dvsa/.github/.github/workflows/php-security.yml@promote-php-actions
-    with: 
-     php_versions: "[\"7.4\"]"
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
@@ -340,8 +338,6 @@ on:
 jobs:
   static:
     uses: dvsa/.github/.github/workflows/php-static.yml@promote-php-actions
-    with: 
-     php_versions: "[\"7.4\"]"
 ```
 
 ### php-tests 
