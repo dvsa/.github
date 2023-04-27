@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ${{ fromJSON(inputs.php-versions) }}
         stability: [prefer-lowest, prefer-stable]
     steps:
       - name: Checkout code

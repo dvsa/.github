@@ -11,5 +11,4 @@ on:
 jobs:
   static:
     uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.0
-    with: 
-     php-versions: "[\"7.4\"]"
+    
