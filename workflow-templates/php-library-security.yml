@@ -2,9 +2,9 @@ name: Security analysis
 
 on:
   push:
-    branches: [ main ]
+    branches: [ $default-branch ]
   pull_request:
-    branches: [ main ]
+    branches: [ $default-branch ]
   schedule:
     - cron: '0 0 * * 1'
 
@@ -12,6 +12,6 @@ jobs:
   security:
     uses: dvsa/.github/.github/workflows/php-security.yml@v3.2.0
     with: 
-     php_versions: "[\"7.4\"]"
+     php-versions: "[\"7.4\"]"
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

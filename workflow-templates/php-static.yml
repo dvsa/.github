@@ -2,14 +2,13 @@ name: Static analysis
 
 on:
   push:
-    branches: [ main ]
+    branches: [ $default-branch  ]
   pull_request:
-    branches: [ main ]
+    branches: [ $default-branch ]
   schedule:
     - cron: '0 0 * * 1'
  
 jobs:
   static:
     uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.0
-    with: 
-     php_versions: "[\"7.4\"]"
+    

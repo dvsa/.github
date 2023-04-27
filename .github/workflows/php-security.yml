@@ -5,11 +5,7 @@ on:
   secrets:
       SNYK_TOKEN:
         required: true
-  inputs:
-    upload-sarif:
-      required: false
-      type: boolean
-      default: false
+  
 jobs:
  snyk:
    runs-on: ubuntu-latest
@@ -36,6 +32,10 @@ jobs:
     - name: isPrivate
       uses: octokit/graphql-action@v2.x
       id: isPrivate
+      permissions:
+        security-events: write
+        actions: read
+        contents: read
       with:
           query: |
             query release($owner:String!,$repo:String!) {
@@ -49,7 +49,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload result to GitHub Code Scanning
-      if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false && inputs.upload-sarif == true  }} 
+      if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false }} 
       continue-on-error: true
       uses: github/codeql-action/upload-sarif@v2
       with:

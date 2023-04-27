@@ -2,10 +2,7 @@ name: Static analysis
 
 on:
  workflow_call:
- inputs:
-    php-versions:
-     required: true
-     type: string
+ 
 jobs:
   phpstan:
    
@@ -22,7 +19,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: latest
           coverage: none
           tools: phpstan
 
@@ -31,7 +28,7 @@ jobs:
 
   php-codesniffer:
    
-    name: PHP-CodeSniffer - ${{ matrix.php }}
+    name: PHP-CodeSniffer 
     runs-on: ubuntu-latest
 
     steps:
@@ -41,7 +38,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: latest
           coverage: none
           tools: php-cs-fixer, phpcs
       - name: Execute PHP CodeSniffer
@@ -49,11 +46,10 @@ jobs:
 
   psalm:
     
-    name: Psalm - ${{ matrix.php }}
+    name: Psalm 
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ${{ fromJSON(inputs.php-versions) }}
         stability: [prefer-lowest, prefer-stable]
     steps:
       - name: Checkout code
@@ -62,7 +58,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: latest
           coverage: none
           extensions: mbstring, intl
           tools: vimeo/psalm
