@@ -10,7 +10,10 @@ jobs:
  snyk:
    runs-on: ubuntu-latest
    name: Snyk PHP Scan
-
+   permissions:
+      security-events: write
+      actions: read
+      contents: read
    steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -32,10 +35,6 @@ jobs:
     - name: isPrivate
       uses: octokit/graphql-action@v2.x
       id: isPrivate
-      permissions:
-        security-events: write
-        actions: read
-        contents: read
       with:
           query: |
             query release($owner:String!,$repo:String!) {
@@ -50,7 +49,6 @@ jobs:
 
     - name: Upload result to GitHub Code Scanning
       if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false }} 
-      continue-on-error: true
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: snyk.sarif
