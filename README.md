@@ -11,7 +11,7 @@ This repository contains shared templates and actions for use throughout the DVS
 Currently on Version 3.2.1
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.2.0
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.x
 ```
 
 If using the first version of the workflows, specify v1.0.0.
