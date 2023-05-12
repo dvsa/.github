@@ -544,3 +544,10 @@ to
  uses: dvsa/.github/.github/workflows/php-library-tests.yml@v3.2.3
 
 ```
+
+## The `check-pr-title.yaml` starter workflow
+
+This workflow will check the title of a pull request and ensure it follows the conventional commit specification.
+
+> **Warning**
+> This workflow should only be used if `commitlint` is already configured in the repository.
