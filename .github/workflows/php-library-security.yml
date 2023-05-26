@@ -5,15 +5,20 @@ on:
   secrets:
       SNYK_TOKEN:
         required: true
+  inputs:
+    php-versions:
+      required: true
+      type: string
+      
   
 jobs:
  snyk:
    runs-on: ubuntu-latest
    name: Snyk PHP Scan
-   permissions:
-      security-events: write
-      actions: read
-      contents: read
+   strategy:
+      matrix:
+        php: ${{ fromJSON(inputs.php-versions) }}
+        stability: [prefer-lowest, prefer-stable]
    steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -21,9 +26,13 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: 8.1
+        php-version: ${{ matrix.php }}
+        tools: composer:v2
         coverage: none
         extensions: mbstring
+
+    - name: Composer install
+      run: composer update --{{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/php@master
@@ -35,6 +44,10 @@ jobs:
     - name: isPrivate
       uses: octokit/graphql-action@v2.x
       id: isPrivate
+      permissions:
+        security-events: write
+        actions: read
+        contents: read
       with:
           query: |
             query release($owner:String!,$repo:String!) {
@@ -48,7 +61,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload result to GitHub Code Scanning
-      if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false }} 
+      if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false  }} 
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: snyk.sarif

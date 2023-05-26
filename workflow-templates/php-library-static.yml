@@ -2,7 +2,7 @@ name: Static analysis
 
 on:
   push:
-    branches: [ $default-branch  ]
+    branches: [ $default-branch ]
   pull_request:
     branches: [ $default-branch ]
   schedule:
@@ -10,5 +10,5 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.0
+    uses: dvsa/.github/.github/workflows/php-library-static.yml@v3.2.1
     
