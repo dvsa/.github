@@ -13,6 +13,10 @@ on:
   
 jobs:
  snyk:
+   permissions:
+      security-events: write
+      actions: read
+      contents: read
    runs-on: ubuntu-latest
    name: Snyk PHP Scan
    strategy:
@@ -44,10 +48,6 @@ jobs:
     - name: isPrivate
       uses: octokit/graphql-action@v2.x
       id: isPrivate
-      permissions:
-        security-events: write
-        actions: read
-        contents: read
       with:
           query: |
             query release($owner:String!,$repo:String!) {
