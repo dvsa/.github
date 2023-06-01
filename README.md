@@ -8,10 +8,10 @@ This repository contains shared templates and actions for use throughout the DVS
 
 ## Versions
 
-Currently on Version 3.2.2
+Currently on Version 3.2.3
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.x
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.2.3
 ```
 
 If using the first version of the workflows, specify v1.0.0.
@@ -449,8 +449,8 @@ jobs:
 ```
 ## PHP Actions
 
-### php-security 
-This action carries out scans of dependencies introduced by composer using SNYK tooling to help identify any vulnerabilities. 
+### php-security | php-library-security
+These actions carry out scans of dependencies introduced by composer using SNYK tooling to help identify any vulnerabilities. 
 This action should be run on push to main and pull requests and schedule.
 Note you can pass in a json string as an array of php versions to run against
 
@@ -467,17 +467,25 @@ on:
  
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-security.yml@promote-php-actions
+    uses: dvsa/.github/.github/workflows/php-security.yml@v3.2.3
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
+if using library version amend 
+```YAML
+   uses: dvsa/.github/.github/workflows/php-security.yml@v3.2.3
+```
+to 
 
+```YAML
+ uses: dvsa/.github/.github/workflows/php-library-security.yml@v3.2.3
 
+```
 Requires a `SNYK_TOKEN` secret - one can be inherited from the organisation - contact shaun.hare@dvsa.gov.uk or a DVSA member of your team to get that enabled.
 
-### php-static 
+### php-static  | php-library-static
 
-This action is for static code analysis using PSALM and will rull on PR and schedule. For advice contact a DVSA member of your team.
+These actions are for static code analysis using PSALM and will rull on PR and schedule. For advice contact a DVSA member of your team.
 This action should be run on push to main and pull requests and schedule.
 Note you can pass in a json string as an array of php versions to run against
 
@@ -493,9 +501,18 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@promote-php-actions
+    uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.3
 ```
+if using library version amend 
+```YAML
+   uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.3
+```
+to 
 
+```YAML
+ uses: dvsa/.github/.github/workflows/php-library-static.yml@v3.2.3
+
+```
 ### php-tests 
  
 This action should be run on push to main and pull requests and schedule.
@@ -513,7 +530,17 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-tests.yml@promote-php-actions
+    uses: dvsa/.github/.github/workflows/php-tests.yml@v3.2.3
     with: 
      php_versions: "[\"7.4\",\"8.0\"]"
+```
+if using library version amend 
+```YAML
+   uses: dvsa/.github/.github/workflows/php-tests.yml@v3.2.3
+```
+to 
+
+```YAML
+ uses: dvsa/.github/.github/workflows/php-library-tests.yml@v3.2.3
+
 ```
