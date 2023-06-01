@@ -36,7 +36,7 @@ jobs:
         extensions: mbstring
 
     - name: Composer install
-      run: composer update --{{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+      run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/php@master
