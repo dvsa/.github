@@ -1,14 +1,19 @@
 name: Static analysis
 
 on:
- workflow_call:
- 
+  workflow_call:
+    inputs:
+      fail-fast:
+        required: false
+        default: true
+        type: boolean
+  
 jobs:
   phpstan:
-   
     name: PHPStan 
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: ${{ inputs.fail-fast }}
       matrix:
         stability: [prefer-lowest, prefer-stable]
     steps:
@@ -48,6 +53,7 @@ jobs:
     name: Psalm 
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: ${{ inputs.fail-fast }}
       matrix:
         stability: [prefer-lowest, prefer-stable]
     steps:
