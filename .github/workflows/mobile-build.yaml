@@ -16,6 +16,7 @@ on:
         required: false
         type: string
         default: '14'
+    
     secrets:
       AWS_ROLE:
         required: true
@@ -25,6 +26,15 @@ on:
         required: true
       VERSION_BUCKET:
         required: true
+      APPLE_DEVELOPER_EMAIL:
+        required: true
+      APPLE_DEVELOPER_PASSWORD:
+        required: true
+      MACHINE_PASSWORD:
+        required: true
+      ARTEFACT_S3:
+        required: true
+
 
 permissions:
   id-token: write
@@ -32,6 +42,7 @@ permissions:
 
 jobs:
   build:
+    environment: ${{ inputs.environment }}
     name: "Build ${{ inputs.environment }} Mobile Artefacts"
     runs-on: ${{ inputs.builder }}
     steps:
@@ -65,6 +76,15 @@ jobs:
         run: |
           npm install -g @ionic/cli qrcode-terminal @capacitor/core @capacitor/cli
           set +x; . ./.env; set -x; npm install --legacy-peer-deps
-      
-      - name: "⚙️ Check Environment"
-        run: env
+
+      - name: "📱 Run Fastlane"
+        env: 
+          EMAIL: ${{ secrets.APPLE_DEVELOPER_EMAIL }}
+          MATCH_PASSWORD: ${{ secrets.APPLE_DEVELOPER_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.MACHINE_PASSWORD }}
+          ARETFACT_S3: ${{ secrets.ARTEFACT_S3 }}
+          BRANCH: develop
+          ENVIRONMENT: ${{ inputs.environment }}
+        run: |
+          npm run build-ios -- --no-open
+          bundle install --jobs $(sysctl -n hw.physicalcpu) && fastlane build
