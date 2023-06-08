@@ -1,0 +1,74 @@
+name: Build Mobile
+on:
+  workflow_call:
+    inputs:
+      builder:
+        required: true
+        type: string
+        description: "The Self-Hosted Runner's label for this Job"
+      
+      branch_name:
+        required: true
+        type: string
+    
+      environment:
+        required: true
+        type: string
+      
+      node_version:
+        required: false
+        type: string
+        default: '14'
+      
+      npm_global_dependencies:
+        required: false
+        type: string
+        description: "VTA: npm i -g @ionic/cli qrcode-terminal @capacitor/core @capacitor/cli"
+            
+      mobile_build_cmd:
+        required: true
+        type: string
+        description: "VTA: npm run build-ios -- --no-open"
+
+jobs:
+  build:
+    name: "Build ${{ inputs.environment }} Mobile Artefacts"
+    runs-on: ${{ inputs.builder }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          ref: ${{ inputs.branch_name }}
+
+      - uses: actions/setup-node@v3
+        with: 
+          node-version: ${{ inputs.node_version }}
+      
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: eu-west-1
+          role-session-name: GHAMobileBuild
+
+      - name: "📂 Set Configuration Files"
+        run: |
+          echo ${{ secrets.NPMRC }} | base64 --decode > .npmrc
+          echo ${{ secrets.DOTENV }} | base64 --decode > .env
+      
+      - name: "⚙️ Install Dependencies"
+        run: npm install ${{ inputs.npm_global_dependencies }}
+
+      - name: 📱 Run Fastlane
+        run: |
+          npm run ${{ inputs.mobile_build_cmd }}
+          bundle install --jobs $(sysctl -n hw.physicalcpu) && fastlane build
+
+      - name: ⚙️ Generate QR Codes
+        run: |
+          qrencode -o fastlane/builds/${{ inputs.branch_name }}-v${{ env.NEXT_VERSION }}.png "https://${{ env.CVS_ARTEFACT_S3 }}.s3.eu-west-1.amazonaws.com/github-actions/${{ env.ENVIRONMENT }}/v${{ env.NEXT_VERSION }}/${{ inputs.branch_name }}}.html"
+
+      - name: "Post 🧹 Clean Workspace"
+        if: always()
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
