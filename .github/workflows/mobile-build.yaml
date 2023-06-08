@@ -19,22 +19,22 @@ on:
         required: false
         type: string
         default: '14'
-      
-      npm_global_dependencies:
-        required: false
-        type: string
-        description: "VTA: npm i -g @ionic/cli qrcode-terminal @capacitor/core @capacitor/cli"
-            
-      mobile_build_cmd:
+
+    secrets:
+      AWS_ROLE: 
         required: true
-        type: string
-        description: "VTA: npm run build-ios -- --no-open"
+      NPMRC: 
+        required: true
+      DOTENV: 
+        required: true
+      VERSION_BUCKET:
+        required: true
+            
 
 jobs:
   build:
     name: "Build ${{ inputs.environment }} Mobile Artefacts"
     runs-on: ${{ inputs.builder }}
-
     steps:
       - uses: actions/checkout@v3
         with: 
@@ -54,21 +54,15 @@ jobs:
         run: |
           echo ${{ secrets.NPMRC }} | base64 --decode > .npmrc
           echo ${{ secrets.DOTENV }} | base64 --decode > .env
+          aws s3 cp ${{ secrets.VERSION_BUCKET }}/github-actions/latest-develop.txt latest-version.txt
+          echo "CURRENT_VERSION=$(cat latest-version.txt)" >> $GITHUB_ENV
+          echo "BUILD_VERSION=${{ github.run_id }}" >> $GITHUB_ENV
+          version=$(bash .github/scripts/bump.sh ${{ env.CURRENT_VERSION }} 1)
+          echo NEXT_VERSION=$(echo $version) >> $GITHUB_ENV
+          echo $version > latest-version.txt
+          aws s3 cp latest-version.txt ${{ secrets.CVS_VERSIONING }}/github-actions/latest-develop.txt
       
       - name: "⚙️ Install Dependencies"
-        run: npm install ${{ inputs.npm_global_dependencies }}
-
-      - name: 📱 Run Fastlane
         run: |
-          npm run ${{ inputs.mobile_build_cmd }}
-          bundle install --jobs $(sysctl -n hw.physicalcpu) && fastlane build
-
-      - name: ⚙️ Generate QR Codes
-        run: |
-          qrencode -o fastlane/builds/${{ inputs.branch_name }}-v${{ env.NEXT_VERSION }}.png "https://${{ env.CVS_ARTEFACT_S3 }}.s3.eu-west-1.amazonaws.com/github-actions/${{ env.ENVIRONMENT }}/v${{ env.NEXT_VERSION }}/${{ inputs.branch_name }}}.html"
-
-      - name: "Post 🧹 Clean Workspace"
-        if: always()
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
+          npm install -g @ionic/cli qrcode-terminal @capacitor/core @capacitor/cli
+          set +x; . ./.env; set -x; npm install --legacy-peer-deps
