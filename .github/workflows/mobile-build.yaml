@@ -6,30 +6,29 @@ on:
         required: true
         type: string
         description: "The Self-Hosted Runner's label for this Job"
-      
       branch_name:
         required: true
         type: string
-    
       environment:
         required: true
         type: string
-      
       node_version:
         required: false
         type: string
         default: '14'
-
     secrets:
-      AWS_ROLE: 
+      AWS_ROLE:
         required: true
-      NPMRC: 
+      NPMRC:
         required: true
-      DOTENV: 
+      DOTENV:
         required: true
       VERSION_BUCKET:
         required: true
-            
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build:
