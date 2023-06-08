@@ -68,8 +68,9 @@ jobs:
           aws s3 cp ${{ secrets.VERSION_BUCKET }}/github-actions/latest-develop.txt latest-version.txt
           echo "v0.1827.0" > latest-version.txt
           echo "CURRENT_VERSION=$(cat latest-version.txt)" >> $GITHUB_ENV
+          current_vers=$(cat latest-version.txt)
           echo "BUILD_VERSION=${{ github.run_id }}" >> $GITHUB_ENV
-          version=$(bash .github/scripts/bump.sh ${{ env.CURRENT_VERSION }} 1)
+          version=$(bash .github/scripts/bump.sh $current_vers 1)
           echo NEXT_VERSION=$(echo $version) >> $GITHUB_ENV
           echo $version > latest-version.txt
           aws s3 cp latest-version.txt ${{ secrets.VERSION_BUCKET }}/github-actions/latest-develop.txt
