@@ -60,7 +60,7 @@ jobs:
           version=$(bash .github/scripts/bump.sh ${{ env.CURRENT_VERSION }} 1)
           echo NEXT_VERSION=$(echo $version) >> $GITHUB_ENV
           echo $version > latest-version.txt
-          aws s3 cp latest-version.txt ${{ secrets.CVS_VERSIONING }}/github-actions/latest-develop.txt
+          aws s3 cp latest-version.txt ${{ secrets.VERSION_BUCKET }}/github-actions/latest-develop.txt
       
       - name: "⚙️ Install Dependencies"
         run: |
