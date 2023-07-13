@@ -2,16 +2,21 @@ name: Tests
 
 on:
   workflow_call:
-   inputs:
-    php-versions:
-     required: true
-     type: string
+    inputs:
+      php-versions:
+        required: true
+        type: string
+      fail-fast:
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   tests:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: ${{ inputs.fail-fast }}
       matrix:
         php: ${{ fromJSON(inputs.php-versions) }}
         

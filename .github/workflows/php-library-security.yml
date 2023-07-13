@@ -1,54 +1,59 @@
 name: Security
 
 on:
- workflow_call:
-  secrets:
+  workflow_call:
+    secrets:
       SNYK_TOKEN:
         required: true
-  inputs:
-    php-versions:
-      required: true
-      type: string
+    inputs:
+      php-versions:
+        required: true
+        type: string
+      fail-fast:
+        required: false
+        default: true
+        type: boolean
       
   
 jobs:
- snyk:
-   permissions:
+  snyk:
+    permissions:
       security-events: write
       actions: read
       contents: read
-   runs-on: ubuntu-latest
-   name: Snyk PHP Scan
-   strategy:
+    runs-on: ubuntu-latest
+    name: Snyk PHP Scan
+    strategy:
+      fail-fast: ${{ inputs.fail-fast }}
       matrix:
         php: ${{ fromJSON(inputs.php-versions) }}
         stability: [prefer-lowest, prefer-stable]
-   steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        tools: composer:v2
-        coverage: none
-        extensions: mbstring
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
+          extensions: mbstring
 
-    - name: Composer install
-      run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+      - name: Composer install
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
-    - name: Run Snyk to check for vulnerabilities
-      uses: snyk/actions/php@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        args: --sarif-file-output=snyk.sarif
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/php@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk.sarif
 
-    - name: isPrivate
-      uses: octokit/graphql-action@v2.x
-      id: isPrivate
-      with:
+      - name: isPrivate
+        uses: octokit/graphql-action@v2.x
+        id: isPrivate
+        with:
           query: |
             query release($owner:String!,$repo:String!) {
               repository(owner:$owner,name:$repo) {
@@ -60,8 +65,8 @@ jobs:
           graphqlEndpoint: ${{ github.graphql_url }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload result to GitHub Code Scanning
-      if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false  }} 
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: snyk.sarif
+      - name: Upload result to GitHub Code Scanning
+        if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false  }} 
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
