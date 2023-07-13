@@ -19,6 +19,8 @@ test_report_path (required): Path of test report HTML file
 ####  Outputs
 Table of jest test results displayed on Github summary
 
+![e2e test summary](https://github.com/alexisc-kainos/.github/assets/74315644/b9ee7058-0d2f-41d3-b045-d2a39a200010)
+
 ####  Usage
 ```yaml
 - name: Display Jest Test Summary
