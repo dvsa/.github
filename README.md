@@ -562,3 +562,12 @@ Secrets:
 Inputs:
 * [REQUIRED] `php-version` - list of strings of all php versions which the workflow will run against
 * [OPTIONAL] `fail-fast` - boolean to control whether all steps in the matrix should be run, even if one of them fails
+
+
+## The `check-pr-title.yaml` starter workflow
+
+This workflow will check the title of a pull request and ensure it follows the conventional commit specification.
+
+> **Warning**
+> This workflow should only be used if `commitlint` is already configured in the repository.
+
