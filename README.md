@@ -451,8 +451,7 @@ jobs:
 
 ### php-security | php-library-security
 These actions carry out scans of dependencies introduced by composer using SNYK tooling to help identify any vulnerabilities. 
-This action should be run on push to main and pull requests and schedule.
-Note you can pass in a json string as an array of php versions to run against
+This action should be run on push to main, pull requests and schedule.
 
 ```YAML
   name: Security analysis
@@ -481,13 +480,18 @@ to
  uses: dvsa/.github/.github/workflows/php-library-security.yml@v3.2.3
 
 ```
-Requires a `SNYK_TOKEN` secret - one can be inherited from the organisation - contact shaun.hare@dvsa.gov.uk or a DVSA member of your team to get that enabled.
+
+Secrets:
+* [REQUIRED] `SNYK_TOKEN` - one can be inherited from the organisation - contact shaun.hare@dvsa.gov.uk or a DVSA member of your team to get that enabled.
+
+Inputs:
+* [REQUIRED] `php-version` - list of strings of all php versions which the workflow will run against
+* [OPTIONAL - php-library-security only] `fail-fast` - boolean to control whether all steps in the matrix should be run, even if one of them fails
 
 ### php-static  | php-library-static
 
 These actions are for static code analysis using PSALM and will rull on PR and schedule. For advice contact a DVSA member of your team.
-This action should be run on push to main and pull requests and schedule.
-Note you can pass in a json string as an array of php versions to run against
+This action should be run on push to main, pull requests and schedule.
 
 ```YAML
 name: Static analysis
@@ -513,10 +517,17 @@ to
  uses: dvsa/.github/.github/workflows/php-library-static.yml@v3.2.3
 
 ```
-### php-tests 
+
+Secrets:
+* [REQUIRED] `SNYK_TOKEN` - one can be inherited from the organisation - contact shaun.hare@dvsa.gov.uk or a DVSA member of your team to get that enabled.
+
+Inputs:
+* [REQUIRED] `php-version` - list of strings of all php versions which the workflow will run against
+* [OPTIONAL - php-library-static only] `fail-fast` - boolean to control whether all steps in the matrix should be run, even if one of them fails
+
+### php-tests | php-library-tests
  
-This action should be run on push to main and pull requests and schedule.
-Note you can pass in a json string as an array of php versions to run against
+This action should be run on push to main, pull requests and schedule.
 
 ```YAML
 name: PHP Unit Tests 
@@ -545,9 +556,18 @@ to
 
 ```
 
+Secrets:
+* [REQUIRED] `SNYK_TOKEN` - one can be inherited from the organisation - contact shaun.hare@dvsa.gov.uk or a DVSA member of your team to get that enabled.
+
+Inputs:
+* [REQUIRED] `php-version` - list of strings of all php versions which the workflow will run against
+* [OPTIONAL] `fail-fast` - boolean to control whether all steps in the matrix should be run, even if one of them fails
+
+
 ## The `check-pr-title.yaml` starter workflow
 
 This workflow will check the title of a pull request and ensure it follows the conventional commit specification.
 
 > **Warning**
 > This workflow should only be used if `commitlint` is already configured in the repository.
+
