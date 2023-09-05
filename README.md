@@ -562,3 +562,4 @@ Secrets:
 Inputs:
 * [REQUIRED] `php-version` - list of strings of all php versions which the workflow will run against
 * [OPTIONAL] `fail-fast` - boolean to control whether all steps in the matrix should be run, even if one of them fails
+* [OPTIONAL] `phpunit-args` - string of arguments to be appended to the invocation of `vendor/bin/phpunit` (default is `--verbose` as per existing behaviour, however as of PHPUnit 10, this will no longer work and will need overriding to an empty string, or other arguments of choice)
