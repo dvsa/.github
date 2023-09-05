@@ -12,7 +12,7 @@ on:
         type: boolean
       phpunit-args:
         required: false
-        default: --verbose
+        default: '--verbose'
         type: string
 
 jobs:
@@ -41,4 +41,4 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute tests
-        run: vendor/bin/phpunit ${{ phpunit-args }}
+        run: vendor/bin/phpunit ${{ inputs.phpunit-args }}
