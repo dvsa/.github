@@ -26,7 +26,7 @@ jobs:
     name: PHP test ${{ matrix.php }}
 
     env:
-      PHPUNIT_CONFIG: ${{ inputs.phpunit-config && format('-c "{0}"', inputs.phpunit-config) || '' }}
+      PHPUNIT_CONFIG: ${{ inputs.phpunit-config && format('-c {0}', inputs.phpunit-config) || '' }}
 
     steps:
       - name: Checkout code
