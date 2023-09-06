@@ -10,9 +10,8 @@ on:
         required: false
         default: true
         type: boolean
-      phpunit-args:
+      phpunit-config:
         required: false
-        default: '--verbose'
         type: string
 
 jobs:
@@ -24,7 +23,10 @@ jobs:
       matrix:
         php: ${{ fromJSON(inputs.php-versions) }}
         stability: [prefer-lowest, prefer-stable]
-    name: PHP test ${{ matrix.php }} 
+    name: PHP test ${{ matrix.php }}
+
+    env:
+      PHPUNIT_CONFIG: ${{ inputs.phpunit-config && format('-c "{0}"', inputs.phpunit-config) || '' }}
 
     steps:
       - name: Checkout code
@@ -41,4 +43,4 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute tests
-        run: vendor/bin/phpunit ${{ inputs.phpunit-args }}
+        run: vendor/bin/phpunit $PHPUNIT_CONFIG
