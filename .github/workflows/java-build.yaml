@@ -1,0 +1,109 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      config_file_contents:
+        required: true
+        type: string
+      java_version:
+        required: false
+        type: string
+        default: '11'
+      working-directory:
+        required: false
+        type: string
+        default: '.'
+      build-command:
+        required: false
+        type: string
+        default: 'mvn clean install'
+      upload-artifact:
+        required: false
+        type: boolean
+        default: false
+      build-name:
+        required: false
+        type: string
+        default: 'target'
+      build-path:
+        required: false
+        type: string
+        default: 'target'
+      retention-days:
+        required: false
+        type: number
+        default: 3
+    secrets:
+      USER_NAME:
+        required: true
+      ACCESS_TOKEN:
+        required: true
+      PACKAGE_REPO:
+        required: true
+
+jobs:
+  maven-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project Branch from GitHub
+        uses: actions/checkout@master
+
+      - name: Install Java Corretto ${{ inputs.java_version }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '${{inputs.java_version}}'
+          cache: 'maven'
+
+      - name: Generate Maven settings.xml file to access GitHub Packages
+        uses: whelk-io/maven-settings-xml-action@v21
+        with:
+          repositories: >
+            [
+              {
+                "id": "central",
+                "url": "https://repo1.maven.org/maven2"
+              },
+              {
+                "id": "github",
+                "url": "${{ secrets.PACKAGE_REPO }}",
+                "releases": {
+                  "enabled": "true"
+                  },
+                "snapshots": {
+                  "enabled": "true"
+                }
+              }
+            ]
+          servers: >
+            [
+              {
+                "id": "github",
+                "username": "${{ secrets.USER_NAME }}",
+                "password": "${{ secrets.ACCESS_TOKEN }}"
+              }
+            ]
+          active_profiles: >
+            [
+              "github"
+            ]
+      - name: Generate settings.yaml File Inside Repository
+        uses: fertrig/create-file-action@1.0.2
+        with:
+          path: 'config'
+          file: 'settings.yaml'
+          content: |
+            ${{ inputs.config_file_contents }}
+      - name: Run Build Process with Maven
+        run: |
+          aws configure set region eu-west-1
+          ${{ inputs.build-command }}
+        working-directory: ${{inputs.working-directory }}
+      - name: Upload artifact
+        if: inputs.upload-artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.build-name }}
+          path: ${{ inputs.build-path }}
+          retention-days: ${{ inputs.retention-days }}

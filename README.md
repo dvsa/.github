@@ -447,6 +447,65 @@ jobs:
       ACCESS_TOKEN: ${{ secrets.SMC_ACCESS_TOKEN }}
       PACKAGE_REPO: ${{ secrets.SMC_PACKAGE_REPO }}
 ```
+
+## The Java `Java-build.yaml` workflow has the following steps:
+
+This workflow can be used to run a build command against a repository. Typically, this would run on
+push so the build process can be confirmed to be working properly and on a change to main to produce an artefact for deployment.
+
+1. Test
+   - arguments:
+      - `config_file_contents`: Any specific values required to populate the `settings.yaml` file.
+      - `java_version`: The version of Java required to run the unit tests. Default is 11.
+      - `working-directory`: Directory in which the build command will be run. Default is `.`
+      - `build-command`: Command ran to start the build. Default is `mvn clean install` 
+      - `upload-artifact`: If true the build archive will be stored in github. Defaults to `false` if the archive doesn't need to be saved. 
+      - `build-name`: Name of the artefact to be stored in github. Defaults to `target`
+      - `build-path`: The path where the artefact that is to be stored is located. Defaults to `target`
+      - `retention-days`: The number of days for the artefact to be retained in github.
+   - secrets:
+      - `USER_NAME`: Relevant GitHub username required to access private packages.
+      - `ACCESS_TOKEN`: Relevant GitHub access token required to access private packages.
+      - `PACKAGE_REPO`: Repo to use to retrieve packages from.
+
+2. Steps
+   - Checkout Project
+      - Checkout branch from GitHub.
+   - Install Java
+      - Install the specified version of AWS Corretto, default is version 11.
+   - Generate Maven Settings
+      - Create a settings file inside the .m2 folder which is required to allow custom packages within the POM to be downloaded from GitHub Packages.
+   - Generate settings file
+      - Generate `settings.yaml` file within the project /config directory, to allow custom environment variables to be set.
+   - Maven Build
+      - Run the provided build command, 'mvn clean install' by default, to build the current version.
+   - Upload Artefact
+     - Stores the resulting artefact from the build step in github
+
+## Example
+
+```YAML
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    uses: dvsa/.github/.github/workflows/java-build.yaml@[version]
+    with:
+      config_file_contents: |
+        environment: development
+        secretkey: default-secret-name
+      java_version: 8
+      upload-artifact: ${{ github.ref_name == 'main' }}
+      build-name: service-build
+      build-path: target/service-build.zip
+    secrets:
+      USER_NAME: ${{ secrets.USER_NAME }}
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      PACKAGE_REPO: ${{ secrets.PACKAGE_REPO }}
+```
 ## PHP Actions
 
 ### php-security | php-library-security
