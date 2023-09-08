@@ -41,7 +41,7 @@ jobs:
 
       - name: Setup composer
         if: ${{ phpstan-composer-install }}
-        run: composer install --no-progress
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute PHPStan
         run: phpstan analyze --no-progress
@@ -91,7 +91,7 @@ jobs:
           
       - name: Setup composer
         if: ${{ psalm-composer-install }}
-        run: composer install --no-progress
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute Psalm
         run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}
