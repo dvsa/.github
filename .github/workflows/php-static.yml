@@ -2,19 +2,6 @@ name: Static analysis
 
 on:
   workflow_call:
-    inputs:
-      phpstan-composer-install:
-        required: false
-        default: false
-        type: boolean
-      phpcs-composer-install:
-        required: false
-        default: false
-        type: boolean
-      psalm-composer-install:
-        required: false
-        default: true
-        type: boolean
 
 jobs:
   phpstan:
@@ -33,8 +20,7 @@ jobs:
           coverage: none
           tools: phpstan
 
-      - name: Setup composer
-        if: ${{ phpstan-composer-install }}
+      - name: Install Composer dependancies
         run: composer install --no-progress
 
       - name: Execute PHPStan
@@ -56,8 +42,7 @@ jobs:
           coverage: none
           tools: php-cs-fixer, phpcs
 
-      - name: Setup composer
-        if: ${{ phpcs-composer-install }}
+      - name: Install Composer dependancies
         run: composer install --no-progress
 
       - name: Execute PHP CodeSniffer
@@ -80,8 +65,7 @@ jobs:
           extensions: mbstring, intl
           tools: vimeo/psalm
           
-      - name: Setup composer
-        if: ${{ psalm-composer-install }}
+      - name: Install Composer dependancies
         run: composer install --no-progress
 
       - name: Execute Psalm

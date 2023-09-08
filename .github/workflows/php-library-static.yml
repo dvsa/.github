@@ -7,18 +7,6 @@ on:
         required: false
         default: true
         type: boolean
-      phpstan-composer-install:
-        required: false
-        default: false
-        type: boolean
-      phpcs-composer-install:
-        required: false
-        default: false
-        type: boolean
-      psalm-composer-install:
-        required: false
-        default: true
-        type: boolean
   
 jobs:
   phpstan:
@@ -39,8 +27,7 @@ jobs:
           coverage: none
           tools: phpstan
 
-      - name: Setup composer
-        if: ${{ phpstan-composer-install }}
+      - name: Install (Update) Composer dependancies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute PHPStan
@@ -50,7 +37,10 @@ jobs:
    
     name: PHP-CodeSniffer 
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: ${{ inputs.fail-fast }}
+      matrix:
+        stability: [prefer-lowest, prefer-stable]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -62,9 +52,8 @@ jobs:
           coverage: none
           tools: php-cs-fixer, phpcs
 
-      - name: Setup composer
-        if: ${{ phpcs-composer-install }}
-        run: composer install --no-progress
+      - name: Install (Update) Composer dependancies
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute PHP CodeSniffer
         run: phpcs -q
@@ -89,8 +78,7 @@ jobs:
           extensions: mbstring, intl
           tools: vimeo/psalm
           
-      - name: Setup composer
-        if: ${{ psalm-composer-install }}
+      - name: Install (Update) Composer dependancies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute Psalm
