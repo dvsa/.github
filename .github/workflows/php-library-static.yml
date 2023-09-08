@@ -7,6 +7,18 @@ on:
         required: false
         default: true
         type: boolean
+      phpstan-composer-install:
+        required: false
+        default: false
+        type: boolean
+      phpcs-composer-install:
+        required: false
+        default: false
+        type: boolean
+      psalm-composer-install:
+        required: false
+        default: true
+        type: boolean
   
 jobs:
   phpstan:
@@ -27,6 +39,10 @@ jobs:
           coverage: none
           tools: phpstan
 
+      - name: Setup composer
+        if: ${{ phpstan-composer-install }}
+        run: composer install --no-progress
+
       - name: Execute PHPStan
         run: phpstan analyze --no-progress
 
@@ -45,6 +61,11 @@ jobs:
           php-version: latest
           coverage: none
           tools: php-cs-fixer, phpcs
+
+      - name: Setup composer
+        if: ${{ phpcs-composer-install }}
+        run: composer install --no-progress
+
       - name: Execute PHP CodeSniffer
         run: phpcs -q
 
@@ -69,8 +90,8 @@ jobs:
           tools: vimeo/psalm
           
       - name: Setup composer
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
-
+        if: ${{ psalm-composer-install }}
+        run: composer install --no-progress
 
       - name: Execute Psalm
         run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}
