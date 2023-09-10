@@ -2,11 +2,16 @@ name: Static analysis
 
 on:
   workflow_call:
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: '8.1'
 
 jobs:
   phpstan:
    
-    name: PHPStan 
+    name: PHPStan - ${{ inputs.php-version }}
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +21,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ inputs.php-version }}
           coverage: none
           tools: phpstan
 
@@ -28,7 +33,7 @@ jobs:
 
   php-codesniffer:
    
-    name: PHP-CodeSniffer - '8.1'
+    name: PHP-CodeSniffer - ${{ inputs.php-version }}
     runs-on: ubuntu-latest
 
     steps:
@@ -38,7 +43,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ inputs.php-version }}
           coverage: none
           tools: php-cs-fixer, phpcs
 
@@ -50,7 +55,7 @@ jobs:
 
   psalm:
     
-    name: Psalm - '8.1'
+    name: Psalm - ${{ inputs.php-version }}
     runs-on: ubuntu-latest
 
     steps:
@@ -60,7 +65,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ inputs.php-version }}
           coverage: none
           extensions: mbstring, intl
           tools: vimeo/psalm

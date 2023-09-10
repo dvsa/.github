@@ -7,10 +7,14 @@ on:
         required: false
         default: true
         type: boolean
+      php-version:
+        required: false
+        type: string
+        default: '8.1'
   
 jobs:
   phpstan:
-    name: PHPStan 
+    name: PHPStan - ${{ inputs.php-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: ${{ inputs.fail-fast }}
@@ -23,7 +27,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: latest
+          php-version: ${{ inputs.php-version }}
           coverage: none
           tools: phpstan
 
@@ -35,7 +39,7 @@ jobs:
 
   php-codesniffer:
    
-    name: PHP-CodeSniffer 
+    name: PHP-CodeSniffer - ${{ inputs.php-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: ${{ inputs.fail-fast }}
@@ -48,7 +52,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: latest
+          php-version: ${{ inputs.php-version }}
           coverage: none
           tools: php-cs-fixer, phpcs
 
@@ -60,7 +64,7 @@ jobs:
 
   psalm:
     
-    name: Psalm 
+    name: Psalm - ${{ inputs.php-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: ${{ inputs.fail-fast }}
@@ -73,7 +77,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: latest
+          php-version: ${{ inputs.php-version }}
           coverage: none
           extensions: mbstring, intl
           tools: vimeo/psalm
