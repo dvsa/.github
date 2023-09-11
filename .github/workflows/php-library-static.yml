@@ -10,11 +10,11 @@ on:
       php-version:
         required: false
         type: string
-        default: '8.1'
+        default: 'latest'
   
 jobs:
   phpstan:
-    name: PHPStan - ${{ inputs.php-version }}
+    name: PHPStan - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: ${{ inputs.fail-fast }}
@@ -39,7 +39,7 @@ jobs:
 
   php-codesniffer:
    
-    name: PHP-CodeSniffer - ${{ inputs.php-version }}
+    name: PHP-CodeSniffer - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: ${{ inputs.fail-fast }}
@@ -64,7 +64,7 @@ jobs:
 
   psalm:
     
-    name: Psalm - ${{ inputs.php-version }}
+    name: Psalm - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: ${{ inputs.fail-fast }}
