@@ -1,0 +1,6 @@
+{
+    "name": "Check PR title",
+    "description": "Enforces conventional commit messages in the PR titles",
+    "iconName": "octicon git-pull-request",
+    "categories": ["Automation"]
+}
