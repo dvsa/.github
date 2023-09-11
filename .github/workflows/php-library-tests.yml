@@ -10,7 +10,7 @@ on:
         required: false
         default: true
         type: boolean
-      phpunit-config:
+      phpunit-config-file:
         required: false
         type: string
 
@@ -26,7 +26,7 @@ jobs:
     name: PHP test ${{ matrix.php }}
 
     env:
-      PHPUNIT_CONFIG: ${{ inputs.phpunit-config && format('-c {0}', inputs.phpunit-config) || '' }}
+      PHPUNIT_CONFIG_FILE: ${{ inputs.phpunit-config-file && format('-c "{0}"', inputs.phpunit-config-file) || '' }}
 
     steps:
       - name: Checkout code
@@ -43,4 +43,4 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute tests
-        run: vendor/bin/phpunit $PHPUNIT_CONFIG
+        run: vendor/bin/phpunit $PHPUNIT_CONFIG_FILE

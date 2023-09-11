@@ -562,4 +562,4 @@ Secrets:
 Inputs:
 * [REQUIRED] `php-version` - list of strings of all php versions which the workflow will run against
 * [OPTIONAL] `fail-fast` - boolean to control whether all steps in the matrix should be run, even if one of them fails
-* [OPTIONAL] `phpunit-config` - the phpunit configuration file to use with `vendor/bin/phpunit`, default is empty/not defined thus resorting to default behaviour when a configuration file (`-c` or `--configuration`) is not specified. 
+* [OPTIONAL] `phpunit-config-file` - the phpunit configuration file to use with `vendor/bin/phpunit`, default is empty/not defined thus resorting to default behaviour when a configuration file (`-c` or `--configuration`) is not specified. 
