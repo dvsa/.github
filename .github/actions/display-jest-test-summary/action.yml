@@ -1,51 +1,32 @@
-name: Display Jest Test Summary
+name: Display E2E Test Summary
 
 inputs:
   test_report_path:
     type: string
-    description: Path of test report HTML file
+    description: Path of test report JSON file
     required: true
 
 runs:
   using: 'composite'
   steps:
+    - name: Transform Input
+      id: transform_input
+      run: |
+        echo JSON_OUTPUT=$(  jq '{ numTotalTests, numPassedTests, numFailedTests}' ${{ inputs.test_report_path }} ) >> $GITHUB_OUTPUT
+      shell: bash
     - name: Display Jest Test Summary
       uses: actions/github-script@v6
-      env:
-        TEST_PATH: ${{ inputs.test_report_path }}
       with:
         script: |
-          const fs = require('fs');
-          const cheerio = require('cheerio');
-          const test_report = process.env.TEST_PATH
-
-          const text = fs.readFileSync(test_report, 'utf8');
-          const $ = cheerio.load(text);
-          
-          let tables = [];
-          let summaryTable = [
-              [
-                  {data: 'Total Tests', header: true}, 
-                  {data: 'Tests Passed ✅', header: true}, 
-                  {data: 'Tests Failed ❌', header: true},
-              ]
-          ];
-          
-          let total = $('div #test-summary').find('.summary-total').text();
-          let passed = $('div #test-summary').find('.summary-passed').text();
-          let failed = $('div #test-summary').find('.summary-failed').text();
-          var total_regExp = /\(([^)]+)\)/;
-          total = total_regExp.exec(total)[1];
-          passed = passed.split(" ")[0];
-          failed = failed.split(" ")[0];
-          
-          summaryTable.push([
-              total,
-              passed,
-              failed,
-          ]);
-          
+          const input = ${{ steps.transform_input.outputs.JSON_OUTPUT }};          
           await core.summary
-              .addHeading(`Results for Jest Tests`)
-              .addTable(summaryTable)
+              .addHeading(`Results for End to End Tests`)
+              .addTable([
+                [
+                    {data: 'Total Tests', header: true}, 
+                    {data: 'Tests Passed ✅', header: true}, 
+                    {data: 'Tests Failed ❌', header: true},
+                ],
+                [ input.numTotalTests.toString(), input.numPassedTests.toString(), input.numFailedTests.toString(), ]
+              ])
               .write()
