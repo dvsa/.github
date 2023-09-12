@@ -24,55 +24,55 @@ Github Actions are used to automate tasks within the repository. Here is a list 
 
 Action to provide ability to authenticate against AWS account
 
+[AWS Authentication](.github/actions/aws-auth/README.md)
 /recalls-infra/.github/actions/aws-auth/README.md
-[AWS Authenication](/.github/.github/actions/aws-auth/README.md)
 
 ## aws-cli
 
 Action to provide ability to run AWS CLI commands
 
-[AWS Authenication](/.github/.github/actions/aws-cli/README.md)
+[AWS CLI](.github/actions/aws-cli/README.md)
 
 ## aws-waf-access
 
 Action to provide ability to add/remove IP addresses from AWS WAF ACL
 
-[AWS-WAF Access](/.github/.github/actions/aws-waf-access/README.md)
+[AWS-WAF Access](.github/actions/aws-waf-access/README.md)
 
-## gattling-job-summary
+## gatling-job-summary
 
 Action to provide ability to get the summary of a Gatling job
 
-[Gatling Job Summary](/.github/.github/actions/gatling-job-summary/README.md)
+[Gatling Job Summary](.github/actions/gatling-job-summary/README.md)
 
 ## java-config
 
 Action to provide ability to configure Java
 
-[Java Config](/.github/.github/actions/java-config/README.md)
+[Java Config](.github/actions/java-config/README.md)
 ## terraform-action
 
 Action to provide ability to run Terraform commands
 
-[Terraform Actions](/.github/.github/actions/terraform-action/README.md)
+[Terraform Actions](.github/actions/terraform-action/README.md)
 
 ## terraform-fmt
 
 Action to provide ability to run Terraform fmt command
 
-[Terraform Fmt](/.github/.github/actions/terraform-fmt/README.md)
+[Terraform Fmt](.github/actions/terraform-fmt/README.md)
 
 ## terraform-workspace
 
 Action to provide ability to run Terraform workspace commands
 
-[Terraform Workspace](/.github/.github/actions/terraform-workspace/README.md)
+[Terraform Workspace](.github/actions/terraform-workspace/README.md)
 
 ## update-pull request
 
 Action to provide ability to update a pull request
 
-[Update Pull Request](/.github/.github/actions/update-pr/README.md)
+[Update Pull Request](.github/actions/update-pr/README.md)
 
 ## Starter Workflow
 
