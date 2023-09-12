@@ -1,4 +1,4 @@
-name: Display E2E Test Summary
+name: Display Jest Test Summary
 
 inputs:
   test_report_path:
@@ -11,8 +11,10 @@ runs:
   steps:
     - name: Transform Input
       id: transform_input
+      env:
+        INPUT_PATH: ${{ inputs.test_report_path }}
       run: |
-        echo JSON_OUTPUT=$(  jq '{ numTotalTests, numPassedTests, numFailedTests}' ${{ inputs.test_report_path }} ) >> $GITHUB_OUTPUT
+        echo JSON_OUTPUT=$(  jq '{ numTotalTests, numPassedTests, numFailedTests}' process.env.INPUT_PATH ) >> $GITHUB_OUTPUT
       shell: bash
     - name: Display Jest Test Summary
       uses: actions/github-script@v6
