@@ -14,7 +14,7 @@ runs:
       env:
         INPUT_PATH: ${{ inputs.test_report_path }}
       run: |
-        echo JSON_OUTPUT=$(  jq '{ numTotalTests, numPassedTests, numFailedTests}' $INPUT_PATH ) >> $GITHUB_ENV
+        echo JSON_OUTPUT=$(  jq '{ numTotalTests, numPassedTests, numFailedTests}' $INPUT_PATH ) >> $GITHUB_OUTPUT 
       shell: bash
     - name: Display Jest Test Summary
       uses: actions/github-script@v6
@@ -22,7 +22,7 @@ runs:
         JSON: ${{ steps.transform_input.outputs.JSON_OUTPUT }}
       with:
         script: |
-          const input = JSON.parse(process.env.JSON_OUTPUT); 
+          const input = JSON.parse(process.env.JSON); 
           await core.summary
               .addHeading(`Results for End to End Tests`)
               .addTable([
