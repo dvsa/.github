@@ -18,9 +18,11 @@ runs:
       shell: bash
     - name: Display Jest Test Summary
       uses: actions/github-script@v6
+      env:
+        JSON: ${{ steps.transform_input.outputs.JSON_OUTPUT }}
       with:
         script: |
-          const input = ${{ env.JSON_OUTPUT }};  
+          const input = JSON.parse(process.env.JSON_OUTPUT); 
           await core.summary
               .addHeading(`Results for End to End Tests`)
               .addTable([
