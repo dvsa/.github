@@ -10,6 +10,6 @@ on:
 
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-security.yml@v3.2.0
+    uses: dvsa/.github/.github/workflows/php-security.yml@v3.2.3
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
