@@ -40,7 +40,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --optimize-autoloader --no-progress
+        run: composer install --optimize-autoloader --no-progress --no-interaction
 
       - name: Execute tests
         run: vendor/bin/phpunit $PHPUNIT_CONFIG_FILE
