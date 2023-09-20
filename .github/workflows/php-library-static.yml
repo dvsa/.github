@@ -7,10 +7,14 @@ on:
         required: false
         default: true
         type: boolean
+      php-version:
+        required: false
+        type: string
+        default: 'latest'
   
 jobs:
   phpstan:
-    name: PHPStan 
+    name: PHPStan - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: ${{ inputs.fail-fast }}
@@ -23,34 +27,19 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: latest
+          php-version: ${{ inputs.php-version }}
           coverage: none
           tools: phpstan
+
+      - name: Install (Update) Composer dependancies
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute PHPStan
         run: phpstan analyze --no-progress
 
   php-codesniffer:
    
-    name: PHP-CodeSniffer 
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: latest
-          coverage: none
-          tools: php-cs-fixer, phpcs
-      - name: Execute PHP CodeSniffer
-        run: phpcs -q
-
-  psalm:
-    
-    name: Psalm 
+    name: PHP-CodeSniffer - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: ${{ inputs.fail-fast }}
@@ -63,14 +52,38 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: latest
+          php-version: ${{ inputs.php-version }}
+          coverage: none
+          tools: php-cs-fixer, phpcs
+
+      - name: Install (Update) Composer dependancies
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+
+      - name: Execute PHP CodeSniffer
+        run: phpcs -q
+
+  psalm:
+    
+    name: Psalm - ${{ inputs.php-version }} - ${{ matrix.stability }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: ${{ inputs.fail-fast }}
+      matrix:
+        stability: [prefer-lowest, prefer-stable]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php-version }}
           coverage: none
           extensions: mbstring, intl
           tools: vimeo/psalm
           
-      - name: Setup composer
+      - name: Install (Update) Composer dependancies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
-
 
       - name: Execute Psalm
         run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}

@@ -10,6 +10,9 @@ on:
         required: false
         default: true
         type: boolean
+      phpunit-config-file:
+        required: false
+        type: string
 
 jobs:
   tests:
@@ -21,6 +24,9 @@ jobs:
         php: ${{ fromJSON(inputs.php-versions) }}
         
     name: PHP test ${{ matrix.php }} 
+
+    env:
+      PHPUNIT_CONFIG_FILE: ${{ inputs.phpunit-config-file && format('-c "{0}"', inputs.phpunit-config-file) || '' }}
 
     steps:
       - name: Checkout code
@@ -34,7 +40,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --optimize-autoloader --no-progress
+        run: composer install --optimize-autoloader --no-progress --no-interaction
 
       - name: Execute tests
-        run: vendor/bin/phpunit --verbose
+        run: vendor/bin/phpunit $PHPUNIT_CONFIG_FILE
