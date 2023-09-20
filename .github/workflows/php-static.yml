@@ -26,7 +26,7 @@ jobs:
           tools: phpstan
 
       - name: Install Composer dependancies
-        run: composer install --no-progress
+        run: composer install --no-progress --no-interaction
 
       - name: Execute PHPStan
         run: phpstan analyze --no-progress
@@ -48,7 +48,7 @@ jobs:
           tools: php-cs-fixer, phpcs
 
       - name: Install Composer dependancies
-        run: composer install --no-progress
+        run: composer install --no-progress --no-interaction
 
       - name: Execute PHP CodeSniffer
         run: phpcs -q
@@ -71,7 +71,7 @@ jobs:
           tools: vimeo/psalm
           
       - name: Install Composer dependancies
-        run: composer install --no-progress
+        run: composer install --no-progress --no-interaction
 
       - name: Execute Psalm
         run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}
