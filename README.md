@@ -74,6 +74,12 @@ Action to provide ability to update a pull request
 
 [Update Pull Request](.github/actions/update-pr/README.md)
 
+### display-inputs
+
+Action to output the inputs to a workflow to the logs and (optionally) to display them on the GitHub summary
+
+[Display Inputs to Workflow](.github/actions/display-inputs/README.md)
+
 ## Starter Workflow
 
 Starter workflows are in the [workflow-templates](workflow-templates/ci.yaml) directory.
