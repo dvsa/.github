@@ -5,6 +5,11 @@ on:
   secrets:
       SNYK_TOKEN:
         required: true
+  inputs:
+      sev-threshold:
+        required: false
+        type: string
+        default: low
   
 jobs:
  snyk:
@@ -30,7 +35,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        args: --sarif-file-output=snyk.sarif
+        args: --sarif-file-output=snyk.sarif --severity-threshold=${{inputs.sev-threshold}}
 
     - name: isPrivate
       uses: octokit/graphql-action@v2.x
