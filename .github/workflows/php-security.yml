@@ -33,7 +33,7 @@ jobs:
       uses: snyk/actions/php@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        SEVERITY_THRESHOLD: ${{ inputs.severity-threshold && format('--severity-threshold="{0}"', inputs.severity-threshold) || '' }}
+        SEVERITY_THRESHOLD: ${{ inputs.severity-threshold && format('--severity-threshold={0}', inputs.severity-threshold) || '' }}
       with:
         args: --sarif-file-output=snyk.sarif $SEVERITY_THRESHOLD
 
