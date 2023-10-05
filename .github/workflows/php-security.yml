@@ -9,8 +9,7 @@ on:
       severity-threshold:
         required: false
         type: string
-        default: low
-  
+        
 jobs:
  snyk:
    runs-on: ubuntu-latest
@@ -34,8 +33,9 @@ jobs:
       uses: snyk/actions/php@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        SEVERITY_THRESHOLD: ${{ inputs.severity-threshold && format('--severity-threshold="{0}"', inputs.severity-threshold) || '' }}
       with:
-        args: --sarif-file-output=snyk.sarif --severity-threshold=${{inputs.sev-threshold}}
+        args: --sarif-file-output=snyk.sarif $SEVERITY_THRESHOLD
 
     - name: isPrivate
       uses: octokit/graphql-action@v2.x
