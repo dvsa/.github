@@ -6,7 +6,7 @@ on:
       SNYK_TOKEN:
         required: true
   inputs:
-      sev-threshold:
+      severity-threshold:
         required: false
         type: string
         default: low
