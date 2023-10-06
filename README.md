@@ -99,6 +99,14 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
 1. Security
     - required secret `SNYK_TOKEN` requires the organization or repo Snyk token secret
     - optional argument `args` allows passing in any extra args to the Snyk command. Note, the default behavior is to test all projects including all dev dependencies. If you don't want to test dev dependencies, pass in args: `--all-projects` to override the default args.
+    - You can pass the severity threshold level as high | medium | low as shown below
+      ```
+            uses: dvsa/.github/.github/workflows/php-security.yml@main
+            secrets:
+              SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+            with:
+              severity-threshold: high
+      ```
 1. Build
     - required arguments:
         - `artifact-name`: The name of the archive to store.
