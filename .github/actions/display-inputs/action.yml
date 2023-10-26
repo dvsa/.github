@@ -3,7 +3,7 @@ name: Display Inputs to Workflow
 runs:
   using:  'composite'
   steps:
-    - name: Display inputs on GitHub Summary
+    - name: Display Inputs on GitHub Summary
       if: ${{ inputs.display_on_github_summary == 'true' }}
       uses: actions/github-script@v6
       with:

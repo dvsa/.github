@@ -5,7 +5,7 @@ Action to display the inputs to a workflow on the GitHub summary
 N/A
 
 ####  Context
-This action allows the workflow to output its inputs to logs and to the GitHub Summary
+This action allows the workflow to output its inputs to the GitHub Summary
 
 ####  Inputs
 N/A
