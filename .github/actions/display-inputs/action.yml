@@ -1,21 +1,8 @@
 name: Display Inputs to Workflow
 
-inputs:
-  display_on_github_summary:
-    type: boolean
-    required: false
-    description: Display inputs on GitHub summary
-    default: false
-
 runs:
   using:  'composite'
   steps:
-    - name: Display Inputs 
-      env:
-        INPUT_JSON: ${{ toJSON(github.event.inputs) }}
-      run: |
-        echo $INPUT_JSON | jq
-      shell: bash
     - name: Display inputs on GitHub Summary
       if: ${{ inputs.display_on_github_summary == 'true' }}
       uses: actions/github-script@v6
