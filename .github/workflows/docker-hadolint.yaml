@@ -1,0 +1,34 @@
+name: Dockerfile Lint Check
+
+on:
+  workflow_call:
+    inputs:
+      dockerfile_name:
+        description: 'Name of Dockerfile'
+        default: 'dockerfile'
+        required: true
+        type: string
+      supress_rule_list:
+        description: 'Comma-separated list of lint rules to ignore, e.g. DL3048,DL3018'
+        default: ''
+        required: false
+        type: string
+
+jobs:
+  hadolint:
+    
+    name: Run hadolint on Dockerfile
+    runs-on: ubuntu-latest
+    
+    steps:
+
+      - name: Checkout the repository to the runner
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.ref }}
+
+      - name: Lint check on dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ inputs.dockerfile_name }}
+          ignore: ${{ inputs.supress_rule_list }}

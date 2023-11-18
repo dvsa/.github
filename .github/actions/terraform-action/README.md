@@ -8,7 +8,7 @@ Authenticated with AWS Account
 This action allows the workflow to run terraform commands via TF Scaffold
 
 ####  Inputs
-- action (required): Terraform action to run e.g plan.
+- action (required): Comma-separated list of terraform actions to run e.g plan | init,plan,apply.
 - project (required): Terraform project e.g dvsa <project_name>.
 - environment (required): Terraform environment e.g dev.
 - component (required): Terraform component to deploy e.g db.

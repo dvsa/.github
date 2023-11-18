@@ -1,0 +1,29 @@
+name: Terraform Synk Scan
+
+inputs:
+  terraform_version:
+    required: false
+    type: string
+    description: Terraform version
+    default: '1.3.7'
+  snyk_token:
+    required: true
+    type: string
+    description: Value of snyk token
+  
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: hashicorp/setup-terraform@v3.0.0
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+
+    - name: Run Snyk to check for vulnerabilities
+      id: snyk
+      uses: snyk/actions/iac@master
+      env:
+        SNYK_TOKEN: ${{ inputs.snyk_token }}
+      with:
+        args: scan .
+      continue-on-error: true

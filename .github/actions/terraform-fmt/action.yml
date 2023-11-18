@@ -21,7 +21,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: hashicorp/setup-terraform@v2
+
+    - name: Checkout the repository to the runner
+      uses: actions/checkout@v3
+
+    - uses: hashicorp/setup-terraform@v3.0.0
       with:
         terraform_version: ${{ inputs.terraform_version }}
     - run: |
@@ -32,5 +36,6 @@ runs:
           echo "RECURSIVE='-recursive'" >> $GITHUB_ENV
           fi
       shell: bash
+
     - run: terraform fmt ${{ env.CHECK }} ${{ env.RECURSIVE }} ${{ inputs.path }}
       shell: bash
