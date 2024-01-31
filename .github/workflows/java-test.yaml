@@ -79,6 +79,6 @@ jobs:
       - name: Run Unit Tests with Maven
         run: |
           aws configure set region eu-west-1
-          mvn clean test
+          mvn clean test --no-transfer-progress
         working-directory: ${{inputs.working-directory}}
         
