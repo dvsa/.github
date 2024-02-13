@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       role:
-        required: true
+        required: false
         type: string
       config_file_contents:
         required: true
@@ -87,7 +87,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v3
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        if: ${{ env.AWS_ACCOUNT_ID }}
+        if: ${{ env.AWS_ACCOUNT_ID && inputs.role }}
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{inputs.role}}
           aws-region: ${{ secrets.AWS_REGION }}
