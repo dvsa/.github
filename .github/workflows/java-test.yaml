@@ -3,6 +3,9 @@ name: Test
 on:
   workflow_call:
     inputs:
+      role:
+        required: true
+        type: string
       config_file_contents:
         required: true
         type: string
@@ -86,7 +89,7 @@ jobs:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         if: ${{ env.AWS_ACCOUNT_ID }}
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-unit-tests
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{inputs.role}}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Run Unit Tests with Maven
