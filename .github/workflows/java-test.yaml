@@ -19,9 +19,9 @@ on:
         default: '.'
     secrets:
       AWS_ACCOUNT_ID:
-        required: true
+        required: false
       AWS_REGION:
-        required: true
+        required: false
       USER_NAME:
         required: true
       ACCESS_TOKEN:
