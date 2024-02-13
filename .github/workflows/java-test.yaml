@@ -3,6 +3,9 @@ name: Test
 on:
   workflow_call:
     inputs:
+      role:
+        required: false
+        type: string
       config_file_contents:
         required: true
         type: string
@@ -15,6 +18,10 @@ on:
         type: string
         default: '.'
     secrets:
+      AWS_ACCOUNT_ID:
+        required: false
+      AWS_REGION:
+        required: false
       USER_NAME:
         required: true
       ACCESS_TOKEN:
@@ -76,9 +83,18 @@ jobs:
           content: |
             ${{inputs.config_file_contents}}
 
+      - name: 🔑 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        if: ${{ env.AWS_ACCOUNT_ID && inputs.role }}
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{inputs.role}}
+          aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Run Unit Tests with Maven
         run: |
           aws configure set region eu-west-1
           mvn clean test --no-transfer-progress
         working-directory: ${{inputs.working-directory}}
-        
+
