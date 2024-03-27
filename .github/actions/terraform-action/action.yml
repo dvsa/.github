@@ -2,7 +2,7 @@ name: Terraform Action
 
 inputs: 
   action: 
-    description: 'Terraform action to run e.g plan'
+    description: 'Comma-separated list of terraform actions to run e.g plan | init,plan,apply'
     required: true
     type: string
   project: 
@@ -41,7 +41,7 @@ inputs:
 runs:
   using: 'composite'
   steps: 
-    - uses: hashicorp/setup-terraform@v2
+    - uses: hashicorp/setup-terraform@v3.0.0
       with:
         terraform_version:  ${{ inputs.terraform_version }}      
         terraform_wrapper: false
@@ -49,13 +49,11 @@ runs:
     - name: Terraform init and plan
       id: plan
       run: |
-        mkdir -p plans/${{ inputs.environment }}
-        ./bin/terraform.sh --action ${{ inputs.action }} --project ${{ inputs.project }} --environment ${{ inputs.environment }}  --component ${{ inputs.component }} --group ${{ inputs.group }} --bucket-prefix ${{ inputs.bucket-prefix }} --region ${{ inputs.region }} --compact-warnings --no-color -- ${{ inputs.terraform_args }} | tee plans/${{ inputs.environment }}/${{ inputs.component }}-plan.txt
+        actionList=($(echo ${{ inputs.action }} | tr "," " "))
+        for action in "${actionList[@]}"; do
+          ./bin/terraform.sh --action ${action} \
+            --project ${{ inputs.project }} --environment ${{ inputs.environment }} \
+            --component ${{ inputs.component }} --group ${{ inputs.group }} \
+            --region ${{ inputs.region }} --bucket-prefix ${{ inputs.bucket-prefix }}
+        done
       shell: bash
-
-    - name: Save Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: "${{ inputs.environment }}-${{ inputs.component }}"
-        path: "./plans/${{ inputs.environment }}/${{ inputs.component }}-plan.txt"
-        retention-days: 7
