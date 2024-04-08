@@ -1,0 +1,31 @@
+name: markdown-linter
+
+inputs:
+  files:
+    type: string
+    description: path and file to be scanned else all files will be scanned
+    default: "'**/*.md'"
+  rules:
+    type: string
+    description: rules that are to be excluded from scan
+    required: true
+  hidden-files:
+    type: boolean
+    description: include hidden files and folders in scan e.g .github/workflows. default is false
+    default: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: install-markdown-linter
+      run: |
+        npm install -g markdownlint-cli
+      shell: bash
+    - name: run-markdown-linter
+      run: |
+        if [ ${{ inputs.hidden-files }} ]; then
+          markdownlint --config ${{ inputs.rules }} --dot -- ${{ inputs.files }}
+        else
+          markdownlint --config ${{ inputs.rules }} -- ${{ inputs.files }}
+        fi
+      shell: bash
