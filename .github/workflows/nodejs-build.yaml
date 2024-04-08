@@ -46,7 +46,7 @@ jobs:
         run: ${{ inputs.build-command }}
       - name: Upload artifact
         if: inputs.upload-artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.build-folder }}
           path: ${{ inputs.build-folder-path }}

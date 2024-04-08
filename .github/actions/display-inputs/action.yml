@@ -1,0 +1,48 @@
+name: Display Inputs to Workflow
+
+inputs:
+  display_on_github_summary:
+    type: boolean
+    required: false
+    description: Display inputs on GitHub summary
+    default: false
+
+runs:
+  using:  'composite'
+  steps:
+    - name: Display Inputs
+      env:
+        INPUT_JSON: ${{ toJSON(github.event.inputs) }}
+      run: |
+        echo $INPUT_JSON | jq
+      shell: bash
+    - name: Display inputs on GitHub Summary
+      if: ${{ inputs.display_on_github_summary == 'true' }}
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const input = ${{ toJSON(github.event.inputs) }}
+          let table = [
+            [
+                { data: 'Input', header: true },
+                { data: 'Value', header: true },
+            ]
+          ];
+          for (var key in input) {
+            try {
+              parsed = JSON.parse(input[key]);
+              if(Array.isArray(parsed)) {
+                formatted = JSON.parse(input[key]).join('</br>');
+                table.push([ key, formatted ])
+              } else {
+                table.push([ key, input[key] ])
+              }
+            }
+            catch (e) {
+              table.push([ key, input[key] ])
+            }
+          }
+          await core.summary
+          .addHeading(`Inputs Provided to Workflow:`)
+          .addTable(table)
+          .write()
