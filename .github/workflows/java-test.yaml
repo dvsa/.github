@@ -84,7 +84,7 @@ jobs:
             ${{inputs.config_file_contents}}
 
       - name: 🔑 Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         if: ${{ env.AWS_ACCOUNT_ID && inputs.role }}
