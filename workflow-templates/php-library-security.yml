@@ -10,7 +10,7 @@ on:
 
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-library-security.yml@v3.2.2
+    uses: dvsa/.github/.github/workflows/php-library-security.yml@v4.0.0
     with: 
      php-versions: "[\"7.4\",\"8.0\"]"
     secrets:
