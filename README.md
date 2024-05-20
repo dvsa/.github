@@ -8,10 +8,10 @@ This repository contains shared templates and actions for use throughout the DVS
 
 ## Versions
 
-Currently on Version 3.2.3
+Currently on Version 4.0.0
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.2.3
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v4.0.0
 ```
 
 If using the first version of the workflows, specify v1.0.0.
@@ -185,13 +185,13 @@ The build and upload-to-s3 steps would look like the following:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v2
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.0.0
     with:
       upload_artifact: true
       build_command: build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.0.0
     with:
       environment: nonprod
       short_commit: ${{  needs.build-names.outputs.short_sha }}
@@ -226,7 +226,7 @@ The build and upload-to-s3 steps would have the following inputs:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.0.0
     with:
       upload_artifact: true
       build_folder: build
@@ -234,7 +234,7 @@ The build and upload-to-s3 steps would have the following inputs:
       build_command: build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.0.0
     with:
       environment: dev
       short_commit: ${{ needs.build-names.outputs.short_sha }}
@@ -270,7 +270,7 @@ The upload-to-s3 action with a matrix strategy defined:
 
 ```YAML
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.0.0
     strategy:
       matrix:
         buildName: [
@@ -467,18 +467,18 @@ on:
  
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-security.yml@v3.2.3
+    uses: dvsa/.github/.github/workflows/php-security.yml@v4.0.0
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-security.yml@v3.2.3
+   uses: dvsa/.github/.github/workflows/php-security.yml@v4.0.0
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-security.yml@v3.2.3
+ uses: dvsa/.github/.github/workflows/php-library-security.yml@v4.0.0
 
 ```
 
@@ -506,16 +506,16 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.3
+    uses: dvsa/.github/.github/workflows/php-static.yml@v4.0.0
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.3
+   uses: dvsa/.github/.github/workflows/php-static.yml@v4.0.0
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-static.yml@v3.2.3
+ uses: dvsa/.github/.github/workflows/php-library-static.yml@v4.0.0
 
 ```
 
@@ -543,18 +543,18 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-tests.yml@v3.2.3
+    uses: dvsa/.github/.github/workflows/php-tests.yml@v4.0.0
     with: 
      php_versions: "[\"7.4\",\"8.0\"]"
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-tests.yml@v3.2.3
+   uses: dvsa/.github/.github/workflows/php-tests.yml@v4.0.0
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-tests.yml@v3.2.3
+ uses: dvsa/.github/.github/workflows/php-library-tests.yml@v4.0.0
 
 ```
 
