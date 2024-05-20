@@ -19,7 +19,7 @@ N/A
 ####  Usage     
 ```yaml
 - name: AWS Authentication
-  uses: dvsa/.github/.github/actions/aws-auth@3.2.0 
+  uses: dvsa/.github/.github/actions/aws-auth@v4.0.0
   with:
     aws_role: dvsa-infra-github
     aws_region: eu-west-1
