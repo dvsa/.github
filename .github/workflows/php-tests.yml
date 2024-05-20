@@ -22,15 +22,15 @@ jobs:
       fail-fast: ${{ inputs.fail-fast }}
       matrix:
         php: ${{ fromJSON(inputs.php-versions) }}
-        
-    name: PHP test ${{ matrix.php }} 
+
+    name: PHP test ${{ matrix.php }}
 
     env:
       PHPUNIT_CONFIG_FILE: ${{ inputs.phpunit-config-file && format('-c "{0}"', inputs.phpunit-config-file) || '' }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2

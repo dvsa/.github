@@ -19,7 +19,7 @@ runs:
   using: 'composite'
   steps:        
   - name: Infra AWS Authenication 
-    uses: aws-actions/configure-aws-credentials@v2
+    uses: aws-actions/configure-aws-credentials@v4
     with:
       role-to-assume: "arn:aws:iam::${{ inputs.aws_account_id }}:role/${{ inputs.aws_role }}" #
       aws-region: "${{ inputs.aws_region }}"

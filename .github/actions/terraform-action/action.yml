@@ -1,27 +1,27 @@
 name: Terraform Action
 
-inputs: 
-  action: 
+inputs:
+  action:
     description: 'Terraform action to run e.g plan'
     required: true
     type: string
-  project: 
+  project:
     description: 'Terraform project'
     required: true
     type: string
-  environment: 
+  environment:
     description: 'Terraform environment'
     required: true
     type: string
-  component: 
+  component:
     description: 'Terraform component'
     required: true
     type: string
-  group: 
+  group:
     description: 'Terraform group'
     required: true
     type: string
-  bucket-prefix: 
+  bucket-prefix:
     description: 'AWS Terraform bucket used for TF state'
     required: true
     type: string
@@ -32,18 +32,18 @@ inputs:
   terraform_version:
     type: number
     default: '1.3.7'
-    description: Terraform Version to install on runner 
+    description: Terraform Version to install on runner
   terraform_args:
     type: string
     default: ''
-    description: Additional Terraform arguments 
+    description: Additional Terraform arguments
 
 runs:
   using: 'composite'
-  steps: 
+  steps:
     - uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version:  ${{ inputs.terraform_version }}      
+        terraform_version:  ${{ inputs.terraform_version }}
         terraform_wrapper: false
 
     - name: Terraform init and plan
@@ -54,7 +54,7 @@ runs:
       shell: bash
 
     - name: Save Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: "${{ inputs.environment }}-${{ inputs.component }}"
         path: "./plans/${{ inputs.environment }}/${{ inputs.component }}-plan.txt"
