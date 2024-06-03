@@ -13,6 +13,10 @@ on:
       phpunit-config-file:
         required: false
         type: string
+      phpunit-args:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   tests:
@@ -43,4 +47,5 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute tests
-        run: vendor/bin/phpunit $PHPUNIT_CONFIG_FILE
+        run: vendor/bin/phpunit ${{ inputs.phpunit-args }} $PHPUNIT_CONFIG_FILE
+

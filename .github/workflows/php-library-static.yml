@@ -14,9 +14,22 @@ on:
         required: false
         type: string
         default: 'latest'
+      use-phpstan:
+        required: false
+        type: boolean
+        default: true
+      use-php-codesniffer:
+        required: false
+        type: boolean
+        default: true
+      use-psalm:
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   phpstan:
+    if: ${{ inputs.use-phpstan }}
     name: PHPStan - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
@@ -41,7 +54,7 @@ jobs:
         run: phpstan analyze --no-progress ${{ inputs.path }}
 
   php-codesniffer:
-
+    if: ${{ inputs.use-php-codesniffer }}
     name: PHP-CodeSniffer - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
@@ -66,7 +79,7 @@ jobs:
         run: phpcs -q ${{ inputs.path }}
 
   psalm:
-
+    if: ${{ inputs.use-psalm }}
     name: Psalm - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
@@ -90,3 +103,4 @@ jobs:
 
       - name: Execute Psalm
         run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}
+
