@@ -3,6 +3,9 @@ name: Static analysis
 on:
   workflow_call:
     inputs:
+      path:
+        required: true
+        type: string
       fail-fast:
         required: false
         default: true
@@ -35,7 +38,7 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute PHPStan
-        run: phpstan analyze --no-progress
+        run: phpstan analyze --no-progress ${{ inputs.path }}
 
   php-codesniffer:
 
@@ -60,7 +63,7 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Execute PHP CodeSniffer
-        run: phpcs -q
+        run: phpcs -q ${{ inputs.path }}
 
   psalm:
 
