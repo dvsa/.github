@@ -11,6 +11,10 @@ on:
         required: false
         type: string
         default: 'latest'
+      composer-version:
+        required: false
+        type: string
+        default: 'v2'
 
 jobs:
   phpstan:
@@ -29,7 +33,7 @@ jobs:
         with:
           php-version: ${{ inputs.php-version }}
           coverage: none
-          tools: phpstan
+          tools: phpstan, composer:${{ inputs.composer-version }}
 
       - name: Install (Update) Composer dependancies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress

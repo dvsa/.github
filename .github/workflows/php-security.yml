@@ -9,6 +9,10 @@ on:
       severity-threshold:
         required: false
         type: string
+      composer-version:
+        required: false
+        type: string
+        default: 'v2'
 
 jobs:
  snyk:
@@ -28,6 +32,7 @@ jobs:
         php-version: 8.1
         coverage: none
         extensions: mbstring
+        tools: composer:${{ inputs.composer-version }}
 
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/php@master
