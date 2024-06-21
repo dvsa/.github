@@ -24,7 +24,7 @@ N/A
 ####  Usage     
 ```yaml
 - name: Terraform - db
-  uses: dvsa/.github/.github/actions/terraform-action@v4.0.1
+  uses: dvsa/.github/.github/actions/terraform-action@v4.0.2
   with:
     action: plan
     environment: dev
@@ -35,7 +35,7 @@ N/A
     project: mot-project
 
 - name: Terraform - app
-  uses: dvsa/.github/.github/actions/terraform-action@v4.0.1
+  uses: dvsa/.github/.github/actions/terraform-action@v4.0.2
   with:
     action: plan
     environment: dev
