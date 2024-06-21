@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: 'latest'
+      composer-version:
+        required: false
+        type: string
+        default: 'v2'
 
 jobs:
   phpstan:
@@ -23,7 +27,7 @@ jobs:
         with:
           php-version: ${{ inputs.php-version }}
           coverage: none
-          tools: phpstan
+          tools: phpstan, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
         run: composer install --no-progress --no-interaction
@@ -45,7 +49,7 @@ jobs:
         with:
           php-version: ${{ inputs.php-version }}
           coverage: none
-          tools: php-cs-fixer, phpcs
+          tools: php-cs-fixer, phpcs, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
         run: composer install --no-progress --no-interaction
@@ -68,7 +72,7 @@ jobs:
           php-version: ${{ inputs.php-version }}
           coverage: none
           extensions: mbstring, intl
-          tools: vimeo/psalm
+          tools: vimeo/psalm, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
         run: composer install --no-progress --no-interaction

@@ -9,6 +9,14 @@ on:
       severity-threshold:
         required: false
         type: string
+      php-version:
+        required: false
+        type: string
+        default: 8.1
+      composer-version:
+        required: false
+        type: string
+        default: 'v2'
 
 jobs:
  snyk:
@@ -25,9 +33,10 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: 8.1
+        php-version: ${{ inputs.php-version }}
         coverage: none
         extensions: mbstring
+        tools: composer:${{ inputs.composer-version }}
 
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/php@master

@@ -16,6 +16,10 @@ on:
       severity-threshold:
         required: false
         type: string
+      composer-version:
+        required: false
+        type: string
+        default: 'v2'
 
 jobs:
   snyk:
@@ -38,7 +42,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: composer:v2
+          tools: composer:${{ inputs.composer-version }}
           coverage: none
           extensions: mbstring
 
