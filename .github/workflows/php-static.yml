@@ -28,6 +28,8 @@ jobs:
           php-version: ${{ inputs.php-version }}
           coverage: none
           tools: phpstan, composer:${{ inputs.composer-version }}
+        env:
+          REDIS_CONFIGURE_OPTS: --enable-redis-igbinary
 
       - name: Install Composer dependancies
         run: composer install --no-progress --no-interaction
