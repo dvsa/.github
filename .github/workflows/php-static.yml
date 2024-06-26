@@ -28,9 +28,6 @@ jobs:
           php-version: ${{ inputs.php-version }}
           coverage: none
           tools: phpstan, composer:${{ inputs.composer-version }}
-          extensions: redis-phpredis/phpredis@5.3.7
-        env:
-          REDIS_CONFIGURE_OPTS: --enable-redis-igbinary
 
       - name: Install Composer dependancies
         run: composer install --no-progress --no-interaction
@@ -74,8 +71,10 @@ jobs:
         with:
           php-version: ${{ inputs.php-version }}
           coverage: none
-          extensions: mbstring, intl
+          extensions: mbstring, intl, redis-phpredis/phpredis@5.3.7
           tools: vimeo/psalm, composer:${{ inputs.composer-version }}
+        env:
+          REDIS_CONFIGURE_OPTS: --enable-redis-igbinary
 
       - name: Install Composer dependancies
         run: composer install --no-progress --no-interaction
