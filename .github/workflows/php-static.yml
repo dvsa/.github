@@ -71,7 +71,7 @@ jobs:
         with:
           php-version: ${{ inputs.php-version }}
           coverage: none
-          extensions: mbstring, intl, redis-phpredis/phpredis@5.3.7
+          extensions: mbstring, intl, redis
           tools: vimeo/psalm, composer:${{ inputs.composer-version }}
         env:
           REDIS_CONFIGURE_OPTS: --enable-redis-igbinary
