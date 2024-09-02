@@ -6,11 +6,11 @@ on:
 
 jobs:
   publish:
-    uses: dvsa/.github/.github/workflows/nodejs-publish.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-publish.yaml@v4.1.1
     with:
-      node-version: '16.x'
-      download_artifact: true
-      build_folder: package
-      build_folder_path: dist
+      node-version: '18.x'
+      download-artifact: true
+      build-folder: package
+      build-folder-path: dist
     secrets:
       NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

@@ -8,10 +8,10 @@ This repository contains shared templates and actions for use throughout the DVS
 
 ## Versions
 
-Currently on Version 3.2.3
+Currently on Version 4.1.1
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v3.2.3
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v4.1.1
 ```
 
 If using the first version of the workflows, specify v1.0.0.
@@ -185,18 +185,18 @@ The build and upload-to-s3 steps would look like the following:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v2
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
     with:
-      upload_artifact: true
-      build_command: build:prod
+      upload-artifact: true
+      build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
     with:
       environment: nonprod
-      short_commit: ${{  needs.build-names.outputs.short_sha }}
+      short-commit: ${{  needs.build-names.outputs.short_sha }}
       artifact: dist.zip
-      bucket_key: backend/functionName/${{ needs.build-names.outputs.pretty_branch_name }}.zip
+      bucket-key: backend/functionName/${{ needs.build-names.outputs.pretty_branch_name }}.zip
     permissions:
       id-token: write
     secrets:
@@ -226,21 +226,21 @@ The build and upload-to-s3 steps would have the following inputs:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
     with:
-      upload_artifact: true
-      build_folder: build
-      build_folder_path: build/artifacts
-      build_command: build:prod
+      upload-artifact: true
+      build-folder: build
+      build-folder-path: build/artifacts
+      build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
     with:
       environment: dev
-      short_commit: ${{ needs.build-names.outputs.short_sha }}
+      short-commit: ${{ needs.build-names.outputs.short_sha }}
       artifact: dist.zip
-      build_folder: build
-      bucket_key: functionName/${{ needs.build-names.outputs.pretty_branch_name }}.zip
+      build-folder: build
+      bucket-key: functionName/${{ needs.build-names.outputs.pretty_branch_name }}.zip
     permissions:
       id-token: write
     secrets:
@@ -270,7 +270,7 @@ The upload-to-s3 action with a matrix strategy defined:
 
 ```YAML
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
     strategy:
       matrix:
         buildName: [
@@ -279,9 +279,9 @@ The upload-to-s3 action with a matrix strategy defined:
         ]
     with:
       environment: nonprod
-      short_commit: ${{  needs.build-names.outputs.short_sha }}
+      short-commit: ${{  needs.build-names.outputs.short_sha }}
       artifact: ${{ matrix.buildName }}.zip
-      bucket_key: backend/${{ matrix.buildName }}/${{ needs.build-names.outputs.pretty_branch_name }}.zip
+      bucket-key: backend/${{ matrix.buildName }}/${{ needs.build-names.outputs.pretty_branch_name }}.zip
     permissions:
       id-token: write
     secrets:
@@ -336,7 +336,7 @@ IDE integration matches those on the Snyk website.
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@[version]
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -390,7 +390,7 @@ Typically, this would run on push so the action result can be used to validate a
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@[version]
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -437,7 +437,7 @@ on:
 
 jobs:
   unit-test:
-    uses: dvsa/.github/.github/workflows/java-test.yaml@[version]
+    uses: dvsa/.github/.github/workflows/java-test.yaml@v4.1.1
     with:
       config_file_contents: |
         environment: development
@@ -467,18 +467,18 @@ on:
  
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-security.yml@v3.2.3
+    uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-security.yml@v3.2.3
+   uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-security.yml@v3.2.3
+ uses: dvsa/.github/.github/workflows/php-library-security.yml@v4.1.1
 
 ```
 
@@ -506,16 +506,16 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.3
+    uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-static.yml@v3.2.3
+   uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-static.yml@v3.2.3
+ uses: dvsa/.github/.github/workflows/php-library-static.yml@v4.1.1
 
 ```
 
@@ -543,18 +543,18 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-tests.yml@v3.2.3
+    uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
     with: 
      php_versions: "[\"7.4\",\"8.0\"]"
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-tests.yml@v3.2.3
+   uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-tests.yml@v3.2.3
+ uses: dvsa/.github/.github/workflows/php-library-tests.yml@v4.1.1
 
 ```
 

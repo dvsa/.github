@@ -36,9 +36,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
-        uses: dvsa/.github/.github/actions/install-deps@v3.0.0
+        uses: dvsa/.github/.github/actions/install-deps@v4.1.1
         with:
           node-version: ${{ inputs.node-version }}
           npm-version: ${{ inputs.npm-version }}
@@ -46,7 +46,7 @@ jobs:
         run: ${{ inputs.build-command }}
       - name: Upload artifact
         if: inputs.upload-artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.build-folder }}
           path: ${{ inputs.build-folder-path }}

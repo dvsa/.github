@@ -11,7 +11,11 @@ on:
         required: false
         type: string
         default: 'latest'
-  
+      composer-version:
+        required: false
+        type: string
+        default: 'v2'
+
 jobs:
   phpstan:
     name: PHPStan - ${{ inputs.php-version }} - ${{ matrix.stability }}
@@ -22,14 +26,14 @@ jobs:
         stability: [prefer-lowest, prefer-stable]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ inputs.php-version }}
           coverage: none
-          tools: phpstan
+          tools: phpstan, composer:${{ inputs.composer-version }}
 
       - name: Install (Update) Composer dependancies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
@@ -38,7 +42,7 @@ jobs:
         run: phpstan analyze --no-progress
 
   php-codesniffer:
-   
+
     name: PHP-CodeSniffer - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
@@ -47,7 +51,7 @@ jobs:
         stability: [prefer-lowest, prefer-stable]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -63,7 +67,7 @@ jobs:
         run: phpcs -q
 
   psalm:
-    
+
     name: Psalm - ${{ inputs.php-version }} - ${{ matrix.stability }}
     runs-on: ubuntu-latest
     strategy:
@@ -72,7 +76,7 @@ jobs:
         stability: [prefer-lowest, prefer-stable]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -81,7 +85,7 @@ jobs:
           coverage: none
           extensions: mbstring, intl
           tools: vimeo/psalm
-          
+
       - name: Install (Update) Composer dependancies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 

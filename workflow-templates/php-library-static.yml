@@ -10,5 +10,5 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-library-static.yml@v3.2.2
+    uses: dvsa/.github/.github/workflows/php-library-static.yml@v4.1.1
     

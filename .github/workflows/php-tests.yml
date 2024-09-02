@@ -13,6 +13,10 @@ on:
       phpunit-config-file:
         required: false
         type: string
+      composer-version:
+        required: false
+        type: string
+        default: 'v2'
 
 jobs:
   tests:
@@ -22,21 +26,21 @@ jobs:
       fail-fast: ${{ inputs.fail-fast }}
       matrix:
         php: ${{ fromJSON(inputs.php-versions) }}
-        
-    name: PHP test ${{ matrix.php }} 
+
+    name: PHP test ${{ matrix.php }}
 
     env:
       PHPUNIT_CONFIG_FILE: ${{ inputs.phpunit-config-file && format('-c "{0}"', inputs.phpunit-config-file) || '' }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: composer:v2
+          tools: composer:${{ inputs.composer-version }}
           coverage: none
 
       - name: Install dependencies
