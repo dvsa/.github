@@ -45,6 +45,12 @@ Action to provide ability to get the summary of a Gatling job
 
 [Gatling Job Summary](.github/actions/gatling-job-summary/README.md)
 
+## display-jest-test-summary
+
+Action to display summary of jest tests on Github summary
+
+[Display Jest Test Summary](/.github/.github/actions/display-jest-test-summary/README.md)
+
 ## java-config
 
 Action to provide ability to configure Java

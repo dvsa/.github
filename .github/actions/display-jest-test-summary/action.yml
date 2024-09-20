@@ -1,0 +1,36 @@
+name: Display Jest Test Summary
+
+inputs:
+  test_report_path:
+    type: string
+    description: Path of test report JSON file
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Transform Input
+      id: transform_input
+      env:
+        INPUT_PATH: ${{ inputs.test_report_path }}
+      run: |
+        echo JSON_OUTPUT=$(  jq '{ numTotalTests, numPassedTests, numFailedTests}' $INPUT_PATH ) >> $GITHUB_OUTPUT 
+      shell: bash
+    - name: Display Jest Test Summary
+      uses: actions/github-script@v6
+      env:
+        JSON: ${{ steps.transform_input.outputs.JSON_OUTPUT }}
+      with:
+        script: |
+          const input = JSON.parse(process.env.JSON); 
+          await core.summary
+              .addHeading(`Results for End to End Tests`)
+              .addTable([
+                [
+                    {data: 'Total Tests', header: true}, 
+                    {data: 'Tests Passed ✅', header: true}, 
+                    {data: 'Tests Failed ❌', header: true},
+                ],
+                [ input.numTotalTests.toString(), input.numPassedTests.toString(), input.numFailedTests.toString(), ]
+              ])
+              .write()
