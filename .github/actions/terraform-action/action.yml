@@ -37,6 +37,10 @@ inputs:
     type: string
     default: ''
     description: Additional Terraform arguments
+  terraform_directory:
+    type: string
+    default: '.'
+    description: Directory location of Terraform
 
 runs:
   using: 'composite'
@@ -48,6 +52,7 @@ runs:
 
     - name: Terraform init and plan
       id: plan
+      working-directory: ${{ inputs.terraform_directory }}
       run: |
         mkdir -p plans/${{ inputs.environment }}
         ./bin/terraform.sh --action ${{ inputs.action }} --project ${{ inputs.project }} --environment ${{ inputs.environment }}  --component ${{ inputs.component }} --group ${{ inputs.group }} --bucket-prefix ${{ inputs.bucket-prefix }} --region ${{ inputs.region }} --compact-warnings --no-color -- ${{ inputs.terraform_args }} | tee plans/${{ inputs.environment }}/${{ inputs.component }}-plan.txt

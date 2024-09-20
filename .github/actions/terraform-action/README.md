@@ -16,15 +16,17 @@ This action allows the workflow to run terraform commands via TF Scaffold
 - bucket-prefix (required): AWS Terraform bucket used for TF state.
 - region (required): AWS region used e.g eu-west-1.
 - terraform_version (optional): Terraform Version to install on runner.
-- terraform_args (optional): Additional Terraform arguments .
+- terraform_args (optional): Additional Terraform arguments.
+- terraform_directory (optional):  Directory location of Terraform
 
 ####  Outputs
 N/A
 
-####  Usage     
+####  Usage
 ```yaml
 - name: Terraform - db
   uses: dvsa/.github/.github/actions/terraform-action@v4.1.1
+  working-directory: .
   with:
     action: plan
     environment: dev
@@ -36,6 +38,7 @@ N/A
 
 - name: Terraform - app
   uses: dvsa/.github/.github/actions/terraform-action@v4.1.1
+  working-directory: ./infrastructure
   with:
     action: plan
     environment: dev
@@ -44,5 +47,5 @@ N/A
     bucket-prefix: mot-recalls-tfscaffold
     region: eu-west-1
     project: mot-project
-    terraform_args: "-var lambda_version=1.x.x"          
+    terraform_args: "-var lambda_version=1.x.x"
 ```
