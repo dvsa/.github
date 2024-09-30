@@ -352,7 +352,39 @@ IDE integration matches those on the Snyk website.
          ACCESS_TOKEN: ${{ secrets.SMC_ACCESS_TOKEN }}
          PACKAGE_REPO: ${{ secrets.SMC_PACKAGE_REPO }}
 ```
+## The Terraform `terraform-static.yaml` workflow
 
+### Background
+
+This workflow can be used to check against known configuration vulnerabilities, formatting and linting issues within the terraform code. It will also scan any containers (incl. dev containers) that exist within that repo.
+
+This is configured to run on PR to help with reviews of the terraform code quality, and it does not need any inputs. They Trivy scan, Checkov scan and changed file scan run in parrallel.
+
+From a security scan perspective the Trivy and Checkov scans will scan recursively any configuration files from the root of the repo. It may inadvertantly scan any other files that fall within the remit of the trivy/checkov scans as well.
+
+The repo will detect any changed files in the PR and anything with a .tf extension it will run terraform fmt -check as well as tflint. Through a quirk of tflint it will actually scan the entire directory even if --filter is used and output any global errors (e.g. invalid input errors). Any global errors will override any file based filters, these will need to be corrected before any other advisories can be seen.
+
+### Steps
+
+  - Trivy Scan
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Trivy action
+          - Run trivy scan from `.` highlighting critical vulnerabilities
+  - Checkov Scan
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Trivy action
+          - Run Checkov scan from `.` highlighting critical vulnerabilities
+
+    - Check modified files
+        - Check PR for for modified files and then check for any files with tf extention
+          - Run terraform fmt against modified files
+          - Run tflint recursively and filters on findings for modified files
+
+### Secrets - None
+
+### Inputs - None
 
 ## The Java `java-security.yaml` workflow has the following steps:
 
