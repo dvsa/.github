@@ -382,9 +382,13 @@ The repo will detect any changed files in the PR and anything with a .tf extensi
           - Run terraform fmt against modified files
           - Run tflint recursively and filters on findings for modified files
 
-### Secrets - None
+### Secrets
 
-### Inputs - None
+None
+
+### Inputs
+
+None
 
 ## The Java `java-security.yaml` workflow has the following steps:
 
