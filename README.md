@@ -364,6 +364,8 @@ From a security scan perspective the Trivy and Checkov scans will scan recursive
 
 The repo will detect any changed files in the PR and anything with a .tf extension it will run terraform fmt -check as well as tflint. Through a quirk of tflint it will actually scan the entire directory even if --filter is used and output any global errors (e.g. invalid input errors). Any global errors will override any file based filters, these will need to be corrected before any other advisories can be seen.
 
+To preven this automatically running the on pull request configuration has been commented out. This will need uncommenting prior to use.
+
 ### Steps
 
   - Trivy Scan
