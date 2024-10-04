@@ -1,7 +1,7 @@
 name: terraform-static
 
 on:
-  workflow call:
+  workflow_call:
 
 jobs:
   terraform-trivy:
