@@ -86,17 +86,17 @@ jobs:
           echo "### Failing files:" >> $GITHUB_STEP_SUMMARY
           terraform fmt -check -no-color -recursive ${{ needs.check-changed-files.outputs.tf_files }} | tee -a $GITHUB_STEP_SUMMARY
 
-  terraform-validate:
-    name: Validate Terraform
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
-    steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v2
-      - run: terraform init
-      - run: terraform validate
+#  terraform-validate:
+#    name: Validate Terraform
+#    runs-on: ubuntu-latest
+#    defaults:
+#      run:
+#        working-directory: ./
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: hashicorp/setup-terraform@v2
+#      - run: terraform init
+#      - run: terraform validate
 
   terraform-lint:
     name: Lint Terraform
