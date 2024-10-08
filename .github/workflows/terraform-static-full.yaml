@@ -1,0 +1,68 @@
+name: terraform-static-full
+
+on:
+  workflow_call:
+
+jobs:
+  terraform-trivy:
+    name: Trivy Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          exit-code: 1
+          scan-ref: "."
+          scan-type: "config" # scan terraform
+          severity: "CRITICAL"
+          format: 'table'
+          ignore-unfixed: true
+
+  terraform-checkov:
+    name: Checkov Scan
+    permissions:
+      contents: read
+      actions: read 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkov Scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          output_format: cli
+          quiet: true # display only failed checks
+          download_external_modules: true # downloads and checks external modules
+
+  terraform-fmt:
+    name: Format Terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+    steps:
+      - uses: actions/checkout@v4
+      - run: terraform fmt -check -no-color -recursive
+        name: Output to summary
+        run:  |
+          echo "### Failing files:" >> $GITHUB_STEP_SUMMARY
+          terraform fmt -check -no-color -recursive | tee -a $GITHUB_STEP_SUMMARY
+
+  terraform-lint:
+    name: Lint Terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        name: Cache plugin dir
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles('.tflint.hcl') }}
+      - uses: terraform-linters/setup-tflint@v4
+      - run: tflint --init --recursive --config=$(realpath .tflint.hcl)
+      - run: tflint --recursive --config=$(realpath .tflint.hcl)

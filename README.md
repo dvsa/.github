@@ -392,6 +392,55 @@ None
 
 None
 
+## The Terraform `terraform-static-full.yaml` workflow
+
+### Background
+
+This workflow follows a similar function as the terraform-static.yaml workflow but does not only run on the changes files in the repo but runs globally against all configuration files.
+
+### Steps
+
+  - Trivy Scan
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Trivy action
+          - Run trivy scan from `.` highlighting critical vulnerabilities
+  - Checkov Scan
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Trivy action
+          - Run Checkov scan from `.` highlighting critical vulnerabilities
+  - Terraform fmt check
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Terraform fmt action
+          - Run terraform fmt recursively check from `.` highlighting formatting issues
+  - tflint check
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run tflint action
+          - Run tflint recursively check from `.` highlighting lint issues issues
+
+
+### Secrets
+
+None
+
+### Inputs
+
+When called form the project repositories the owners will need to specify a schedule. This will need to be specified in the 'on' trigger as part of the workflow (example provided below for every Monday at 0600).
+
+```YAML
+
+name: terraform-static-full
+
+on:
+  schedule:
+    if: github.repository != 'dvsa/.github'
+    - cron: '* 6 * * mon'
+
+```
+
 ## The Java `java-security.yaml` workflow has the following steps:
 
 This workflow can be used to check that the project does not contain any security vulnerabilities identified by Snyk.
