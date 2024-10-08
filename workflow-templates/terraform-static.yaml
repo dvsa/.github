@@ -1,0 +1,8 @@
+name: terraform-static
+
+on:
+  pull_request:
+
+jobs:
+  terraform-static:
+    uses: dvsa/.github/.github/workflows/terraform-static.yaml@main

@@ -1,0 +1,7 @@
+{
+    "name": "DVSA Terraform Static Full Workflow",
+    "description": "Runs a tflint and tf format against any and all .tf files in the repo on a scheduled basis (0600 every Monday morning). Checkov and Trivy will run against the entire repo on a scheduled basis (0600 every Monday morning)",
+    "categories": [
+        "Terraform"
+    ]
+}

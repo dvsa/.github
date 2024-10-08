@@ -1,0 +1,7 @@
+{
+    "name": "DVSA Terraform Static Workflow",
+    "description": "Runs a tflint and tf format against any changed .tf files in the PR. Checkov and Trivy will run against the entire repo each time a PR is created/altered",
+    "categories": [
+        "Terraform"
+    ]
+}
