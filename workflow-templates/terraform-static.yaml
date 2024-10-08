@@ -5,4 +5,4 @@ on:
 
 jobs:
   terraform-static:
-    uses: dvsa/.github/.github/workflows/terraform-static.yaml@main
+    uses: dvsa/.github/.github/workflows/terraform-static.yaml@v5.0.0
