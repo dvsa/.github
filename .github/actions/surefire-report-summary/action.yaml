@@ -1,0 +1,18 @@
+name: 'surefire-=report-summary'
+description: 'gets summary form surefire report'
+inputs:
+  file-path:
+    required: true
+    description: 'file path to the file containing the surefire report'
+  report-path:
+    required: true
+    description: 'path to the file where the summary will be written'
+  fail-on-test-failures:
+    required: false
+    description: 'if true, the action will fail if there are test failures'
+  fail-on-test-errors:
+    required: false
+    description: 'if true, the action will fail if there are test errors'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
