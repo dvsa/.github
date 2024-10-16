@@ -2,6 +2,8 @@ name: terraform-static-full
 
 on:
   workflow_call:
+  
+  workflow_dispatch:
 
 jobs:
   terraform-trivy:
@@ -48,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: terraform fmt -check -no-color -recursive
         name: Output to summary
-        run:  |
+      - run:  |
           echo "### Failing files:" >> $GITHUB_STEP_SUMMARY
           terraform fmt -check -no-color -recursive | tee -a $GITHUB_STEP_SUMMARY
 
