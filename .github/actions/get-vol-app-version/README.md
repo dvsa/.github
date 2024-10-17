@@ -10,7 +10,7 @@ The action determines the version of the application by using git commit history
 #### Inputs
 | Name          | Description                             | Required | Default |
 |---------------|-----------------------------------------|----------|---------|
-| `project-path`| The root path of the app project         | `true`   | N/A     |
+| `project-path`| The root path of the app project         | `false`  | N/A     |
 | `ref`         | The commit reference to use as a starting point for the version | `true`   | `"HEAD"` |
 
 #### Outputs
