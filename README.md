@@ -45,6 +45,13 @@ Action to provide ability to get the summary of a Gatling job
 
 [Gatling Job Summary](.github/actions/gatling-job-summary/README.md)
 
+
+## get-vol-app-version
+
+Action to generate a VOL app version based on tag/commit  
+
+[Get VOL App Version Summary](.github/actions/get-vol-app-version/README.md)
+
 ## display-jest-test-summary
 
 Action to display summary of jest tests on Github summary
@@ -56,6 +63,13 @@ Action to display summary of jest tests on Github summary
 Action to provide ability to configure Java
 
 [Java Config](.github/actions/java-config/README.md)
+
+## surefire-report-summary
+
+Action to produce a test report summary
+
+[Surefire Report Summary](.github/actions/surefire-report-summary/README.md)
+
 ## terraform-action
 
 Action to provide ability to run Terraform commands
