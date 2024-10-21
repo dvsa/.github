@@ -1,0 +1,156 @@
+name: Validation, Reporting, and Cleanup
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 2 * * 5" # Run every Friday at 2 AM UTC
+
+jobs:
+  validate-and-report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install sqlfluff==3.2.0 sqlparse==0.5.1
+
+      - name: Create reports directory
+        run: mkdir -p reports
+
+      - name: Lint Oracle files
+        run: |
+          echo "Linting Oracle files:"
+          if [ -d "oracle" ]; then
+            echo "Oracle directory found. Contents:"
+            ls -R oracle
+            echo "Running SQLFluff on Oracle files:"
+            sqlfluff lint --dialect oracle --format yaml oracle || true
+            echo "Saving lint results:"
+            if sqlfluff lint --dialect oracle --format yaml oracle > reports/oracle_lint_report.yaml; then
+              echo "Oracle linting completed successfully"
+            else
+              echo "Oracle linting encountered issues, check the report for details"
+            fi
+            echo "Oracle lint report:"
+            cat reports/oracle_lint_report.yaml
+          else
+            echo "No Oracle directory found"
+          fi
+
+      - name: Lint MySQL files
+        run: |
+          echo "Linting MySQL files:"
+          if [ -d "mysql" ]; then
+            echo "MySQL directory found. Contents:"
+            ls -R mysql
+            echo "Running SQLFluff on MySQL files:"
+            sqlfluff lint --dialect mysql --format yaml mysql || true
+            echo "Saving lint results:"
+            if sqlfluff lint --dialect mysql --format yaml mysql > reports/mysql_lint_report.yaml; then
+              echo "MySQL linting completed successfully"
+            else
+              echo "MySQL linting encountered issues, check the report for details"
+            fi
+            echo "MySQL lint report:"
+            cat reports/mysql_lint_report.yaml
+          else
+            echo "No MySQL directory found"
+          fi
+
+      - name: Check SQL syntax
+        run: |
+          echo "Checking SQL syntax:"
+          touch reports/syntax_report.txt
+          find_output=$(find . -name "*.sql")
+          if [ -z "$find_output" ]; then
+            echo "No SQL files found" | tee -a reports/syntax_report.txt
+          else
+            while IFS= read -r file; do
+              echo "Checking $file" | tee -a reports/syntax_report.txt
+              if ! cat "$file" | sqlparse --validate >> reports/syntax_report.txt 2>&1; then
+                echo "Error validating $file" | tee -a reports/syntax_report.txt
+              fi
+              echo "" >> reports/syntax_report.txt
+            done <<< "$find_output"
+          fi
+          echo "Syntax check complete. Report contents:"
+          cat reports/syntax_report.txt
+
+      - name: Generate Markdown Report
+        run: |
+          report_file="reports/report-$(date +'%Y%m%d-%H%M%S').md"
+          echo "# SQL Validation Report" > $report_file
+          echo "## MySQL Linting Results" >> $report_file
+          echo '```yaml' >> $report_file
+          cat reports/mysql_lint_report.yaml >> $report_file
+          echo '```' >> $report_file
+          echo "## Oracle Linting Results" >> $report_file
+          echo '```yaml' >> $report_file
+          cat reports/oracle_lint_report.yaml >> $report_file
+          echo '```' >> $report_file
+          echo "## Syntax Check Results" >> $report_file
+          echo '```' >> $report_file
+          cat reports/syntax_report.txt >> $report_file
+          echo '```' >> $report_file
+
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: sql-validation-report
+          path: reports/report-*.md
+          retention-days: 7
+
+  cleanup-old-reports:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+
+    steps:
+      - name: Delete old artifacts
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const ms_per_day = 86400000;
+            const now = new Date();
+            const sevenDaysAgo = new Date(now.getTime() - 7 * ms_per_day);
+
+            console.log(`Fetching artifacts older than ${sevenDaysAgo.toISOString()}`);
+
+            try {
+              const { data } = await github.rest.actions.listArtifactsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              });
+
+              if (data && data.artifacts && Array.isArray(data.artifacts)) {
+                for (const artifact of data.artifacts) {
+                  if (new Date(artifact.created_at) < sevenDaysAgo) {
+                    console.log(`Deleting artifact ${artifact.name} (ID: ${artifact.id})`);
+                    await github.rest.actions.deleteArtifact({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      artifact_id: artifact.id,
+                    });
+                  }
+                }
+              } else {
+                console.log('No artifacts found or unexpected data structure');
+              }
+            } catch (error) {
+              console.error('Error occurred while processing artifacts:', error);
+            }
