@@ -1,0 +1,32 @@
+name: Linting
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+      - name: Run Ruff and save results
+        run: |
+          timestamp=$(date +"%Y%m%d_%H%M%S")
+          ruff check . > logs/lint_result_${timestamp}.txt
+      - name: Run Ruff Format
+        run: ruff format --check .
+      - name: Upload lint results
+        uses: actions/upload-artifact@v3
+        with:
+          name: lint-results
+          path: logs/lint_result_*.txt
