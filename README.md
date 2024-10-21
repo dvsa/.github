@@ -8,10 +8,10 @@ This repository contains shared templates and actions for use throughout the DVS
 
 ## Versions
 
-Currently on Version 4.0.1
+Currently on Version 5.0.2
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0.2
 ```
 
 If using the first version of the workflows, specify v1.0.0.
@@ -45,11 +45,31 @@ Action to provide ability to get the summary of a Gatling job
 
 [Gatling Job Summary](.github/actions/gatling-job-summary/README.md)
 
+
+## get-vol-app-version
+
+Action to generate a VOL app version based on tag/commit  
+
+[Get VOL App Version Summary](.github/actions/get-vol-app-version/README.md)
+
+## display-jest-test-summary
+
+Action to display summary of jest tests on Github summary
+
+[Display Jest Test Summary](/.github/.github/actions/display-jest-test-summary/README.md)
+
 ## java-config
 
 Action to provide ability to configure Java
 
 [Java Config](.github/actions/java-config/README.md)
+
+## surefire-report-summary
+
+Action to produce a test report summary
+
+[Surefire Report Summary](.github/actions/surefire-report-summary/README.md)
+
 ## terraform-action
 
 Action to provide ability to run Terraform commands
@@ -185,18 +205,18 @@ The build and upload-to-s3 steps would look like the following:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
     with:
-      upload_artifact: true
-      build_command: build:prod
+      upload-artifact: true
+      build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
     with:
       environment: nonprod
-      short_commit: ${{  needs.build-names.outputs.short_sha }}
+      short-commit: ${{  needs.build-names.outputs.short_sha }}
       artifact: dist.zip
-      bucket_key: backend/functionName/${{ needs.build-names.outputs.pretty_branch_name }}.zip
+      bucket-key: backend/functionName/${{ needs.build-names.outputs.pretty_branch_name }}.zip
     permissions:
       id-token: write
     secrets:
@@ -226,21 +246,21 @@ The build and upload-to-s3 steps would have the following inputs:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
     with:
-      upload_artifact: true
-      build_folder: build
-      build_folder_path: build/artifacts
-      build_command: build:prod
+      upload-artifact: true
+      build-folder: build
+      build-folder-path: build/artifacts
+      build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
     with:
       environment: dev
-      short_commit: ${{ needs.build-names.outputs.short_sha }}
+      short-commit: ${{ needs.build-names.outputs.short_sha }}
       artifact: dist.zip
-      build_folder: build
-      bucket_key: functionName/${{ needs.build-names.outputs.pretty_branch_name }}.zip
+      build-folder: build
+      bucket-key: functionName/${{ needs.build-names.outputs.pretty_branch_name }}.zip
     permissions:
       id-token: write
     secrets:
@@ -270,7 +290,7 @@ The upload-to-s3 action with a matrix strategy defined:
 
 ```YAML
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
     strategy:
       matrix:
         buildName: [
@@ -279,9 +299,9 @@ The upload-to-s3 action with a matrix strategy defined:
         ]
     with:
       environment: nonprod
-      short_commit: ${{  needs.build-names.outputs.short_sha }}
+      short-commit: ${{  needs.build-names.outputs.short_sha }}
       artifact: ${{ matrix.buildName }}.zip
-      bucket_key: backend/${{ matrix.buildName }}/${{ needs.build-names.outputs.pretty_branch_name }}.zip
+      bucket-key: backend/${{ matrix.buildName }}/${{ needs.build-names.outputs.pretty_branch_name }}.zip
     permissions:
       id-token: write
     secrets:
@@ -336,7 +356,7 @@ IDE integration matches those on the Snyk website.
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.0.1
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -346,7 +366,94 @@ IDE integration matches those on the Snyk website.
          ACCESS_TOKEN: ${{ secrets.SMC_ACCESS_TOKEN }}
          PACKAGE_REPO: ${{ secrets.SMC_PACKAGE_REPO }}
 ```
+## The Terraform `terraform-static.yaml` workflow
 
+### Background
+
+This workflow can be used to check against known configuration vulnerabilities, formatting and linting issues within the terraform code. It will also scan any containers (incl. dev containers) that exist within that repo.
+
+This is configured to run on PR to help with reviews of the terraform code quality, and it does not need any inputs. They Trivy scan, Checkov scan and changed file scan run in parrallel.
+
+From a security scan perspective the Trivy and Checkov scans will scan recursively any configuration files from the root of the repo. It may inadvertantly scan any other files that fall within the remit of the trivy/checkov scans as well.
+
+The repo will detect any changed files in the PR and anything with a .tf extension it will run terraform fmt -check as well as tflint. Through a quirk of tflint it will actually scan the entire directory even if --filter is used and output any global errors (e.g. invalid input errors). Any global errors will override any file based filters, these will need to be corrected before any other advisories can be seen.
+
+To preven this automatically running the on pull request configuration has been commented out. This will need uncommenting prior to use.
+
+### Steps
+
+  - Trivy Scan
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Trivy action
+          - Run trivy scan from `.` highlighting critical vulnerabilities
+  - Checkov Scan
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Trivy action
+          - Run Checkov scan from `.` highlighting critical vulnerabilities
+
+    - Check modified files
+        - Check PR for for modified files and then check for any files with tf extention
+          - Run terraform fmt against modified files
+          - Run tflint recursively and filters on findings for modified files
+
+### Secrets
+
+None
+
+### Inputs
+
+None
+
+## The Terraform `terraform-static-full.yaml` workflow
+
+### Background
+
+This workflow follows a similar function as the terraform-static.yaml workflow but does not only run on the changes files in the repo but runs globally against all configuration files.
+
+### Steps
+
+  - Trivy Scan
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Trivy action
+          - Run trivy scan from `.` highlighting critical vulnerabilities
+  - Checkov Scan
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Trivy action
+          - Run Checkov scan from `.` highlighting critical vulnerabilities
+  - Terraform fmt check
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run Terraform fmt action
+          - Run terraform fmt recursively check from `.` highlighting formatting issues
+  - tflint check
+      - Checkout Project
+          - Checkout branch from GitHub.
+      - Run tflint action
+          - Run tflint recursively check from `.` highlighting lint issues issues
+
+
+### Secrets
+
+None
+
+### Inputs
+
+When called form the project repositories the owners will need to specify a schedule. This will need to be specified in the 'on' trigger as part of the workflow (example provided below for every Monday at 0600).
+
+```YAML
+
+name: terraform-static-full
+
+on:
+  schedule:
+    if: github.repository != 'dvsa/.github'
+    - cron: '* 6 * * mon'
+
+```
 
 ## The Java `java-security.yaml` workflow has the following steps:
 
@@ -390,7 +497,7 @@ Typically, this would run on push so the action result can be used to validate a
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.0.1
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -437,7 +544,7 @@ on:
 
 jobs:
   unit-test:
-    uses: dvsa/.github/.github/workflows/java-test.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/java-test.yaml@v4.1.1
     with:
       config_file_contents: |
         environment: development
@@ -467,18 +574,18 @@ on:
  
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-security.yml@v4.0.1
+    uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-security.yml@v4.0.1
+   uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-security.yml@v4.0.1
+ uses: dvsa/.github/.github/workflows/php-library-security.yml@v4.1.1
 
 ```
 
@@ -506,16 +613,16 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@v4.0.1
+    uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-static.yml@v4.0.1
+   uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-static.yml@v4.0.1
+ uses: dvsa/.github/.github/workflows/php-library-static.yml@v4.1.1
 
 ```
 
@@ -543,18 +650,18 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-tests.yml@v4.0.1
+    uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
     with: 
      php_versions: "[\"7.4\",\"8.0\"]"
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-tests.yml@v4.0.1
+   uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-tests.yml@v4.0.1
+ uses: dvsa/.github/.github/workflows/php-library-tests.yml@v4.1.1
 
 ```
 

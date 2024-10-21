@@ -16,7 +16,7 @@ N/A
 ####  Usage     
 ```yaml
 - name: Generate Job Summary 
-  uses: dvsa/.github/.github/actions/gatling-job-summary@3.2.0
+  uses: dvsa/.github/.github/actions/gatling-job-summary@v4.1.1
   with:
     gatling_report_path: .target/gatling/
 ```

@@ -1,0 +1,9 @@
+name: terraform-static-full
+
+on:
+  schedule:
+    - cron: '* 6 * * mon'
+
+jobs:
+  terraform-static:
+    uses: dvsa/.github/.github/workflows/terraform-static-full.yaml@v5.0.0

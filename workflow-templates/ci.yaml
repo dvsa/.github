@@ -5,13 +5,13 @@ on:
 
 jobs:
   lint:
-    uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@v4.1.1
 
   test:
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v4.1.1
 
   security:
-    uses: dvsa/.github/.github/workflows/nodejs-security.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/nodejs-security.yaml@v4.1.1
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
@@ -35,7 +35,7 @@ jobs:
           echo "NAME=${PRETTY_BRANCH_NAME}" >> $GITHUB_OUTPUT
 
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
     needs: [ build-names ]
     with:
       upload-artifact: ${{ github.ref_name == 'main' }}
@@ -44,7 +44,7 @@ jobs:
 
   upload-to-s3:
     if: ${{ github.ref_name == github.event.repository.default_branch }}
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
     needs: [ lint, test, build, build-names ]
     with:
       environment: dev
@@ -61,7 +61,7 @@ jobs:
 
   update-lambda-code:
     if: ${{ github.ref_name == github.event.repository.default_branch }}
-    uses: dvsa/.github/.github/workflows/update-lambda-function.yaml@v4.0.1
+    uses: dvsa/.github/.github/workflows/update-lambda-function.yaml@v4.1.1
     needs: [ build-names, build, upload-s3 ]
     with:
       environment: dev
