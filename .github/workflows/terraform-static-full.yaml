@@ -48,8 +48,7 @@ jobs:
         working-directory: ./
     steps:
       - uses: actions/checkout@v4
-      - run: terraform fmt -check -no-color -recursive
-        name: Output to summary
+        name: Run tf format
       - run:  |
           echo "### Failing files:" >> $GITHUB_STEP_SUMMARY
           terraform fmt -check -no-color -recursive | tee -a $GITHUB_STEP_SUMMARY
