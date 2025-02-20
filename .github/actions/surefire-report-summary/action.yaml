@@ -13,6 +13,10 @@ inputs:
   fail-on-test-errors:
     required: false
     description: 'if true, the action will fail if there are test errors'
+  pass-percentage:
+    required: false
+    description: 'if set, the action will fail if the percentage of passing tests is below this threshold (e.g. 95)'
+    default: '0'
 runs:
   using: 'node20'
   main: 'dist/index.js'

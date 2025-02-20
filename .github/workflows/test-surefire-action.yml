@@ -1,0 +1,27 @@
+name: Test Surefire Report Summary
+
+on:
+  push:
+    paths:
+      - '.github/actions/surefire-report-summary/**'
+  pull_request:
+    paths:
+      - '.github/actions/surefire-report-summary/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .github/actions/surefire-report-summary
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: .github/actions/surefire-report-summary/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test
