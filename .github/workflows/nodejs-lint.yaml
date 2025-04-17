@@ -32,4 +32,4 @@ jobs:
           node-version: ${{ inputs.node-version }}
           npm-version: ${{ inputs.npm-version }}
       - name: Lint
-        run: npm run lint ${{ !inputs.biome && '-- --max-warnings'  || ''}}
+        run: npm run lint ${{ !inputs.biome && '-- --max-warnings ' || ''}}${{ inputs.max-warnings }}
