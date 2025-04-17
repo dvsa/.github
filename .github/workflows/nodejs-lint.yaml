@@ -31,8 +31,5 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
           npm-version: ${{ inputs.npm-version }}
-        
       - name: Lint
-        run: npm run lint ${{ inputs.biome == 'false' }} -- --max-warnings 
-        
-     
+        run: npm run lint ${{ !inputs.biome && '-- --max-warnings'  || ''}}
