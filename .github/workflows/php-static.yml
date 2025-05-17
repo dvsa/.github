@@ -71,7 +71,7 @@ jobs:
         with:
           php-version: ${{ inputs.php-version }}
           coverage: none
-          extensions: mbstring, intl
+          extensions: mbstring, intl, igbinary
           tools: vimeo/psalm, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
