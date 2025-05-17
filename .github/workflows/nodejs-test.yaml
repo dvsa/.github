@@ -10,7 +10,7 @@ on:
       node-version:
         required: false
         type: string
-        default: '18.x'
+        default: '20.x'
       npm-version:
         required: false
         type: string
