@@ -41,6 +41,14 @@ inputs:
     type: string
     default: '.'
     description: Directory location of Terraform
+  artifact_name:
+    type: string
+    default: ''
+    description: 'Name of the artifact to upload (defaults to environment-component if empty)'
+  upload_artifact:
+    type: boolean
+    default: true
+    description: 'Whether to upload the artifact or not'
 
 runs:
   using: 'composite'
@@ -59,8 +67,9 @@ runs:
       shell: bash
 
     - name: Save Artifact
+      if: ${{ inputs.upload_artifact }}
       uses: actions/upload-artifact@v4
       with:
-        name: "${{ inputs.environment }}-${{ inputs.component }}"
+        name: "${{ inputs.artifact_name != '' && inputs.artifact_name || format('{0}-{1}', inputs.environment, inputs.component) }}"
         path: "${{ inputs.terraform_directory }}/plans/${{ inputs.environment }}/${{ inputs.component }}-plan.txt"
         retention-days: 7
