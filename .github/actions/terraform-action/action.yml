@@ -66,10 +66,15 @@ runs:
         ./bin/terraform.sh --action ${{ inputs.action }} --project ${{ inputs.project }} --environment ${{ inputs.environment }}  --component ${{ inputs.component }} --group ${{ inputs.group }} --bucket-prefix ${{ inputs.bucket-prefix }} --region ${{ inputs.region }} --compact-warnings --no-color -- ${{ inputs.terraform_args }} | tee plans/${{ inputs.environment }}/${{ inputs.component }}-plan.txt
       shell: bash
 
+    - name: Get current date
+      id: date
+      run: echo "date=$(date +'%Y-%m-%d-%H-%M-%S')" >> $GITHUB_OUTPUT
+      shell: bash
+
     - name: Save Artifact
       if: ${{ inputs.upload_artifact }}
       uses: actions/upload-artifact@v4
       with:
-        name: "${{ inputs.artifact_name != '' && inputs.artifact_name || format('{0}-{1}', inputs.environment, inputs.component) }}"
+        name: "${{ inputs.artifact_name != '' && format('{0}-{1}-{2}-{3}', inputs.environment, inputs.component, inputs.artifact_name, steps.date.outputs.date) || format('{0}-{1}-{2}', inputs.environment, inputs.component, steps.date.outputs.date) }}"
         path: "${{ inputs.terraform_directory }}/plans/${{ inputs.environment }}/${{ inputs.component }}-plan.txt"
         retention-days: 7
