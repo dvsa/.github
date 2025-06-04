@@ -17,6 +17,10 @@ on:
         required: false
         type: string
         default: 'v2'
+      working-directory:
+        required: false
+        type: string
+        default: '.'
 
 jobs:
  snyk:
@@ -44,7 +48,7 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         SEVERITY_THRESHOLD: ${{ inputs.severity-threshold && format('--severity-threshold={0}', inputs.severity-threshold) || '' }}
       with:
-        args: --sarif-file-output=snyk.sarif $SEVERITY_THRESHOLD
+        args: ${{ inputs.php-version }} --sarif-file-output=snyk.sarif $SEVERITY_THRESHOLD
 
     - name: isPrivate
       uses: octokit/graphql-action@v2.x

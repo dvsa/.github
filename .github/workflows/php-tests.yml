@@ -17,6 +17,10 @@ on:
         required: false
         type: string
         default: 'v2'
+      working-directory:
+        required: false
+        type: string
+        default: '.'
 
 jobs:
   tests:
@@ -44,7 +48,8 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --optimize-autoloader --no-progress --no-interaction
+        run: composer install --optimize-autoloader --no-progress --no-interaction --working-directory=${{ inputs.working-directory }}
 
       - name: Execute tests
         run: vendor/bin/phpunit $PHPUNIT_CONFIG_FILE
+        working-directory: ${{ inputs.working-directory }}
