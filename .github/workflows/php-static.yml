@@ -78,7 +78,7 @@ jobs:
           php-version: ${{ inputs.php-version }}
           coverage: none
           extensions: mbstring, intl, igbinary
-          tools: composer:${{ inputs.composer-version }}
+          tools: vimeo/psalm, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
         run: composer install --no-progress --no-interaction --working-dir=${{ inputs.working-directory }}
