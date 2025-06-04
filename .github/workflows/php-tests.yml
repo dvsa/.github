@@ -48,7 +48,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --optimize-autoloader --no-progress --no-interaction --working-directory=${{ inputs.working-directory }}
+        run: composer install --optimize-autoloader --no-progress --no-interaction --working-dir=${{ inputs.working-directory }}
 
       - name: Execute tests
         run: vendor/bin/phpunit $PHPUNIT_CONFIG_FILE

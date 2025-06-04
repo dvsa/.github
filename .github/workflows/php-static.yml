@@ -34,7 +34,7 @@ jobs:
           tools: phpstan, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
-        run: composer install --no-progress --no-interaction --working-directory=${{ inputs.working-directory }}
+        run: composer install --no-progress --no-interaction --working-dir=${{ inputs.working-directory }}
 
       - name: Execute PHPStan
         run: phpstan analyze --no-progress
