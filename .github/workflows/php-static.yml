@@ -57,7 +57,7 @@ jobs:
           tools: php-cs-fixer, phpcs, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
-        run: composer install --no-progress --no-interaction --working-directory=${{ inputs.working-directory }}
+        run: composer install --no-progress --no-interaction --working-dir=${{ inputs.working-directory }}
 
       - name: Execute PHP CodeSniffer
         run: phpcs -q
@@ -81,7 +81,7 @@ jobs:
           tools: vimeo/psalm, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
-        run: composer install --no-progress --no-interaction --working-directory=${{ inputs.working-directory }}
+        run: composer install --no-progress --no-interaction --working-dir=${{ inputs.working-directory }}
 
       - name: Execute Psalm
         run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}/${{ inputs.working-directory }}
