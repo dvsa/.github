@@ -11,6 +11,10 @@ on:
         required: false
         type: string
         default: 'v2'
+      working-directory:
+        required: false
+        type: string
+        default: '.'
 
 jobs:
   phpstan:
@@ -30,10 +34,11 @@ jobs:
           tools: phpstan, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
-        run: composer install --no-progress --no-interaction
+        run: composer install --no-progress --no-interaction --working-dir=${{ inputs.working-directory }}
 
       - name: Execute PHPStan
         run: phpstan analyze --no-progress
+        working-directory: ${{ inputs.working-directory }}
 
   php-codesniffer:
 
@@ -52,10 +57,11 @@ jobs:
           tools: php-cs-fixer, phpcs, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
-        run: composer install --no-progress --no-interaction
+        run: composer install --no-progress --no-interaction --working-dir=${{ inputs.working-directory }}
 
       - name: Execute PHP CodeSniffer
         run: phpcs -q
+        working-directory: ${{ inputs.working-directory }}
 
   psalm:
 
@@ -75,7 +81,8 @@ jobs:
           tools: vimeo/psalm, composer:${{ inputs.composer-version }}
 
       - name: Install Composer dependancies
-        run: composer install --no-progress --no-interaction
+        run: composer install --no-progress --no-interaction --working-dir=${{ inputs.working-directory }}
 
       - name: Execute Psalm
-        run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}
+        run: psalm --no-progress --output-format=github --root=${GITHUB_WORKSPACE}/${{ inputs.working-directory }}
+        working-directory: ${{ inputs.working-directory }}
