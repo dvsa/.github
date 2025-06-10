@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@commitlint/config-conventional": "^19.8.1",
+    "commitlint": "^19.8.1"
+  }
+}
