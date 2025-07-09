@@ -30196,7 +30196,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.failOnTestErrors = exports.failOnTestFailures = void 0;
+exports.failOnTestErrors = exports.failOnTestFailures = exports.calculatePassPercentage = void 0;
 exports.run = run;
 const core = __importStar(__nccwpck_require__(2186));
 const reader_1 = __nccwpck_require__(2203);
@@ -30209,22 +30209,51 @@ function run() {
             core.debug(`file-path: ${filePath}`);
             core.debug(`report-path: ${filePath}`);
             const results = yield (0, reader_1.parse)((0, reader_1.read)(filePath));
+            const passPercentage = (0, exports.calculatePassPercentage)(results);
             yield core.summary.addHeading('Test Results')
                 .addTable([
-                [{ data: 'Tests', header: true }, { data: 'Failures', header: true }, { data: 'Errors', header: true }, { data: 'Skipped', header: true }],
-                [results.tests.toString(), results.failures.toString(), results.errors.toString(), results.skipped.toString()]
+                [{ data: 'Tests', header: true }, { data: 'Failures', header: true }, { data: 'Errors', header: true }, { data: 'Skipped', header: true }, { data: 'Pass Rate', header: true }],
+                [results.tests.toString(), results.failures.toString(), results.errors.toString(), results.skipped.toString(), `${passPercentage.toFixed(2)}%`]
             ])
                 .addLink('View Test Results report', reportPath)
                 .write();
             core.debug(`Results: ${JSON.stringify(results)}`);
-            (yield (0, exports.failOnTestFailures)(results)) ? core.setFailed('Test failures found') : core.info('fail-on-test-failures is false, ignoring test failures');
-            (yield (0, exports.failOnTestErrors)(results)) ? core.setFailed('Test errors found') : core.info('fail-on-test-errors is false, ignoring test errors');
+            const passThreshold = parseFloat(core.getInput('pass-percentage'));
+            // If pass-percentage is set, use only that criteria
+            if (passThreshold > 0) {
+                if (passPercentage < passThreshold) {
+                    core.setFailed(`Pass percentage ${passPercentage.toFixed(2)}% is below threshold of ${passThreshold}%`);
+                }
+                else {
+                    core.info(`Pass percentage ${passPercentage.toFixed(2)}% meets or exceeds threshold of ${passThreshold}%`);
+                }
+            }
+            else {
+                // Only check individual failure conditions if pass-percentage is not set
+                if (yield (0, exports.failOnTestFailures)(results)) {
+                    core.setFailed('Test failures found');
+                }
+                else if (yield (0, exports.failOnTestErrors)(results)) {
+                    core.setFailed('Test errors found');
+                }
+                else {
+                    core.info('All checks passed successfully');
+                }
+            }
         }
         catch (error) {
             core.setFailed(`${(_a = error === null || error === void 0 ? void 0 : error.message) !== null && _a !== void 0 ? _a : error}`);
         }
     });
 }
+const calculatePassPercentage = (results) => {
+    const totalRun = results.tests - results.skipped;
+    if (totalRun === 0)
+        return 0;
+    const passed = totalRun - (results.failures + results.errors);
+    return (passed / totalRun) * 100;
+};
+exports.calculatePassPercentage = calculatePassPercentage;
 const failOnTestFailures = (results) => __awaiter(void 0, void 0, void 0, function* () {
     const fail_on_test_failures = core.getInput('fail-on-test-failures') === 'true';
     if (!fail_on_test_failures) {
