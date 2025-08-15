@@ -632,6 +632,7 @@ Inputs:
 * [REQUIRED] `php-version` - list of strings of all php versions which the workflow will run against
 * [OPTIONAL - php-library-static only] `fail-fast` - boolean to control whether all steps in the matrix should be run, even if one of them fails
 * [OPTIONAL]  `severity-threshold` - string to set threshold for which snyk report the vulnerabilities and fails the action, valid levels are `high` | `medium` | `low`
+* [OPTIONAL - php-library-static only] `stability` - array of strings to test based on composer package stability. Defaults to `["prefer-lowest", "prefer-stable"]`
 
 ### php-tests | php-library-tests
  
