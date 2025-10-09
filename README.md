@@ -38,6 +38,80 @@ Action to provide ability to add/remove IP addresses from AWS WAF ACL
 
 [AWS-WAF Access](.github/actions/aws-waf-access/README.md)
 
+## Azure-token-rotation
+
+### Background
+
+This workflow should be used to rotate azure client secrets stored in AWS secret manager for known azure client identities. The indended use case for this workflow to be called as part of a schedule to rotate the secrets in an automated manner.
+
+The workflow depends on an app registration which must has Microsoft Graph API permissions. This should be scoped to ensure that it is the specific repo, specific branches associated to the project and AWS secrets. There should also be a conditional statement that the OIDC role associated with the repo can only change the clientID's associated with the repo and project. A sample piece of code to call this as part of a different workflow can be found below.
+
+        uses: dvsa/.github/.github/workflows/azure-token-rotation.yml@v5.0.10
+        
+        # 1. Inputs (Non-Sensitive variables)
+        with:
+          aws-secret-id: var.secretid # required
+          aws-account-id: var.nonprodAccount              # required
+          aws-github-actions-role: var.GitHubActionsRole # required
+          
+          # optional input, allows user to override region otherwise uses the default (eu-west-1)
+          aws-region: var.region
+          
+        # 2. Secrets (Sensitive, Automatically Masked)
+        secrets:
+          # These are passed from the caller repository's Secrets store.
+          # The key names here MUST match the names defined in the reusable workflow's 'secrets:' block.
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-oidc-client-id: ${{ secrets.AZURE_OIDC_CLIENT_ID }}
+
+### Steps
+
+  - Azure Login with OIDC (uses clientID, AzureTennantID and SubscriptionID to authenticate)
+
+  - Configure AWS Credentials (uses AccountID and AWSGitHubRole to authenticate)
+
+  - Retrieve clientID (uses known AWS secretID to retrieve clientID that will be used to rotate the Azure Client Secret)
+
+  - Create new client secret (uses existing Azure OIDC to create a new client Secret)
+
+  - Update AWS secret (updates known AWS secret with the new secret value)
+
+
+### Secrets
+The below secrets will need to be added as GitHub secrets in the appropriate repository but will also need to pass the appropriate secrets using the secrets keyword when calling the workflow.
+
+      AZURE_TENANT_ID:
+        description: "Azure Tenant ID"
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        description: "Azure Subscription ID"
+        required: true
+      AZURE_OIDC_CLIENT_ID:
+        description: "Azure AD App (client) ID for OIDC login"
+        required: true
+
+### Inputs
+
+      aws-secret-id:
+        description: "Name of the AWS secret containing Azure client credentials"
+        required: true
+        type: string
+      aws-account-id:
+        description: "AWS Account ID where the secret is stored"
+        required: true
+        type: string
+      aws-github-actions-role:
+        description: "The role to assume in AWS to access Secrets Manager"
+        required: true
+        type: string
+      aws-region:
+        description: "AWS region where the secret is stored"
+        required: false
+        type: string
+        default: "eu-west-1"
+
+
 ## gatling-job-summary
 
 Action to provide ability to get the summary of a Gatling job

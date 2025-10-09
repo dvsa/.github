@@ -21,6 +21,17 @@ on:
         type: string
         default: "eu-west-1"
 
+    secrets:
+      AZURE_TENANT_ID:
+        description: "Azure Tenant ID"
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        description: "Azure Subscription ID"
+        required: true
+      AZURE_OIDC_CLIENT_ID:
+        description: "Azure AD App (client) ID for OIDC login"
+        required: true
+
 jobs:
   rotate-and-push:
     runs-on: ubuntu-latest
@@ -29,7 +40,7 @@ jobs:
 
     steps:
 
-        # Logs into Azure using OIDC, requires the secrets AZURE_OIDC_CLIENT_ID, AZURE_TENANT_ID and AZURE_SUBSCRIPTION_ID to be set in the repo secrets. Also requires an OIDC federated credential to be set up in the Azure AD App registration that requires Microsoft Graph API permissions (like Application.ReadWrite.All) to reset app credentials
+        # Logs into Azure using OIDC, requires the inputs azure-oidc-client-id, azure-tenant-id and azure-subscription-id to be set in the repo secrets. These are set as inputs to provide some flexibility for adoption. Also requires an OIDC federated credential to be set up in the Azure AD App registration that requires Microsoft Graph API permissions (like Application.ReadWrite.All) to reset app credentials
       - name: Azure login with OIDC
         uses: azure/login@v1
         with:
