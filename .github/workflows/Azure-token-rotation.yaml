@@ -1,4 +1,4 @@
-name: Rotate Azure Client Secret and Push to AWS
+name: Rotate Azure Client Secret and Push to AWS Secrets Manager
 
 on:
   workflow_call:
