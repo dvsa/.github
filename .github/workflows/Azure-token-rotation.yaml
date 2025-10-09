@@ -7,6 +7,19 @@ on:
         description: "Name of the AWS secret containing Azure client credentials"
         required: true
         type: string
+      aws-account-id:
+        description: "AWS Account ID where the secret is stored"
+        required: true
+        type: string
+      aws-github-actions-role:
+        description: "The role to assume in AWS to access Secrets Manager"
+        required: true
+        type: string
+      aws-region:
+        description: "AWS region where the secret is stored"
+        required: false
+        type: string
+        default: "eu-west-1"
 
 jobs:
   rotate-and-push:
@@ -30,8 +43,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<OIDC_ROLE_NAME>
-          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::${{ inputs.aws-account-id }}:role/${{ inputs.aws-github-actions-role }}
+          aws-region: ${{ inputs.aws-region }}
 
         # Need to ensure that secret-id maps to what is stored in AWS Secrets Manager, static for now.
       - name: Retrieve clientId
