@@ -26,11 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
         # Logs into Azure using OIDC, requires the secrets AZURE_OIDC_CLIENT_ID, AZURE_TENANT_ID and AZURE_SUBSCRIPTION_ID to be set in the repo secrets. Also requires an OIDC federated credential to be set up in the Azure AD App registration that requires Microsoft Graph API permissions (like Application.ReadWrite.All) to reset app credentials
       - name: Azure login with OIDC
