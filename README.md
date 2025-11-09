@@ -6,13 +6,62 @@ This repository contains shared templates and actions for use throughout the DVS
 
 > hint: As this README.md is quite large use the [github table of contents](https://github.blog/changelog/2021-04-13-table-of-contents-support-in-markdown-files/) feature to navigate
 
-## Versions
+## Versioning
 
-Currently on Version 5.0.6
+This repository follows [Semantic Versioning](https://semver.org/) and uses automated releases via [release-please](https://github.com/googleapis/release-please).
+
+**Current Version:** 5.0.6
+
+### Using Versioned Workflows
+
+When referencing workflows from this repository, you can choose different versioning strategies based on your stability requirements:
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0.6
+# Recommended: Pin to major version (automatically receives patch and minor updates)
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5
+
+# Conservative: Pin to minor version (automatically receives patch updates only)
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0
+
+# Most conservative: Pin to exact version (no automatic updates)
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0.6
+
+# Not recommended: Use main branch (may contain breaking changes)
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@main
 ```
+
+**Recommendation:** For production workflows, pin to the major version (`@v5`) to automatically receive bug fixes and new features while avoiding breaking changes. For maximum stability during critical periods, use an exact version and update manually.
+
+### Version Bumping
+
+Releases are automated based on [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Commit Type | Version Bump | Example |
+|-------------|--------------|---------|
+| `feat:` | **Minor** (5.0.6 → 5.1.0) | New action or workflow feature |
+| `fix:` | **Patch** (5.0.6 → 5.0.7) | Bug fix in existing action |
+| `feat!:` or `BREAKING CHANGE:` | **Major** (5.0.6 → 6.0.0) | Breaking API change |
+| `docs:`, `chore:`, etc. | **Patch** (5.0.6 → 5.0.7) | Non-code changes |
+
+### Release Process
+
+Releases are fully automated:
+
+1. **Developers** merge PRs to `main` using conventional commit messages
+2. **Release-Please bot** opens/updates a release PR with:
+   - Updated `CHANGELOG.md`
+   - Version bump
+   - Comprehensive release notes
+3. **Maintainers** review and merge the release PR
+4. **Automation** creates:
+   - GitHub Release (e.g., `v5.1.0`)
+   - Git tags: `v5.1.0`, `v5.1`, and `v5`
+
+### Viewing Changes
+
+- **Releases:** See all releases at https://github.com/dvsa/.github/releases
+- **Changelog:** View [CHANGELOG.md](CHANGELOG.md) for detailed change history
+- **Commits:** Compare versions using Git: `git log v5.0.5..v5.0.6`
 
 
 ## Actions
