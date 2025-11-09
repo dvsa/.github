@@ -6,7 +6,6 @@ on:
       max-warnings:
         required: false
         type: number
-        default: 0
       node-version:
         type: string
         required: false
@@ -32,4 +31,4 @@ jobs:
           node-version: ${{ inputs.node-version }}
           npm-version: ${{ inputs.npm-version }}
       - name: Lint
-        run: npm run lint ${{ !inputs.biome && format('-- --max-warnings {0}', inputs.max-warnings) || '' }}
+        run: npm run lint ${{ !inputs.biome && inputs.max-warnings != '' && format('-- --max-warnings {0}', inputs.max-warnings) || '' }}
