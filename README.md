@@ -8,10 +8,10 @@ This repository contains shared templates and actions for use throughout the DVS
 
 ## Versions
 
-Currently on Version 5.0.6
+Currently on Version 5.0.10
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0.6
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0.10
 ```
 
 
@@ -107,9 +107,10 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
 
 1. Lint
     - optional argument:
-        - `max-warnings`: Sets how many warnings are allowed. Default is `0`.
-        - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
+        - `max-warnings`: Sets how many warnings are allowed. Only applies when not using Biome. No default value.
+        - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `20.x`.
         - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
+        - `biome`: Boolean flag to indicate if Biome linter is being used. Default is `false`.
 1. Test
     - optional argument:
         - `test-command`: Sets the command used during the Test step. Default is `npm run test`.
