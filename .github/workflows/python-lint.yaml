@@ -29,7 +29,7 @@ jobs:
       - name: Run Ruff Format
         run: ruff format --check .
       - name: Upload lint results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lint-results
           path: logs/lint_result_*.txt
