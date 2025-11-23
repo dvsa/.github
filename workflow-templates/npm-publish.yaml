@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish:
-    uses: dvsa/.github/.github/workflows/nodejs-publish.yaml@v5.10.0
+    uses: dvsa/.github/.github/workflows/nodejs-publish.yaml@v5.0.10
     with:
       node-version: '18.x'
       download-artifact: true
