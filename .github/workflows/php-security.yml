@@ -43,7 +43,7 @@ jobs:
         tools: composer:${{ inputs.composer-version }}
 
     - name: Run Snyk to check for vulnerabilities
-      uses: snyk/actions/php@master
+      uses: snyk/actions/php@v1.0.0
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         SEVERITY_THRESHOLD: ${{ inputs.severity-threshold && format('--severity-threshold={0}', inputs.severity-threshold) || '' }}
@@ -51,7 +51,7 @@ jobs:
         args: ${{ inputs.working-directory}}/ --sarif-file-output=snyk.sarif $SEVERITY_THRESHOLD
 
     - name: isPrivate
-      uses: octokit/graphql-action@v2.x
+      uses: octokit/graphql-action@v3.0.0
       id: isPrivate
       with:
           query: |
@@ -67,6 +67,6 @@ jobs:
 
     - name: Upload result to GitHub Code Scanning
       if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false }}
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: snyk.sarif
