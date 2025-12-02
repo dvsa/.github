@@ -1,0 +1,84 @@
+name: Rotate Azure Client Secret and Push to AWS Secrets Manager
+
+on:
+  workflow_call:
+    inputs:
+      aws-secret-id:
+        description: "Name of the AWS secret containing Azure client credentials"
+        required: true
+        type: string
+      aws-account-id:
+        description: "AWS Account ID where the secret is stored"
+        required: true
+        type: string
+      aws-github-actions-role:
+        description: "The role to assume in AWS to access Secrets Manager"
+        required: true
+        type: string
+      aws-region:
+        description: "AWS region where the secret is stored"
+        required: false
+        type: string
+        default: "eu-west-1"
+
+    secrets:
+      AZURE_TENANT_ID:
+        description: "Azure Tenant ID"
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        description: "Azure Subscription ID"
+        required: true
+      AZURE_OIDC_CLIENT_ID:
+        description: "Azure AD App (client) ID for OIDC login"
+        required: true
+
+jobs:
+  rotate-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+
+    steps:
+
+        # Logs into Azure using OIDC, requires the inputs azure-oidc-client-id, azure-tenant-id and azure-subscription-id to be set in the repo secrets. These are set as inputs to provide some flexibility for adoption. Also requires an OIDC federated credential to be set up in the Azure AD App registration that requires Microsoft Graph API permissions (like Application.ReadWrite.All) to reset app credentials
+      - name: Azure login with OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_OIDC_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ inputs.aws-account-id }}:role/${{ inputs.aws-github-actions-role }}
+          aws-region: ${{ inputs.aws-region }}
+
+        # Need to ensure that secret-id maps to what is stored in AWS Secrets Manager, static for now.
+      - name: Retrieve clientId
+        id: get-clientid
+        run: |
+          CLIENT_ID=$(aws secretsmanager get-secret-value \
+            --secret-id "${{ inputs.aws-secret-id }}" \
+            --query SecretString \
+            --output text | jq -r '.clientId')
+
+          echo "::add-mask::$CLIENT_ID"
+          echo "CLIENT_ID=$CLIENT_ID" >> $GITHUB_ENV
+
+      - name: Create new client secret
+        run: |
+          NEW_SECRET=$(az ad app credential reset \
+            --id $CLIENT_ID \
+            --append \
+            --years 1 \
+            --query password -o tsv)
+
+          echo "::add-mask::$NEW_SECRET"
+          echo "AZURE_NEW_SECRET=$NEW_SECRET" >> $GITHUB_ENV
+
+      - name: Update AWS secret
+        run: |
+          aws secretsmanager put-secret-value \
+            --secret-id "${{ inputs.aws-secret-id }}" \
+            --secret-string "{\"clientId\":\"$CLIENT_ID\",\"clientSecret\":\"$AZURE_NEW_SECRET\"}"
