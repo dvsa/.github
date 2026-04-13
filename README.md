@@ -109,13 +109,13 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
     - optional argument:
         - `max-warnings`: Sets how many warnings are allowed. Only applies when not using Biome. No default value.
         - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `20.x`.
-        - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
+        - `npm-version`: Global npm version to install before `npm ci`. Default is `''` (use the npm bundled with the selected node version). Avoid `'latest'` — triggers npm/cli#9151 on Node 22.
         - `biome`: Boolean flag to indicate if Biome linter is being used. Default is `false`.
 1. Test
     - optional argument:
         - `test-command`: Sets the command used during the Test step. Default is `npm run test`.
         - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
-        - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
+        - `npm-version`: Global npm version to install before `npm ci`. Default is `''` (use the npm bundled with the selected node version). Avoid `'latest'` — triggers npm/cli#9151 on Node 22.
 1. Security
     - required secret `SNYK_TOKEN` requires the organization or repo Snyk token secret
     - optional argument `args` allows passing in any extra args to the Snyk command. Note, the default behavior is to test all projects including all dev dependencies. If you don't want to test dev dependencies, pass in args: `--all-projects` to override the default args.
@@ -130,7 +130,7 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
         - `retention-days`: How many days to save the archive for if it's stored. (upload-artifact: `true`). Default is `7` days.
         - `build-command`: The command to run to build the project. Defaults to `npm run package`.
         - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
-        - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
+        - `npm-version`: Global npm version to install before `npm ci`. Default is `''` (use the npm bundled with the selected node version). Avoid `'latest'` — triggers npm/cli#9151 on Node 22.
 1. Upload to s3
 
     Workflow downloads the archive created from the build workflow and pushes it to s3 with the commit id as a tag. Default only running on master branch. See examples before for more information.
