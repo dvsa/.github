@@ -372,9 +372,9 @@ IDE integration matches those on the Snyk website.
 
 This workflow can be used to check against known configuration vulnerabilities, formatting and linting issues within the terraform code. It will also scan any containers (incl. dev containers) that exist within that repo.
 
-This is configured to run on PR to help with reviews of the terraform code quality, and it does not need any inputs. They Trivy scan, Checkov scan and changed file scan run in parrallel.
+This is configured to run on PR to help with reviews of the terraform code quality, and it does not need any inputs. They Checkov scan and changed file scan run in parrallel.
 
-From a security scan perspective the Trivy and Checkov scans will scan recursively any configuration files from the root of the repo. It may inadvertantly scan any other files that fall within the remit of the trivy/checkov scans as well.
+From a security scan perspective the Checkov scans will scan recursively any configuration files from the root of the repo. It may inadvertantly scan any other files that fall within the remit of the checkov scans as well.
 
 The repo will detect any changed files in the PR and anything with a .tf extension it will run terraform fmt -check as well as tflint. Through a quirk of tflint it will actually scan the entire directory even if --filter is used and output any global errors (e.g. invalid input errors). Any global errors will override any file based filters, these will need to be corrected before any other advisories can be seen.
 
@@ -382,15 +382,9 @@ To preven this automatically running the on pull request configuration has been 
 
 ### Steps
 
-  - Trivy Scan
-      - Checkout Project
-          - Checkout branch from GitHub.
-      - Run Trivy action
-          - Run trivy scan from `.` highlighting critical vulnerabilities
   - Checkov Scan
       - Checkout Project
           - Checkout branch from GitHub.
-      - Run Trivy action
           - Run Checkov scan from `.` highlighting critical vulnerabilities
 
     - Check modified files
@@ -413,17 +407,9 @@ None
 This workflow follows a similar function as the terraform-static.yaml workflow but does not only run on the changes files in the repo but runs globally against all configuration files.
 
 ### Steps
-
-  - Trivy Scan
-      - Checkout Project
-          - Checkout branch from GitHub.
-      - Run Trivy action
-          - Run trivy scan from `.` highlighting critical vulnerabilities
   - Checkov Scan
       - Checkout Project
           - Checkout branch from GitHub.
-      - Run Trivy action
-          - Run Checkov scan from `.` highlighting critical vulnerabilities
   - Terraform fmt check
       - Checkout Project
           - Checkout branch from GitHub.
