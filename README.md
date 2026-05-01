@@ -87,6 +87,12 @@ Action to provide ability to add/remove IP addresses from AWS WAF ACL
 
 [AWS-WAF Access](.github/actions/aws-waf-access/README.md)
 
+## commitlint
+
+Action to validate pull request titles against Conventional Commits.
+
+[Commitlint](.github/actions/commitlint/README.md)
+
 ## gatling-job-summary
 
 Action to provide ability to get the summary of a Gatling job
@@ -714,5 +720,4 @@ Inputs:
 
 This workflow will check the title of a pull request and ensure it follows the conventional commit specification.
 
-> **Warning**
-> This workflow should only be used if `commitlint` is already configured in the repository.
+The workflow uses the shared `conventional-commits.yaml` reusable workflow, which runs the internal `commitlint` action from this repository.
