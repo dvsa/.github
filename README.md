@@ -10,7 +10,7 @@ This repository contains shared templates and actions for use throughout the DVS
 
 This repository follows [Semantic Versioning](https://semver.org/) and uses automated releases via [release-please](https://github.com/googleapis/release-please).
 
-**Current Version:** 5.0.6
+**Current Version:** 5.0.11
 
 ### Using Versioned Workflows
 
@@ -24,7 +24,7 @@ uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5
 uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0
 
 # Most conservative: Pin to exact version (no automatic updates)
-uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0.6
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0.11
 
 # Not recommended: Use main branch (may contain breaking changes)
 uses: dvsa/.github/.github/workflows/nodejs-test.yaml@main
@@ -36,12 +36,12 @@ uses: dvsa/.github/.github/workflows/nodejs-test.yaml@main
 
 Releases are automated based on [Conventional Commits](https://www.conventionalcommits.org/):
 
-| Commit Type | Version Bump | Example |
-|-------------|--------------|---------|
-| `feat:` | **Minor** (5.0.6 → 5.1.0) | New action or workflow feature |
-| `fix:` | **Patch** (5.0.6 → 5.0.7) | Bug fix in existing action |
-| `feat!:` or `BREAKING CHANGE:` | **Major** (5.0.6 → 6.0.0) | Breaking API change |
-| `docs:`, `chore:`, etc. | **Patch** (5.0.6 → 5.0.7) | Non-code changes |
+| Commit Type | Version Bump                | Example |
+|-------------|-----------------------------|---------|
+| `feat:` | **Minor** (5.0.11 → 5.1.0)  | New action or workflow feature |
+| `fix:` | **Patch** (5.0.11 → 5.0.12) | Bug fix in existing action |
+| `feat!:` or `BREAKING CHANGE:` | **Major** (5.0.11 → 6.0.0)  | Breaking API change |
+| `docs:`, `chore:`, etc. | **Patch** (5.0.11 → 5.0.12) | Non-code changes |
 
 ### Release Process
 
@@ -61,7 +61,7 @@ Releases are fully automated:
 
 - **Releases:** See all releases at https://github.com/dvsa/.github/releases
 - **Changelog:** View [CHANGELOG.md](CHANGELOG.md) for detailed change history
-- **Commits:** Compare versions using Git: `git log v5.0.5..v5.0.6`
+- **Commits:** Compare versions using Git: `git log v5.0.10..v5.0.11`
 
 
 ## Actions
@@ -254,13 +254,13 @@ The build and upload-to-s3 steps would look like the following:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v5
     with:
       upload-artifact: true
       build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v5
     with:
       environment: nonprod
       short-commit: ${{  needs.build-names.outputs.short_sha }}
@@ -295,7 +295,7 @@ The build and upload-to-s3 steps would have the following inputs:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v5
     with:
       upload-artifact: true
       build-folder: build
@@ -303,7 +303,7 @@ The build and upload-to-s3 steps would have the following inputs:
       build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v5
     with:
       environment: dev
       short-commit: ${{ needs.build-names.outputs.short_sha }}
@@ -339,7 +339,7 @@ The upload-to-s3 action with a matrix strategy defined:
 
 ```YAML
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v5
     strategy:
       matrix:
         buildName: [
@@ -405,7 +405,7 @@ IDE integration matches those on the Snyk website.
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v5
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -532,7 +532,7 @@ Typically, this would run on push so the action result can be used to validate a
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v5
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -579,7 +579,7 @@ on:
 
 jobs:
   unit-test:
-    uses: dvsa/.github/.github/workflows/java-test.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/java-test.yaml@v5
     with:
       config_file_contents: |
         environment: development
@@ -609,18 +609,18 @@ on:
  
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
+    uses: dvsa/.github/.github/workflows/php-security.yml@v5
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
+   uses: dvsa/.github/.github/workflows/php-security.yml@v5
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-security.yml@v4.1.1
+ uses: dvsa/.github/.github/workflows/php-library-security.yml@v5
 
 ```
 
@@ -648,16 +648,16 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
+    uses: dvsa/.github/.github/workflows/php-static.yml@v5
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
+   uses: dvsa/.github/.github/workflows/php-static.yml@v5
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-static.yml@v4.1.1
+ uses: dvsa/.github/.github/workflows/php-library-static.yml@v5
 
 ```
 
@@ -686,18 +686,18 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
+    uses: dvsa/.github/.github/workflows/php-tests.yml@v5
     with: 
      php_versions: "[\"7.4\",\"8.0\"]"
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
+   uses: dvsa/.github/.github/workflows/php-tests.yml@v5
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-tests.yml@v4.1.1
+ uses: dvsa/.github/.github/workflows/php-library-tests.yml@v5
 
 ```
 
