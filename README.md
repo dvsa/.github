@@ -205,13 +205,13 @@ The build and upload-to-s3 steps would look like the following:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v5.0.10
     with:
       upload-artifact: true
       build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v5.0.10
     with:
       environment: nonprod
       short-commit: ${{  needs.build-names.outputs.short_sha }}
@@ -246,7 +246,7 @@ The build and upload-to-s3 steps would have the following inputs:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v5.0.10
     with:
       upload-artifact: true
       build-folder: build
@@ -254,7 +254,7 @@ The build and upload-to-s3 steps would have the following inputs:
       build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v5.0.10
     with:
       environment: dev
       short-commit: ${{ needs.build-names.outputs.short_sha }}
@@ -290,7 +290,7 @@ The upload-to-s3 action with a matrix strategy defined:
 
 ```YAML
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v5.0.10
     strategy:
       matrix:
         buildName: [
@@ -352,11 +352,11 @@ IDE integration matches those on the Snyk website.
      pull_request:
        types:
          - closed
-   
+
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v5.0.10
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -479,11 +479,11 @@ Typically, this would run on push so the action result can be used to validate a
      pull_request:
        types:
          - closed
-   
+
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v5.0.10
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -530,7 +530,7 @@ on:
 
 jobs:
   unit-test:
-    uses: dvsa/.github/.github/workflows/java-test.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/java-test.yaml@v5.0.10
     with:
       config_file_contents: |
         environment: development
@@ -560,18 +560,18 @@ on:
  
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
+    uses: dvsa/.github/.github/workflows/php-security.yml@v5.0.10
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
-if using library version amend 
+if using library version amend
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
+   uses: dvsa/.github/.github/workflows/php-security.yml@v5.0.10
 ```
-to 
+to
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-security.yml@v4.1.1
+ uses: dvsa/.github/.github/workflows/php-library-security.yml@v5.0.10
 
 ```
 
@@ -599,16 +599,16 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
+    uses: dvsa/.github/.github/workflows/php-static.yml@v5.0.10
 ```
-if using library version amend 
+if using library version amend
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
+   uses: dvsa/.github/.github/workflows/php-static.yml@v5.0.10
 ```
-to 
+to
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-static.yml@v4.1.1
+ uses: dvsa/.github/.github/workflows/php-library-static.yml@v5.0.10
 
 ```
 
@@ -637,18 +637,18 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
-    with: 
+    uses: dvsa/.github/.github/workflows/php-tests.yml@v5.0.10
+    with:
      php_versions: "[\"7.4\",\"8.0\"]"
 ```
-if using library version amend 
+if using library version amend
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
+   uses: dvsa/.github/.github/workflows/php-tests.yml@v5.0.10
 ```
-to 
+to
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-tests.yml@v4.1.1
+ uses: dvsa/.github/.github/workflows/php-library-tests.yml@v5.0.10
 
 ```
 
