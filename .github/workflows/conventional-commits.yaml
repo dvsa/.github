@@ -20,13 +20,14 @@ jobs:
     name: Check PR title
     runs-on: ubuntu-latest
     env:
-      TITLE: ${{ inputs.title || github.event.pull_request.title }}
+      INPUT: ${{ inputs.title || github.event.pull_request.title }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: "lts/*"
-          cache: "npm"
-      - run: npm ci
-      - name: Validate PR title
-        run: echo "$TITLE" | npx --no commitlint
+          repository: dvsa/.github
+          ref: ${{ github.workflow_sha }}
+
+      - name: Validate input
+        uses: ./.github/actions/commitlint
+        with:
+          input: ${{ env.INPUT }}

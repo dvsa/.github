@@ -1,0 +1,68 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          # Use 'simple' strategy for shared actions repository
+          release-type: simple
+
+          # Optional: customize package name
+          package-name: dvsa-github-actions
+
+          # The manifest file will track version
+          manifest-file: .release-please-manifest.json
+
+          # Configuration file
+          config-file: release-please-config.json
+
+      # Tag major and minor versions when a release is created
+      - name: Checkout code
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v4
+
+      - name: Tag major and minor versions
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+          # Get the version numbers
+          VERSION=${{ steps.release.outputs.tag_name }}
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f1-2)
+
+          # Update major tag (e.g., v5)
+          git tag -fa $MAJOR -m "Release $VERSION"
+          git push origin $MAJOR --force
+
+          # Update minor tag (e.g., v5.0)
+          git tag -fa $MINOR -m "Release $VERSION"
+          git push origin $MINOR --force
+
+          echo "Tagged $MAJOR and $MINOR for $VERSION"
+
+      - name: Release summary
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          echo "## Release Created! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ steps.release.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release URL**: ${{ steps.release.outputs.html_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Available Tags" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ steps.release.outputs.tag_name }}\` (exact version)" >> $GITHUB_STEP_SUMMARY
+          echo "- \`$(echo ${{ steps.release.outputs.tag_name }} | cut -d. -f1-2)\` (minor version)" >> $GITHUB_STEP_SUMMARY
+          echo "- \`$(echo ${{ steps.release.outputs.tag_name }} | cut -d. -f1)\` (major version)" >> $GITHUB_STEP_SUMMARY

@@ -6,13 +6,62 @@ This repository contains shared templates and actions for use throughout the DVS
 
 > hint: As this README.md is quite large use the [github table of contents](https://github.blog/changelog/2021-04-13-table-of-contents-support-in-markdown-files/) feature to navigate
 
-## Versions
+## Versioning
 
-Currently on Version 5.0.10
+This repository follows [Semantic Versioning](https://semver.org/) and uses automated releases via [release-please](https://github.com/googleapis/release-please).
+
+**Current Version:** 5.0.11
+
+### Using Versioned Workflows
+
+When referencing workflows from this repository, you can choose different versioning strategies based on your stability requirements:
 
 ```yaml
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0.10
+# Recommended: Pin to major version (automatically receives patch and minor updates)
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5
+
+# Conservative: Pin to minor version (automatically receives patch updates only)
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0
+
+# Most conservative: Pin to exact version (no automatic updates)
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v5.0.11
+
+# Not recommended: Use main branch (may contain breaking changes)
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@main
 ```
+
+**Recommendation:** For production workflows, pin to the major version (`@v5`) to automatically receive bug fixes and new features while avoiding breaking changes. For maximum stability during critical periods, use an exact version and update manually.
+
+### Version Bumping
+
+Releases are automated based on [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Commit Type | Version Bump                | Example |
+|-------------|-----------------------------|---------|
+| `feat:` | **Minor** (5.0.11 → 5.1.0)  | New action or workflow feature |
+| `fix:` | **Patch** (5.0.11 → 5.0.12) | Bug fix in existing action |
+| `feat!:` or `BREAKING CHANGE:` | **Major** (5.0.11 → 6.0.0)  | Breaking API change |
+| `docs:`, `chore:`, etc. | **Patch** (5.0.11 → 5.0.12) | Non-code changes |
+
+### Release Process
+
+Releases are fully automated:
+
+1. **Developers** merge PRs to `main` using conventional commit messages
+2. **Release-Please bot** opens/updates a release PR with:
+   - Updated `CHANGELOG.md`
+   - Version bump
+   - Comprehensive release notes
+3. **Maintainers** review and merge the release PR
+4. **Automation** creates:
+   - GitHub Release (e.g., `v5.1.0`)
+   - Git tags: `v5.1.0`, `v5.1`, and `v5`
+
+### Viewing Changes
+
+- **Releases:** See all releases at https://github.com/dvsa/.github/releases
+- **Changelog:** View [CHANGELOG.md](CHANGELOG.md) for detailed change history
+- **Commits:** Compare versions using Git: `git log v5.0.10..v5.0.11`
 
 
 ## Actions
@@ -37,6 +86,12 @@ Action to provide ability to run AWS CLI commands
 Action to provide ability to add/remove IP addresses from AWS WAF ACL
 
 [AWS-WAF Access](.github/actions/aws-waf-access/README.md)
+
+## commitlint
+
+Action to validate pull request titles against Conventional Commits.
+
+[Commitlint](.github/actions/commitlint/README.md)
 
 ## gatling-job-summary
 
@@ -205,13 +260,13 @@ The build and upload-to-s3 steps would look like the following:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v5
     with:
       upload-artifact: true
       build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v5
     with:
       environment: nonprod
       short-commit: ${{  needs.build-names.outputs.short_sha }}
@@ -246,7 +301,7 @@ The build and upload-to-s3 steps would have the following inputs:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v5
     with:
       upload-artifact: true
       build-folder: build
@@ -254,7 +309,7 @@ The build and upload-to-s3 steps would have the following inputs:
       build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v5
     with:
       environment: dev
       short-commit: ${{ needs.build-names.outputs.short_sha }}
@@ -290,7 +345,7 @@ The upload-to-s3 action with a matrix strategy defined:
 
 ```YAML
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v5
     strategy:
       matrix:
         buildName: [
@@ -356,7 +411,7 @@ IDE integration matches those on the Snyk website.
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v5
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -483,7 +538,7 @@ Typically, this would run on push so the action result can be used to validate a
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v4.1.1
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v5
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -530,7 +585,7 @@ on:
 
 jobs:
   unit-test:
-    uses: dvsa/.github/.github/workflows/java-test.yaml@v4.1.1
+    uses: dvsa/.github/.github/workflows/java-test.yaml@v5
     with:
       config_file_contents: |
         environment: development
@@ -560,18 +615,18 @@ on:
  
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
+    uses: dvsa/.github/.github/workflows/php-security.yml@v5
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-security.yml@v4.1.1
+   uses: dvsa/.github/.github/workflows/php-security.yml@v5
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-security.yml@v4.1.1
+ uses: dvsa/.github/.github/workflows/php-library-security.yml@v5
 
 ```
 
@@ -599,16 +654,16 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
+    uses: dvsa/.github/.github/workflows/php-static.yml@v5
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-static.yml@v4.1.1
+   uses: dvsa/.github/.github/workflows/php-static.yml@v5
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-static.yml@v4.1.1
+ uses: dvsa/.github/.github/workflows/php-library-static.yml@v5
 
 ```
 
@@ -637,18 +692,18 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
+    uses: dvsa/.github/.github/workflows/php-tests.yml@v5
     with: 
      php_versions: "[\"7.4\",\"8.0\"]"
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-tests.yml@v4.1.1
+   uses: dvsa/.github/.github/workflows/php-tests.yml@v5
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-tests.yml@v4.1.1
+ uses: dvsa/.github/.github/workflows/php-library-tests.yml@v5
 
 ```
 
@@ -665,5 +720,4 @@ Inputs:
 
 This workflow will check the title of a pull request and ensure it follows the conventional commit specification.
 
-> **Warning**
-> This workflow should only be used if `commitlint` is already configured in the repository.
+The workflow uses the shared `conventional-commits.yaml` reusable workflow, which runs the internal `commitlint` action from this repository.

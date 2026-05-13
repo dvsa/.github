@@ -1,0 +1,12 @@
+{
+  "name": "@dvsa/github-commitlint-action",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3"
+  }
+}
+
