@@ -14,7 +14,7 @@ on:
       npm-version:
         required: false
         type: string
-        default: 'latest'
+        default: ''
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
-        uses: dvsa/.github/.github/actions/install-deps@v4.1.1
+        uses: dvsa/.github/.github/actions/install-deps@v5.0.11
         with:
           node-version: ${{ inputs.node-version }}
           npm-version: ${{ inputs.npm-version }}

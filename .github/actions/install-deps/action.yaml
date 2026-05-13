@@ -8,10 +8,10 @@ inputs:
     required: false
     default: '18.x'
   npm-version:
-    description: NPM version to be installed and used
+    description: NPM version to install globally before `npm ci`. Leave empty (default) to use the npm bundled with the selected node version. Set to a specific version (e.g. '10.9.7') to pin. Avoid 'latest' — it triggers npm/cli#9151 on Node 22.
     type: string
     required: false
-    default: 'latest'
+    default: ''
 
 runs:
   using: 'composite'
@@ -21,7 +21,9 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'npm'
-    - run: npm i -g npm@${{ inputs.npm-version }}
+    - name: Upgrade npm
+      if: inputs.npm-version != ''
+      run: npm i -g npm@${{ inputs.npm-version }}
       shell: bash
     - run: node --version
       shell: bash
