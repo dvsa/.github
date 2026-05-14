@@ -13,7 +13,7 @@ jobs:
       actions: read 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Checkov Scan
         uses: bridgecrewio/checkov-action@v12
         with:
@@ -28,7 +28,7 @@ jobs:
       run:
         working-directory: ./
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         name: Run tf format
       - run: terraform fmt -check -no-color -recursive
       - run:  |
@@ -42,7 +42,7 @@ jobs:
       run:
         working-directory: ./
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/cache@v4
         name: Cache plugin dir
         with:
