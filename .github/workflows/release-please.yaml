@@ -31,7 +31,7 @@ jobs:
       # Tag major and minor versions when a release is created
       - name: Checkout code
         if: ${{ steps.release.outputs.release_created }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Tag major and minor versions
         if: ${{ steps.release.outputs.release_created }}

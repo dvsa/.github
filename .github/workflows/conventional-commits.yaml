@@ -22,7 +22,7 @@ jobs:
     env:
       INPUT: ${{ inputs.title || github.event.pull_request.title }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: dvsa/.github
           ref: ${{ github.workflow_sha }}

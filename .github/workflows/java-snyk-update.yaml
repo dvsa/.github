@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project Branch from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install Java Corretto ${{inputs.java_version}}
         uses: actions/setup-java@v4
