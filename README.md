@@ -715,7 +715,6 @@ Inputs:
 * [OPTIONAL] `fail-fast` - boolean to control whether all steps in the matrix should be run, even if one of them fails
 * [OPTIONAL] `phpunit-config-file` - the phpunit configuration file to use with `vendor/bin/phpunit`, default is empty/not defined thus resorting to default behaviour when a configuration file (`-c` or `--configuration`) is not specified. 
 
-
 ## The `check-pr-title.yaml` starter workflow
 
 This workflow will check the title of a pull request and ensure it follows the conventional commit specification.
