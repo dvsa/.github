@@ -1,0 +1,35 @@
+name: commitlint
+
+description: Validate input against the Conventional Commits specification.
+
+inputs:
+  input:
+    description: Input to validate
+    required: true
+  node-version:
+    description: "Version Spec of the version to use. Examples: 12.x, 10.15.1, >=10.15.0."
+    required: false
+    default: "latest"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: npm
+        cache-dependency-path: .github/actions/commitlint/package-lock.json
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci --prefix "$GITHUB_ACTION_PATH"
+
+    - name: Validate input
+      shell: bash
+      env:
+        INPUT: ${{ inputs.input }}
+      run: |
+        echo "$INPUT" | npx --no-install --prefix "$GITHUB_ACTION_PATH" commitlint \
+          --config "$GITHUB_ACTION_PATH/commitlint.config.cjs"
+

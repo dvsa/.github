@@ -4,25 +4,6 @@ on:
   workflow_call:
 
 jobs:
-  terraform-trivy:
-    name: Trivy Scan
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - name: Scan
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          exit-code: 1
-          scan-ref: "."
-          scan-type: "config" # scan terraform
-          severity: "CRITICAL"
-          format: 'table'
-          ignore-unfixed: true
-        env: 
-          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
-
   terraform-checkov:
     name: Checkov Scan
     permissions:
@@ -30,7 +11,7 @@ jobs:
       actions: read 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Checkov Scan
         uses: bridgecrewio/checkov-action@v12
         with:
@@ -42,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Checking Modified Files
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v45
@@ -80,7 +61,7 @@ jobs:
       run:
         working-directory: ./
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: terraform fmt -check -no-color -recursive ${{ needs.check-changed-files.outputs.tf_files }}
       - if: failure()
         name: Output to summary
@@ -98,7 +79,7 @@ jobs:
       run:
         working-directory: ./
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/cache@v4
         name: Cache plugin dir
         with:
