@@ -16,17 +16,8 @@ jobs:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          # Use 'simple' strategy for shared actions repository
-          release-type: simple
-
-          # Optional: customize package name
-          package-name: dvsa-github-actions
-
-          # The manifest file will track version
-          manifest-file: .release-please-manifest.json
-
-          # Configuration file
           config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
 
       # Tag major and minor versions when a release is created
       - name: Checkout code
