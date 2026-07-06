@@ -4,11 +4,18 @@ import { Results } from './types';
 
 
 export const parse = async (xml:string): Promise<Results> => {
-  const doc = new DOMParser().parseFromString(xml, 'text/xml')
-  const tests = doc.documentElement.getAttribute('tests')
-  const failures = doc.documentElement.getAttribute('failures')
-  const errors = doc.documentElement.getAttribute('errors')
-  const skipped = doc.documentElement.getAttribute('skipped')
+  let doc
+  try {
+    doc = new DOMParser().parseFromString(xml, 'text/xml')
+  } catch {
+    throw new Error('Invalid XML')
+  }
+  const root = doc.documentElement
+  if (!root) throw new Error('Invalid XML format')
+  const tests = root.getAttribute('tests')
+  const failures = root.getAttribute('failures')
+  const errors = root.getAttribute('errors')
+  const skipped = root.getAttribute('skipped')
   if (!tests || !failures || !errors || !skipped) throw new Error('Invalid XML format')
   return {
     tests: tests ? parseInt(tests) : 0,
