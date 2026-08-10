@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.3.0](https://github.com/dvsa/.github/compare/v5.2.0...v5.3.0) (2026-08-10)
+
+
+### Features
+
+* update references to latest major ([#101](https://github.com/dvsa/.github/issues/101)) ([f6d4d75](https://github.com/dvsa/.github/commit/f6d4d754f1017c80a7df7f18b6687edde534b16e))
+
+
+### Bug Fixes
+
+* Release Please configuration ([#99](https://github.com/dvsa/.github/issues/99)) ([12960c8](https://github.com/dvsa/.github/commit/12960c8c987034e65121510b845f81ffa525f85a))
+
 ## [5.2.0](https://github.com/dvsa/.github/compare/v5.1.0...v5.2.0) (2026-05-14)
 
 
