@@ -15,6 +15,6 @@ permissions:
 
 jobs:
   check:
-    uses: dvsa/.github/.github/workflows/conventional-commits.yaml@v5
+    uses: dvsa/.github/.github/workflows/conventional-commits.yaml@v6
     with:
       title: ${{ github.event.pull_request.title }}

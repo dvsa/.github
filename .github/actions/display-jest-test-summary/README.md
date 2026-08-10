@@ -20,7 +20,7 @@ Table of jest test results displayed on Github summary
 ####  Usage
 ```yaml
 - name: Display Jest Test Summary
-  uses: dvsa/.github/.github/actions/display-jest-test-summary@v5
+  uses: dvsa/.github/.github/actions/display-jest-test-summary@v6
   with:
     test_report_path: 'test-report.html'
 ```

@@ -14,7 +14,7 @@ jobs:
   check-pr-title:
     runs-on: ubuntu-latest
     steps:
-      - uses: dvsa/.github/.github/actions/commitlint@v5
+      - uses: dvsa/.github/.github/actions/commitlint@v6
         with:
           input: ${{ github.event.pull_request.title }}
 ```
