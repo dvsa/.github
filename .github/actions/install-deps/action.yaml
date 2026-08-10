@@ -6,7 +6,7 @@ inputs:
     description: Node version used to install dependencies
     type: string
     required: false
-    default: '18.x'
+    default: 'latest'
   npm-version:
     description: NPM version to be installed and used
     type: string
