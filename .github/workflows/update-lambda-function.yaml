@@ -1,4 +1,5 @@
 name: Update lambda code action
+
 on:
   workflow_call:
     inputs:
@@ -20,6 +21,7 @@ on:
         required: true
       AWS_ROLE_TO_ASSUME_ARN:
         required: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
