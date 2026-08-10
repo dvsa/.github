@@ -12,4 +12,4 @@ jobs:
   tests:
     uses: dvsa/.github/.github/workflows/php-tests.yml@v5
     with:
-      php-versions: "[\"8.2\",\"8.3\",\"8.4\"]"
+      php-versions: "[\"8.2\",\"8.3\",\"8.4\",\"8.5\"]"
