@@ -16,7 +16,7 @@ N/A
 ####  Usage     
 ```yaml
 - name: Java Setup
-  uses: dvsa/.github/.github/actions/java-config@v5
+  uses: dvsa/.github/.github/actions/java-config@v6
   with:
     java-version: 17
 ```

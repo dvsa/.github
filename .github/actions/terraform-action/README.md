@@ -25,7 +25,7 @@ N/A
 ####  Usage
 ```yaml
 - name: Terraform - db
-  uses: dvsa/.github/.github/actions/terraform-action@v5
+  uses: dvsa/.github/.github/actions/terraform-action@v6
   working-directory: .
   with:
     action: plan
@@ -37,7 +37,7 @@ N/A
     project: mot-project
 
 - name: Terraform - app
-  uses: dvsa/.github/.github/actions/terraform-action@v5
+  uses: dvsa/.github/.github/actions/terraform-action@v6
   working-directory: ./infrastructure
   with:
     action: plan
