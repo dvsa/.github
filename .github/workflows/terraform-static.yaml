@@ -8,7 +8,7 @@ jobs:
     name: Checkov Scan
     permissions:
       contents: read
-      actions: read 
+      actions: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -19,7 +19,7 @@ jobs:
           quiet: true # display only failed checks
           download_external_modules: true # downloads and checks external modules
 
-  check-changed-files: 
+  check-changed-files:
     runs-on: ubuntu-latest
     name: Checking Modified Files
     steps:
@@ -34,7 +34,7 @@ jobs:
           # Loop though files, get terraform files and reformat for tflint
         run: |
           echo "### Modified files:" >> $GITHUB_STEP_SUMMARY
-          export tf_files="" 
+          export tf_files=""
           export tf_files_filtered=""
           for file in ${ALL_CHANGED_FILES}; do
             echo "$file" >> $GITHUB_STEP_SUMMARY
@@ -46,7 +46,7 @@ jobs:
           echo "tf_files=$tf_files" >> $GITHUB_OUTPUT
           echo "tf_files_filtered=$tf_files_filtered" >> $GITHUB_OUTPUT
 
-          
+
     outputs:
       tf_files: ${{ steps.list-changed-files.outputs.tf_files }}
       tf_files_filtered: ${{ steps.list-changed-files.outputs.tf_files_filtered }}
@@ -80,7 +80,7 @@ jobs:
         working-directory: ./
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         name: Cache plugin dir
         with:
           path: ~/.tflint.d/plugins

@@ -2,7 +2,7 @@ name: terraform-static-full
 
 on:
   workflow_call:
-  
+
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,7 @@ jobs:
     name: Checkov Scan
     permissions:
       contents: read
-      actions: read 
+      actions: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -43,7 +43,7 @@ jobs:
         working-directory: ./
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         name: Cache plugin dir
         with:
           path: ~/.tflint.d/plugins
