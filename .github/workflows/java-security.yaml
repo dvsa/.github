@@ -15,11 +15,11 @@ on:
       SNYK_TOKEN:
         required: true
       USER_NAME:
-        required: true
+        required: false
       ACCESS_TOKEN:
-        required: true
+        required: false
       PACKAGE_REPO:
-        required: true
+        required: false
 
 jobs:
   snyk-cli:
@@ -35,6 +35,7 @@ jobs:
           java-version: '${{inputs.java_version}}'
 
       - name: Generate Maven settings.xml file to access GitHub Packages
+        if: ${{ secrets.USER_NAME && secrets.ACCESS_TOKEN && secrets.PACKAGE_REPO }}
         uses: whelk-io/maven-settings-xml-action@v22
         with:
           repositories: >
