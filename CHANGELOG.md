@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.0](https://github.com/dvsa/.github/compare/v6.0.0...v6.1.0) (2026-08-18)
+
+
+### Features
+
+* make maven step optional ([#118](https://github.com/dvsa/.github/issues/118)) ([c0033c8](https://github.com/dvsa/.github/commit/c0033c818828a377779a55e6c0bb77584125ecf7))
+
 ## [6.0.0](https://github.com/dvsa/.github/compare/v5.3.0...v6.0.0) (2026-08-12)
 
 
