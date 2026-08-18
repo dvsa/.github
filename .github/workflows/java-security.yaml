@@ -26,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project Branch from GitHub
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Java Corretto ${{inputs.java_version}}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'corretto'
           java-version: '${{inputs.java_version}}'
@@ -68,7 +68,7 @@ jobs:
             ]
 
       - name: Generate settings.yaml File Inside Repository
-        uses: 1arp/create-a-file-action@0.4.5
+        uses: 1arp/create-a-file-action@0.4.6
         with:
           path: 'config'
           file: 'settings.yaml'

@@ -1,4 +1,4 @@
-name: PHP Unit Tests 
+name: PHP Unit Tests
 
 on:
   push:
@@ -7,9 +7,9 @@ on:
     branches: [ $default-branch ]
   schedule:
     - cron: '0 0 * * 1'
- 
+
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-library-tests.yml@v4.1.1
-    with: 
-     php-versions: "[\"7.4\",\"8.0\"]"
+    uses: dvsa/.github/.github/workflows/php-library-tests.yml@v6
+    with:
+      php-versions: "[\"8.2\",\"8.3\",\"8.4\",\"8.5\"]"

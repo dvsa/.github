@@ -13,25 +13,16 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         id: release
         with:
-          # Use 'simple' strategy for shared actions repository
-          release-type: simple
-
-          # Optional: customize package name
-          package-name: dvsa-github-actions
-
-          # The manifest file will track version
-          manifest-file: .release-please-manifest.json
-
-          # Configuration file
           config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
 
       # Tag major and minor versions when a release is created
       - name: Checkout code
         if: ${{ steps.release.outputs.release_created }}
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Tag major and minor versions
         if: ${{ steps.release.outputs.release_created }}

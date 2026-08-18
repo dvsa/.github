@@ -21,13 +21,13 @@ N/A
 ####  Usage     
 ```yaml
 - name: TF workspace
-  uses: dvsa/.github/.github/actions/terraform-workspace@v4.1.1
+  uses: dvsa/.github/.github/actions/terraform-workspace@v6
   with:
     terraform_workspace_name: ${{ inputs.terraform_workspace_name }}
     terraform_version: 1.3.7
 
 - name: TF workspace
-  uses: dvsa/.github/.github/actions/terraform-workspace@v4.1.1
+  uses: dvsa/.github/.github/actions/terraform-workspace@v6
   with:
     terraform_workspace_name: test01         
 ```

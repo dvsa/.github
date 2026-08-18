@@ -7,8 +7,7 @@ on:
     branches: [ $default-branch ]
   schedule:
     - cron: '0 0 * * 1'
- 
+
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-library-static.yml@v4.1.1
-    
+    uses: dvsa/.github/.github/workflows/php-library-static.yml@v6
