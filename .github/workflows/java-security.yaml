@@ -6,7 +6,7 @@ on:
       java_version:
         required: false
         type: string
-        default: latest
+        default: '11'
       snyk_threshold:
         required: false
         type: string
