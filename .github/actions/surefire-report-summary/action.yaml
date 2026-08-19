@@ -18,5 +18,5 @@ inputs:
     description: 'if set, the action will fail if the percentage of passing tests is below this threshold (e.g. 95)'
     default: '0'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
