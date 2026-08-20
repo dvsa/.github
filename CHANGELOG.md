@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.1](https://github.com/dvsa/.github/compare/v6.1.0...v6.1.1) (2026-08-19)
+
+
+### Miscellaneous
+
+* bump surefire-report-summary action and test workflow to Node 24 ([#98](https://github.com/dvsa/.github/issues/98)) ([a226fa5](https://github.com/dvsa/.github/commit/a226fa52aa83be9007b7c068cd22bf3b81afc929))
+
 ## [6.1.0](https://github.com/dvsa/.github/compare/v6.0.0...v6.1.0) (2026-08-18)
 
 
