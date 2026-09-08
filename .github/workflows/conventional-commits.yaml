@@ -23,6 +23,6 @@ jobs:
       INPUT: ${{ inputs.title || github.event.pull_request.title }}
     steps:
       - name: Validate input
-        uses: dvsa/.github/.github/actions/commitlint@fix/conventional-commits-workflow
+        uses: dvsa/.github/.github/actions/commitlint@v6
         with:
           input: ${{ env.INPUT }}
