@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.2](https://github.com/dvsa/.github/compare/v6.1.1...v6.1.2) (2026-09-08)
+
+
+### Bug Fixes
+
+* conventional commits workflow ([#122](https://github.com/dvsa/.github/issues/122)) ([f980d21](https://github.com/dvsa/.github/commit/f980d21d822a8db9a946259fb7cdc5b0df5293a8))
+
 ## [6.1.1](https://github.com/dvsa/.github/compare/v6.1.0...v6.1.1) (2026-08-19)
 
 
