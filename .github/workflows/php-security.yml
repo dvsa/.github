@@ -50,9 +50,11 @@ jobs:
       with:
         args: ${{ inputs.working-directory}}/ --sarif-file-output=snyk.sarif $SEVERITY_THRESHOLD
 
-    - name: isPrivate
-      uses: octokit/graphql-action@v2.x
-      id: isPrivate
+    - name: Check if the repository is private
+      uses: octokit/graphql-action@v3.x
+      id: is-private
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
           query: |
             query release($owner:String!,$repo:String!) {
@@ -60,13 +62,12 @@ jobs:
                 isPrivate
               }
             }
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
-          graphqlEndpoint: ${{ github.graphql_url }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          variables: |
+            owner: ${{ github.repository_owner }}
+            repo: ${{ github.event.repository.name }}
 
     - name: Upload result to GitHub Code Scanning
-      if: ${{ fromJSON(steps.isPrivate.outputs.data).repository.isPrivate  == false }}
+      if: ${{ fromJSON(steps.is-private.outputs.data).repository.isPrivate  == false }}
       uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: snyk.sarif
