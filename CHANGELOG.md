@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.2.0](https://github.com/dvsa/.github/compare/v6.1.2...v6.2.0) (2026-09-17)
+
+
+### Features
+
+* update cache action to latest ([#125](https://github.com/dvsa/.github/issues/125)) ([75be4c6](https://github.com/dvsa/.github/commit/75be4c649de7603ee0d0e3ebada9a8d4b61dec31))
+* update graphql-action to latest ([#124](https://github.com/dvsa/.github/issues/124)) ([0405a84](https://github.com/dvsa/.github/commit/0405a84f1ee58df6f7683952af4b204274f607ee))
+
 ## [6.1.2](https://github.com/dvsa/.github/compare/v6.1.1...v6.1.2) (2026-09-08)
 
 
