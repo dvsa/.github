@@ -1,0 +1,71 @@
+name: Test Install Dependencies
+
+on:
+  push:
+    paths:
+      - '.github/actions/install-deps/**'
+      - '.github/workflows/test-install-deps.yml'
+  pull_request:
+    paths:
+      - '.github/actions/install-deps/**'
+      - '.github/workflows/test-install-deps.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  # Runs the action against a minimal project for each way of choosing the Node version, and checks the Node it set up
+  node-version:
+    name: ${{ matrix.case }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case: node-version input wins over .nvmrc
+            input: '24'
+            nvmrc: '26'
+            expect: '^v24\.'
+          - case: .nvmrc when there is no input
+            input: ''
+            nvmrc: '26'
+            expect: '^v26\.'
+          - case: .nvmrc with a v prefix and x range
+            input: ''
+            nvmrc: 'v24.x'
+            expect: '^v24\.'
+          - case: .nvmrc with a wildcard range
+            input: ''
+            nvmrc: '26.*'
+            expect: '^v26\.'
+          - case: latest without an input or .nvmrc
+            input: ''
+            nvmrc: ''
+            expect: latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Write a minimal project to install
+        env:
+          NVMRC: ${{ matrix.nvmrc }}
+        run: |
+          printf '{"name":"fixture","version":"1.0.0","private":true}\n' > package.json
+          printf '{"name":"fixture","version":"1.0.0","lockfileVersion":3,"requires":true,"packages":{"":{"name":"fixture","version":"1.0.0"}}}\n' > package-lock.json
+          if [ -n "$NVMRC" ]; then
+            echo "$NVMRC" > .nvmrc
+          fi
+      - uses: ./.github/actions/install-deps
+        with:
+          node-version: ${{ matrix.input }}
+      - name: Check the Node version
+        env:
+          EXPECT: ${{ matrix.expect }}
+        run: |
+          actual=$(node --version)
+          if [ "$EXPECT" = latest ]; then
+            EXPECT="^$(curl -fsSL https://nodejs.org/dist/index.json | jq -r '.[0].version')\$"
+          fi
+          echo "Node $actual, expected to match $EXPECT"
+          [[ "$actual" =~ $EXPECT ]]
