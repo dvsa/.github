@@ -163,13 +163,13 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
 1. Lint
     - optional argument:
         - `max-warnings`: Sets how many warnings are allowed. Only applies when not using Biome. No default value.
-        - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `20.x`.
+        - `node-version`: Defines the version of NodeJS used for actions/install-deps. Defaults to the version in the project's `.nvmrc`, or `latest` if there isn't one. Pass `latest` to use the newest Node even when there is an `.nvmrc`.
         - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
         - `biome`: Boolean flag to indicate if Biome linter is being used. Default is `false`.
 1. Test
     - optional argument:
         - `test-command`: Sets the command used during the Test step. Default is `npm run test`.
-        - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
+        - `node-version`: Defines the version of NodeJS used for actions/install-deps. Defaults to the version in the project's `.nvmrc`, or `latest` if there isn't one. Pass `latest` to use the newest Node even when there is an `.nvmrc`.
         - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
 1. Security
     - required secret `SNYK_TOKEN` requires the organization or repo Snyk token secret
@@ -184,7 +184,7 @@ Publishing to NPM requires permissions and the relevant token to be stored in th
         - `build-folder-path`: If only a subset of directories want to be saved provide the path to those files. For example `dist/artifact`. Defaults to `dist`.
         - `retention-days`: How many days to save the archive for if it's stored. (upload-artifact: `true`). Default is `7` days.
         - `build-command`: The command to run to build the project. Defaults to `npm run package`.
-        - `node-version`: Defines the version of NodeJS is used for actions/install-deps. Default is `18.x`.
+        - `node-version`: Defines the version of NodeJS used for actions/install-deps. Defaults to the version in the project's `.nvmrc`, or `latest` if there isn't one. Pass `latest` to use the newest Node even when there is an `.nvmrc`.
         - `npm-version`: Defines the version of NPM that is used for actions/install-deps. Default is `latest`.
 1. Upload to s3
 
@@ -224,7 +224,7 @@ To read about using Starter Workflows, see [here](https://docs.github.com/en/act
 
 1. Publish
     - optional arguments:
-        - `node-version`: The version of Node the package is to be published with. This is defaulted to the latest version of NodeJS 18.
+        - `node-version`: The version of Node the package is to be published with. Defaults to the version in the project's `.nvmrc`, or `latest` if there isn't one. Pass `latest` to use the newest Node even when there is an `.nvmrc`.
         - `download-artifact`: Optional boolean value, to be used when building package separately prior to publishing.
         - `build-folder`: The folder to download the built package from.
         - `build-folder-path`: The path of the folder to download the built package to.

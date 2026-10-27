@@ -6,7 +6,7 @@ on:
       node-version:
         type: string
         required: false
-        default: 'latest'
+        default: ''
       download-artifact:
         required: false
         type: boolean
@@ -31,10 +31,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Build on Node.js ${{ inputs.node-version }}
+      # As actions/install-deps: an explicit node-version wins; otherwise the project's .nvmrc; otherwise the latest Node
+      - name: Choose Node version
+        id: node
+        env:
+          NODE_VERSION: ${{ inputs.node-version }}
+        run: |
+          if [ -n "$NODE_VERSION" ]; then
+            echo "Using the node-version input: $NODE_VERSION"
+            echo "version=$NODE_VERSION" >> "$GITHUB_OUTPUT"
+          elif [ -f .nvmrc ]; then
+            echo "Using .nvmrc: $(head -n 1 .nvmrc)"
+            echo "file=.nvmrc" >> "$GITHUB_OUTPUT"
+          else
+            echo "No node-version input or .nvmrc, so using the latest Node"
+            echo "version=latest" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version: ${{ steps.node.outputs.version }}
+          node-version-file: ${{ steps.node.outputs.file }}
           registry-url: 'https://registry.npmjs.org'
       - name: Download build artifact
         if: inputs.download-artifact

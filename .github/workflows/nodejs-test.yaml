@@ -10,7 +10,7 @@ on:
       node-version:
         required: false
         type: string
-        default: 'latest'
+        default: ''
       npm-version:
         required: false
         type: string
@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Install dependencies
-        uses: dvsa/.github/.github/actions/install-deps@v6
+        uses: dvsa/.github/.github/actions/install-deps@v7
         with:
           node-version: ${{ inputs.node-version }}
           npm-version: ${{ inputs.npm-version }}

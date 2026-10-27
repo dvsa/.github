@@ -8,7 +8,6 @@ jobs:
   publish:
     uses: dvsa/.github/.github/workflows/nodejs-publish.yaml@v6
     with:
-      node-version: 'latest'
       download-artifact: true
       build-folder: package
       build-folder-path: dist
