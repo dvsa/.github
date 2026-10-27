@@ -18,19 +18,19 @@ When referencing workflows from this repository, you can choose different versio
 
 ```yaml
 # Recommended: Pin to major version (automatically receives patch and minor updates)
-uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v6
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v7
 
 # Conservative: Pin to minor version (automatically receives patch updates only)
-uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v6.0
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v7.0
 
 # Most conservative: Pin to exact version (no automatic updates)
-uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v6.0.0
+uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v7.0.0
 
 # Not recommended: Use main branch (may contain breaking changes)
 uses: dvsa/.github/.github/workflows/nodejs-test.yaml@main
 ```
 
-**Recommendation:** For production workflows, pin to the major version (`@v6`) to automatically receive bug fixes and new features while avoiding breaking changes. For maximum stability during critical periods, use an exact version and update manually.
+**Recommendation:** For production workflows, pin to the major version (`@v7`) to automatically receive bug fixes and new features while avoiding breaking changes. For maximum stability during critical periods, use an exact version and update manually.
 
 ### Version Bumping
 
@@ -260,13 +260,13 @@ The build and upload-to-s3 steps would look like the following:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v6
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v7
     with:
       upload-artifact: true
       build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v6
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v7
     with:
       environment: nonprod
       short-commit: ${{  needs.build-names.outputs.short_sha }}
@@ -301,7 +301,7 @@ The build and upload-to-s3 steps would have the following inputs:
 
 ```YAML
   build:
-    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v6
+    uses: dvsa/.github/.github/workflows/nodejs-build.yaml@v7
     with:
       upload-artifact: true
       build-folder: build
@@ -309,7 +309,7 @@ The build and upload-to-s3 steps would have the following inputs:
       build-command: npm run build:prod
 
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v6
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v7
     with:
       environment: dev
       short-commit: ${{ needs.build-names.outputs.short_sha }}
@@ -345,7 +345,7 @@ The upload-to-s3 action with a matrix strategy defined:
 
 ```YAML
   upload-to-s3:
-    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v6
+    uses: dvsa/.github/.github/workflows/upload-to-s3.yaml@v7
     strategy:
       matrix:
         buildName: [
@@ -411,7 +411,7 @@ IDE integration matches those on the Snyk website.
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v6
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v7
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -538,7 +538,7 @@ Typically, this would run on push so the action result can be used to validate a
    jobs:
      security:
        if: github.event.pull_request.merged == true
-       uses: dvsa/.github/.github/workflows/java-security.yaml@v6
+       uses: dvsa/.github/.github/workflows/java-security.yaml@v7
        with:
          java_version: 11
          snyk_project: smc-w53
@@ -585,7 +585,7 @@ on:
 
 jobs:
   unit-test:
-    uses: dvsa/.github/.github/workflows/java-test.yaml@v6
+    uses: dvsa/.github/.github/workflows/java-test.yaml@v7
     with:
       config_file_contents: |
         environment: development
@@ -615,18 +615,18 @@ on:
  
 jobs:
   security:
-    uses: dvsa/.github/.github/workflows/php-security.yml@v6
+    uses: dvsa/.github/.github/workflows/php-security.yml@v7
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-security.yml@v6
+   uses: dvsa/.github/.github/workflows/php-security.yml@v7
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-security.yml@v6
+ uses: dvsa/.github/.github/workflows/php-library-security.yml@v7
 
 ```
 
@@ -654,16 +654,16 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-static.yml@v6
+    uses: dvsa/.github/.github/workflows/php-static.yml@v7
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-static.yml@v6
+   uses: dvsa/.github/.github/workflows/php-static.yml@v7
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-static.yml@v6
+ uses: dvsa/.github/.github/workflows/php-library-static.yml@v7
 
 ```
 
@@ -692,18 +692,18 @@ on:
  
 jobs:
   static:
-    uses: dvsa/.github/.github/workflows/php-tests.yml@v6
+    uses: dvsa/.github/.github/workflows/php-tests.yml@v7
     with: 
      php_versions: "[\"7.4\",\"8.0\"]"
 ```
 if using library version amend 
 ```YAML
-   uses: dvsa/.github/.github/workflows/php-tests.yml@v6
+   uses: dvsa/.github/.github/workflows/php-tests.yml@v7
 ```
 to 
 
 ```YAML
- uses: dvsa/.github/.github/workflows/php-library-tests.yml@v6
+ uses: dvsa/.github/.github/workflows/php-library-tests.yml@v7
 
 ```
 
