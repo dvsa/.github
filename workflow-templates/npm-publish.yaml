@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish:
-    uses: dvsa/.github/.github/workflows/nodejs-publish.yaml@v6
+    uses: dvsa/.github/.github/workflows/nodejs-publish.yaml@v7
     with:
       download-artifact: true
       build-folder: package

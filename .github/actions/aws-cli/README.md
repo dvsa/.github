@@ -16,7 +16,7 @@ N/A
 ####  Usage     
 ```yaml
 - name: List S3 Buckets
-  uses: dvsa/.github/.github/actions/aws-cli@v6
+  uses: dvsa/.github/.github/actions/aws-cli@v7
   with:
     command: "s3 ls"
 ```
