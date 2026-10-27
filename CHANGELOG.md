@@ -1,5 +1,27 @@
 # Changelog
 
+## [7.0.0](https://github.com/dvsa/.github/compare/v6.2.0...v7.0.0) (2026-10-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* use the project's .nvmrc when no node-version is given ([#127](https://github.com/dvsa/.github/issues/127))
+
+### Features
+
+* use the project's .nvmrc when no node-version is given ([#127](https://github.com/dvsa/.github/issues/127)) ([09cae38](https://github.com/dvsa/.github/commit/09cae381562e364de9b3c7a5f39f539aa6915423))
+
+
+### Miscellaneous
+
+* add .editorconfig ([#111](https://github.com/dvsa/.github/issues/111)) ([eb60cbf](https://github.com/dvsa/.github/commit/eb60cbfb68d1f8ffdb57766004c9fc4d01044c46))
+* prepare v7 for release ([#129](https://github.com/dvsa/.github/issues/129)) ([452757a](https://github.com/dvsa/.github/commit/452757a8817db11fd79c1edfa7f600ab8e2614c2))
+
+
+### Build System
+
+* **deps:** bump actions/setup-java from 5 to 6 ([#121](https://github.com/dvsa/.github/issues/121)) ([41d9225](https://github.com/dvsa/.github/commit/41d9225d583e8837d52cc20ae12745352edfbd52))
+
 ## [6.2.0](https://github.com/dvsa/.github/compare/v6.1.2...v6.2.0) (2026-09-17)
 
 
