@@ -367,6 +367,39 @@ The upload-to-s3 action with a matrix strategy defined:
 
 In the s3 bucket, the objects have been uploaded to the specified location: `backend/lambdaA/feature-new-frontend.zip` and `backend/lambdaB/feature-new-frontend.zip`.
 
+## The `update-ssm-parameter.yaml` workflow has the following steps:
+
+This workflow overwrites a single AWS Systems Manager Parameter Store value, typically from a GitHub secret or variable.
+
+1. Arguments
+   - `environment`: The GitHub environment to run in.
+   - `parameter-name`: Full name of the parameter.
+   - `parameter-type`: `String`. Default is `String`.
+   - secrets:
+      - `AWS_ACCOUNT`: the account number for the aws environment the archive is to be uploaded to.
+      - `AWS_REGION`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place.
+      - `AWS_ROLE_TO_ASSUME_ARN`: The ARN for the role assume to run `ssm:PutParameter`.
+      - `PARAMETER_VALUE`: The value to store.
+
+2. Steps
+   - Configure aws credentials
+   - Update SSM parameter with `aws ssm put-parameter --overwrite`.
+
+```YAML
+  update-ssm-parameter:
+    uses: dvsa/.github/.github/workflows/update-ssm-parameter.yaml@v7
+    with:
+      environment: nonprod
+      parameter-name: /project/nonprod/client-secret
+    permissions:
+      id-token: write
+    secrets:
+      AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ROLE_TO_ASSUME_ARN: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
+      PARAMETER_VALUE: ${{ secrets.CLIENT_SECRET }}
+```
+
 ## The Java `java-snyk-update.yaml` workflow has the following steps:
 
 This workflow can be used to update a Java project within Snyk, typically invoked after a merge has been approved.
