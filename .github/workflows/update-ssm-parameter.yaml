@@ -1,0 +1,47 @@
+name: Update SSM parameter action
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      parameter-name:
+        description: Full name of the Parameter Store parameter
+        required: true
+        type: string
+      parameter-type:
+        required: false
+        type: string
+        default: String
+    secrets:
+      AWS_ACCOUNT:
+        required: true
+      AWS_REGION:
+        required: true
+      AWS_ROLE_TO_ASSUME_ARN:
+        required: true
+      PARAMETER_VALUE:
+        required: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      id-token: write
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
+          role-session-name: GithubActionsSession
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Update SSM parameter
+        env:
+          PARAMETER_NAME: ${{ inputs.parameter-name }}
+          PARAMETER_TYPE: ${{ inputs.parameter-type }}
+          PARAMETER_VALUE: ${{ secrets.PARAMETER_VALUE }}
+        run: |
+          aws ssm put-parameter --name "$PARAMETER_NAME" --value "$PARAMETER_VALUE" --type "$PARAMETER_TYPE" --overwrite 
+          echo "Updated $PARAMETER_NAME"
