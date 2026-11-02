@@ -19,13 +19,18 @@ on:
         required: false
         type: string
         default: ''
+      role-name:
+        description: IAM role name to assume in the environment's account (AWS_ACCOUNT_ID variable). Used when the AWS_ROLE_TO_ASSUME_ARN secret is not set
+        required: false
+        type: string
+        default: ''
     secrets:
       AWS_REGION:
-        required: true
+        required: false
       AWS_ROLE_TO_ASSUME_ARN:
-        required: true
+        required: false
       PARAMETER_VALUE:
-        required: true
+        required: false
 
 jobs:
   update:
@@ -37,9 +42,9 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, inputs.role-name) }}
           role-session-name: GithubActionsSession
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION || vars.AWS_REGION }}
       - name: Update SSM parameter
         env:
           PARAMETER_NAME: ${{ inputs.parameter-name }}
