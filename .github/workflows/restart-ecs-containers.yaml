@@ -7,24 +7,24 @@ permissions:
   contents: read
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to restart'
-        required: true
-        type: choice
-        options:
-          - dev01
-          - int
-          - nft
-          - accept
-          - preprod
-        default: nft
   workflow_call:
     inputs:
       environment:
         required: true
         type: string
+      cluster:
+        description: 'ECS cluster to restart'
+        required: true
+        type: string
+      service:
+        description: 'ECS service to restart'
+        required: true
+        type: string  
+    secrets:
+      AWS_REGION:
+        required: true
+      AWS_ROLE_TO_ASSUME_ARN:
+        required: true
 
 jobs:
   restart-ecs:
@@ -34,15 +34,15 @@ jobs:
       name: ${{ inputs.environment }}
       deployment: false
     env:
-      ECS_CLUSTER: cpms-${{ inputs.environment }}-base-api
-      ECS_SERVICE: cpms-${{ inputs.environment }}-base-api-service
+      ECS_CLUSTER: ${{ inputs.cluster }}
+      ECS_SERVICE: ${{ inputs.service }}
     steps:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ vars.AWS_BATCH_ROLE_NAME }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
           role-session-name: GithubActionsSession
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Force new ECS deployment
         run: |
