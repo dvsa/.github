@@ -376,11 +376,9 @@ This workflow overwrites a single AWS Systems Manager Parameter Store value, typ
    - `parameter-name`: Full name of the parameter.
    - `parameter-type`: `String`. Default is `String`.
    - secrets:
-      - `AWS_ACCOUNT`: the account number for the aws environment the archive is to be uploaded to.
       - `AWS_REGION`: the account region for the aws environment the archive is to be upgraded to. It's easier to maintain if this is only set in one place.
       - `AWS_ROLE_TO_ASSUME_ARN`: The ARN for the role assume to run `ssm:PutParameter`.
-      - `PARAMETER_VALUE`: The value to store. Optional when `parameter-value-variable` is set.
-      - `parameter-value-variable`: Optional name of a variable in the GitHub environment to use as the value instead of the secret.
+      - `PARAMETER_VALUE`: The value to store.
 
 2. Steps
    - Configure aws credentials
@@ -395,7 +393,6 @@ This workflow overwrites a single AWS Systems Manager Parameter Store value, typ
     permissions:
       id-token: write
     secrets:
-      AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_ROLE_TO_ASSUME_ARN: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
       PARAMETER_VALUE: ${{ secrets.CLIENT_SECRET }}

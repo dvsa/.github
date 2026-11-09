@@ -14,11 +14,6 @@ on:
         required: false
         type: string
         default: String
-      role-name:
-        description: IAM role name to assume in the environment's account (AWS_ACCOUNT_ID variable). Used when the AWS_ROLE_TO_ASSUME_ARN secret is not set
-        required: false
-        type: string
-        default: ''
     secrets:
       AWS_REGION:
         required: true
