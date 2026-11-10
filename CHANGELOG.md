@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.0](https://github.com/dvsa/.github/compare/v7.0.0...v7.1.0) (2026-11-10)
+
+
+### Features
+
+* add reusable workflows to update SSM parameter and restart ECS container ([#130](https://github.com/dvsa/.github/issues/130)) ([4dceea6](https://github.com/dvsa/.github/commit/4dceea66509d2d67333605ed24093fe66bfa0508))
+
 ## [7.0.0](https://github.com/dvsa/.github/compare/v6.2.0...v7.0.0) (2026-10-27)
 
 
