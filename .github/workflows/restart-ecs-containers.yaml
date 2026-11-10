@@ -1,0 +1,54 @@
+name: Restart ECS Containers
+
+run-name: Restart ECS Containers - ${{ inputs.environment }}
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      cluster:
+        description: 'ECS cluster to restart'
+        required: true
+        type: string
+      service:
+        description: 'ECS service to restart'
+        required: true
+        type: string  
+    secrets:
+      AWS_REGION:
+        required: true
+      AWS_ROLE_TO_ASSUME_ARN:
+        required: true
+
+jobs:
+  restart-ecs:
+    name: Restart ECS Containers - ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+      deployment: false
+    env:
+      ECS_CLUSTER: ${{ inputs.cluster }}
+      ECS_SERVICE: ${{ inputs.service }}
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
+          role-session-name: GithubActionsSession
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Force new ECS deployment
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --force-new-deployment
+          echo "Restarting $ECS_SERVICE"
+          aws ecs wait services-stable --cluster "$ECS_CLUSTER" --services "$ECS_SERVICE"
