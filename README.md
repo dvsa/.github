@@ -454,29 +454,17 @@ IDE integration matches those on the Snyk website.
 ```
 ## The Terraform `terraform-static.yaml` workflow
 
-### Background
+Checks changed `.tf` files with `terraform fmt` and TFLint, and scans the whole
+repository with Checkov. TFLint can still report directory-wide errors even when
+findings are filtered to changed files. Optionally validates affected directories,
+including directories with deleted `.tf` files if Terraform files remain.
 
-This workflow can be used to check against known configuration vulnerabilities, formatting and linting issues within the terraform code. It will also scan any containers (incl. dev containers) that exist within that repo.
-
-This is configured to run on PR to help with reviews of the terraform code quality, and it does not need any inputs. They Checkov scan and changed file scan run in parrallel.
-
-From a security scan perspective the Checkov scans will scan recursively any configuration files from the root of the repo. It may inadvertantly scan any other files that fall within the remit of the checkov scans as well.
-
-The repo will detect any changed files in the PR and anything with a .tf extension it will run terraform fmt -check as well as tflint. Through a quirk of tflint it will actually scan the entire directory even if --filter is used and output any global errors (e.g. invalid input errors). Any global errors will override any file based filters, these will need to be corrected before any other advisories can be seen.
-
-To preven this automatically running the on pull request configuration has been commented out. This will need uncommenting prior to use.
-
-### Steps
-
-  - Checkov Scan
-      - Checkout Project
-          - Checkout branch from GitHub.
-          - Run Checkov scan from `.` highlighting critical vulnerabilities
-
-    - Check modified files
-        - Check PR for for modified files and then check for any files with tf extention
-          - Run terraform fmt against modified files
-          - Run tflint recursively and filters on findings for modified files
+TFLint uses the root `.tflint.hcl` when present. Otherwise, the workflow creates a
+temporary configuration enabling the built-in `terraform` plugin's `recommended`
+preset. Both workflows install Terraform and TFLint, and cache TFLint plugins.
+Validation runs `terraform init -backend=false -input=false` and `terraform validate`
+in each directory; it may require network access, credentials for private modules,
+and compatible provider and Terraform versions.
 
 ### Secrets
 
@@ -484,29 +472,15 @@ None
 
 ### Inputs
 
-None
+- `terraform_version` (string, default `latest`): Terraform version.
+- `tflint_version` (string, default `latest`): TFLint version.
+- `run_validate` (boolean, default `false`): Validate affected Terraform directories.
 
 ## The Terraform `terraform-static-full.yaml` workflow
 
-### Background
-
-This workflow follows a similar function as the terraform-static.yaml workflow but does not only run on the changes files in the repo but runs globally against all configuration files.
-
-### Steps
-  - Checkov Scan
-      - Checkout Project
-          - Checkout branch from GitHub.
-  - Terraform fmt check
-      - Checkout Project
-          - Checkout branch from GitHub.
-      - Run Terraform fmt action
-          - Run terraform fmt recursively check from `.` highlighting formatting issues
-  - tflint check
-      - Checkout Project
-          - Checkout branch from GitHub.
-      - Run tflint action
-          - Run tflint recursively check from `.` highlighting lint issues issues
-
+Runs Checkov, Terraform formatting and TFLint across the whole repository. It uses
+the same TFLint fallback as the changed-files workflow. Optional validation runs
+in every directory containing `.tf` files, excluding `.terraform` directories.
 
 ### Secrets
 
@@ -514,17 +488,32 @@ None
 
 ### Inputs
 
-When called form the project repositories the owners will need to specify a schedule. This will need to be specified in the 'on' trigger as part of the workflow (example provided below for every Monday at 0600).
+- `terraform_version` (string, default `latest`): Terraform version.
+- `tflint_version` (string, default `latest`): TFLint version.
+- `run_validate` (boolean, default `false`): Validate every Terraform directory.
 
-```YAML
+These inputs are also available when dispatching the full workflow manually.
+The composite Terraform actions default to Terraform `1.9.8`; see their
+individual READMEs for action inputs.
 
+For a scheduled caller, configure the trigger in the calling workflow. For example,
+to run at 06:00 UTC every Monday:
+
+```yaml
 name: terraform-static-full
 
 on:
   schedule:
-    if: github.repository != 'dvsa/.github'
-    - cron: '* 6 * * mon'
+    - cron: '0 6 * * mon'
+  workflow_dispatch:
 
+permissions:
+  contents: read
+
+jobs:
+  terraform-static:
+    if: github.repository != 'dvsa/.github'
+    uses: dvsa/.github/.github/workflows/terraform-static-full.yaml@v7
 ```
 
 ## The Java `java-security.yaml` workflow has the following steps:

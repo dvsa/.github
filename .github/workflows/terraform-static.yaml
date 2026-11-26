@@ -2,89 +2,192 @@ name: terraform-static
 
 on:
   workflow_call:
+    inputs:
+      terraform_version:
+        description: Terraform version to install
+        type: string
+        default: latest
+      tflint_version:
+        description: TFLint version to install
+        type: string
+        default: latest
+      run_validate:
+        description: Validate affected Terraform directories
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-static-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   terraform-checkov:
     name: Checkov Scan
-    permissions:
-      contents: read
-      actions: read
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - name: Checkov Scan
         uses: bridgecrewio/checkov-action@v12
         with:
           output_format: cli
-          quiet: true # display only failed checks
-          download_external_modules: true # downloads and checks external modules
+          quiet: true
+          download_external_modules: true
 
   check-changed-files:
-    runs-on: ubuntu-latest
     name: Checking Modified Files
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      tf_files: ${{ steps.select.outputs.tf_files }}
+      tf_dirs: ${{ steps.select.outputs.tf_dirs }}
     steps:
       - uses: actions/checkout@v7
-      - name: Get changed files
+      - name: Get changed Terraform files
         id: changed-files
         uses: tj-actions/changed-files@v47
-      - name: List all changed files
-        id: list-changed-files
+        with:
+          files: '**/*.tf'
+          json: true
+          escape_json: false
+          safe_output: false
+      - name: Select existing files and affected directories
+        id: select
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-          # Loop though files, get terraform files and reformat for tflint
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_modified_files }}
         run: |
-          echo "### Modified files:" >> $GITHUB_STEP_SUMMARY
-          export tf_files=""
-          export tf_files_filtered=""
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file" >> $GITHUB_STEP_SUMMARY
-            if echo "$file" | grep -q ".*\.tf$" ; then
-                tf_files+="${file} "
-                tf_files_filtered+="--filter=${file} "
-            fi
-          done
-          echo "tf_files=$tf_files" >> $GITHUB_OUTPUT
-          echo "tf_files_filtered=$tf_files_filtered" >> $GITHUB_OUTPUT
+          python3 <<'PY'
+          import json
+          import os
 
-
-    outputs:
-      tf_files: ${{ steps.list-changed-files.outputs.tf_files }}
-      tf_files_filtered: ${{ steps.list-changed-files.outputs.tf_files_filtered }}
+          changed = json.loads(os.environ["CHANGED_FILES"])
+          files = [path for path in changed if os.path.isfile(path)]
+          dirs = sorted({
+              os.path.dirname(path) or "."
+              for path in changed
+              if os.path.isdir(os.path.dirname(path) or ".")
+              and any(name.endswith(".tf") and os.path.isfile(os.path.join(os.path.dirname(path) or ".", name))
+                      for name in os.listdir(os.path.dirname(path) or "."))
+          })
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              print(f"tf_files={json.dumps(files)}", file=output)
+              print(f"tf_dirs={json.dumps(dirs)}", file=output)
+          PY
 
   terraform-fmt:
     name: Format Terraform
-    if: ${{ needs.check-changed-files.outputs.tf_files != '' }}
-    needs:
-      - check-changed-files
+    if: ${{ needs.check-changed-files.outputs.tf_files != '[]' }}
+    needs: check-changed-files
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-      - run: terraform fmt -check -no-color -recursive ${{ needs.check-changed-files.outputs.tf_files }}
-      - if: failure()
-        name: Output to summary
-        run:  |
-          echo "### Failing files:" >> $GITHUB_STEP_SUMMARY
-          terraform fmt -check -no-color -recursive ${{ needs.check-changed-files.outputs.tf_files }} | tee -a $GITHUB_STEP_SUMMARY
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: false
+      - name: Check formatting
+        env:
+          TF_FILES: ${{ needs.check-changed-files.outputs.tf_files }}
+        run: |
+          status=0
+          while IFS= read -r -d '' file; do
+            if ! terraform fmt -check -diff -no-color "./$file"; then
+              if (( status == 0 )); then
+                echo "### Failing files:" >> "$GITHUB_STEP_SUMMARY"
+              fi
+              printf '%s\n' "- \`$file\`" >> "$GITHUB_STEP_SUMMARY"
+              status=1
+            fi
+          done < <(jq -j '.[] | ., "\u0000"' <<< "$TF_FILES")
+          exit "$status"
 
   terraform-lint:
     name: Lint Terraform
-    if: ${{ needs.check-changed-files.outputs.tf_files_filtered != '' }}
-    needs:
-      - check-changed-files
+    if: ${{ needs.check-changed-files.outputs.tf_files != '[]' }}
+    needs: check-changed-files
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
+    timeout-minutes: 20
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/cache@v6
         name: Cache plugin dir
         with:
           path: ~/.tflint.d/plugins
-          key: tflint-${{ hashFiles('.tflint.hcl') }}
+          key: tflint-${{ runner.os }}-${{ hashFiles('.tflint.hcl') }}
       - uses: terraform-linters/setup-tflint@v6
-      - run: tflint --init --recursive --config=$(realpath .tflint.hcl)
-      - run: tflint --recursive --config=$(realpath .tflint.hcl) ${{ needs.check-changed-files.outputs.tf_files_filtered }}
+        with:
+          tflint_version: ${{ inputs.tflint_version }}
+      - name: Select TFLint configuration
+        run: |
+          if [[ -f .tflint.hcl ]]; then
+            config="$GITHUB_WORKSPACE/.tflint.hcl"
+          else
+            config="$RUNNER_TEMP/tflint-fallback.hcl"
+            printf 'plugin "terraform" {\n  enabled = true\n  preset = "recommended"\n}\n' > "$config"
+          fi
+          echo "TFLINT_CONFIG=$config" >> "$GITHUB_ENV"
+      - run: tflint --init --recursive --config="$TFLINT_CONFIG"
+      - name: Lint changed Terraform files
+        env:
+          TF_FILES: ${{ needs.check-changed-files.outputs.tf_files }}
+        run: |
+          # Recursive TFLint resolves --filter relative to each scanned directory.
+          status=0
+          tflint --recursive --format=json --config="$TFLINT_CONFIG" > "$RUNNER_TEMP/tflint-results.json" || status=$?
+          if (( status != 0 && status != 2 )); then
+            cat "$RUNNER_TEMP/tflint-results.json"
+            exit "$status"
+          fi
+          TFLINT_STATUS="$status" python3 <<'PY'
+          import json
+          import os
+          import sys
+
+          files = {os.path.normpath(path) for path in json.loads(os.environ["TF_FILES"])}
+          dirs = {os.path.dirname(path) or "." for path in files}
+          with open(os.path.join(os.environ["RUNNER_TEMP"], "tflint-results.json")) as result:
+              report = json.load(result)
+          selected = []
+          for issue in report["issues"]:
+              location = issue["range"]
+              path = os.path.normpath(location["filename"])
+              if path in files or (location["start"]["line"] == 0 and (os.path.dirname(path) or ".") in dirs):
+                  selected.append(issue)
+                  rule = issue["rule"]
+                  print(f'{rule["severity"]}: {issue["message"]} ({rule["name"]})')
+                  print(f'  {location["filename"]}:{location["start"]["line"]}')
+                  print(f'  {rule["link"]}')
+          if selected and os.environ["TFLINT_STATUS"] == "2":
+              sys.exit(2)
+          PY
+
+  terraform-validate:
+    name: Validate Terraform
+    if: ${{ inputs.run_validate && needs.check-changed-files.outputs.tf_dirs != '[]' }}
+    needs: check-changed-files
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: false
+      - name: Validate affected directories
+        env:
+          TF_DIRS: ${{ needs.check-changed-files.outputs.tf_dirs }}
+        run: |
+          status=0
+          while IFS= read -r -d '' dir; do
+            echo "Validating $dir"
+            if ! (cd -- "$dir" && terraform init -backend=false -input=false && terraform validate); then
+              status=1
+            fi
+          done < <(jq -j '.[] | ., "\u0000"' <<< "$TF_DIRS")
+          exit "$status"

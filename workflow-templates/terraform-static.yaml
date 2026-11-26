@@ -2,6 +2,10 @@ name: terraform-static
 
 on:
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   terraform-static:
