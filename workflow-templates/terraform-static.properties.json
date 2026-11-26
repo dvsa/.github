@@ -1,6 +1,6 @@
 {
     "name": "DVSA Terraform Static Workflow",
-    "description": "Runs a tflint and tf format against any changed .tf files in the PR. Checkov will run against the entire repo each time a PR is created/altered",
+    "description": "Checks changed Terraform files with fmt and TFLint and scans the repository with Checkov. Validation is optional.",
     "categories": [
         "Terraform"
     ]

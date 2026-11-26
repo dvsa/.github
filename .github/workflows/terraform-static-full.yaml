@@ -2,52 +2,123 @@ name: terraform-static-full
 
 on:
   workflow_call:
-
+    inputs:
+      terraform_version:
+        description: Terraform version to install
+        type: string
+        default: latest
+      tflint_version:
+        description: TFLint version to install
+        type: string
+        default: latest
+      run_validate:
+        description: Validate all Terraform directories
+        type: boolean
+        default: false
   workflow_dispatch:
+    inputs:
+      terraform_version:
+        description: Terraform version to install
+        type: string
+        default: latest
+      tflint_version:
+        description: TFLint version to install
+        type: string
+        default: latest
+      run_validate:
+        description: Validate all Terraform directories
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-static-full-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   terraform-checkov:
     name: Checkov Scan
-    permissions:
-      contents: read
-      actions: read
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - name: Checkov Scan
         uses: bridgecrewio/checkov-action@v12
         with:
           output_format: cli
-          quiet: true # display only failed checks
-          download_external_modules: true # downloads and checks external modules
+          quiet: true
+          download_external_modules: true
 
   terraform-fmt:
     name: Format Terraform
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-        name: Run tf format
-      - run: terraform fmt -check -no-color -recursive
-      - run:  |
-          echo "### Failing files:" >> $GITHUB_STEP_SUMMARY
-          terraform fmt -check -no-color -recursive | tee -a $GITHUB_STEP_SUMMARY
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: false
+      - name: Check formatting
+        run: |
+          set -o pipefail
+          echo "### Failing files:" >> "$GITHUB_STEP_SUMMARY"
+          terraform fmt -check -diff -no-color -recursive | tee -a "$GITHUB_STEP_SUMMARY"
 
   terraform-lint:
     name: Lint Terraform
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
+    timeout-minutes: 20
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/cache@v6
         name: Cache plugin dir
         with:
           path: ~/.tflint.d/plugins
-          key: tflint-${{ hashFiles('.tflint.hcl') }}
+          key: tflint-${{ runner.os }}-${{ hashFiles('.tflint.hcl') }}
       - uses: terraform-linters/setup-tflint@v6
-      - run: tflint --init --recursive --config=$(realpath .tflint.hcl)
-      - run: tflint --recursive --config=$(realpath .tflint.hcl)
+        with:
+          tflint_version: ${{ inputs.tflint_version }}
+      - name: Select TFLint configuration
+        run: |
+          if [[ -f .tflint.hcl ]]; then
+            config="$GITHUB_WORKSPACE/.tflint.hcl"
+          else
+            config="$RUNNER_TEMP/tflint-fallback.hcl"
+            printf 'plugin "terraform" {\n  enabled = true\n  preset = "recommended"\n}\n' > "$config"
+          fi
+          echo "TFLINT_CONFIG=$config" >> "$GITHUB_ENV"
+      - run: tflint --init --recursive --config="$TFLINT_CONFIG"
+      - run: tflint --recursive --config="$TFLINT_CONFIG"
+
+  terraform-validate:
+    name: Validate Terraform
+    if: ${{ inputs.run_validate }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: false
+      - name: Validate Terraform directories
+        run: |
+          status=0
+          declare -A seen=()
+          while IFS= read -r -d '' file; do
+            dir="${file%/*}"
+            if [[ -n "${seen[$dir]:-}" ]]; then
+              continue
+            fi
+            seen["$dir"]=1
+            echo "Validating $dir"
+            if ! (cd "$dir" && terraform init -backend=false -input=false && terraform validate); then
+              status=1
+            fi
+          done < <(find . -type d -name .terraform -prune -o -type f -name '*.tf' -print0)
+          exit "$status"

@@ -2,20 +2,18 @@ name: Terraform Format
 
 inputs:
   terraform_version:
-    type: number
-    default: '1.3.7'
+    default: '1.9.8'
+    description: Terraform version to install
   check:
     required: false
-    type: boolean
-    default: true
+    default: 'true'
     description: Flag whether to only report errors without making changes
   recursive:
     required: false
-    default: true
+    default: 'true'
     description: Flag to trigger recursive checks into subfolders of project path
   path:
     required: false
-    type: string
     description: Target directory in which to run fmt command
 
 runs:
@@ -24,13 +22,22 @@ runs:
     - uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: ${{ inputs.terraform_version }}
-    - run: |
-        if ${{ inputs.CHECK }} == true; then
-          echo "CHECK='-check'" >> $GITHUB_ENV
-          fi
-        if ${{ inputs.RECURSIVE }} == true; then
-          echo "RECURSIVE='-recursive'" >> $GITHUB_ENV
-          fi
-      shell: bash
-    - run: terraform fmt ${{ env.CHECK }} ${{ env.RECURSIVE }} ${{ inputs.path }}
+        terraform_wrapper: false
+    - name: Format Terraform
+      env:
+        INPUT_CHECK: ${{ inputs.check }}
+        INPUT_RECURSIVE: ${{ inputs.recursive }}
+        INPUT_PATH: ${{ inputs.path }}
+      run: |
+        args=()
+        if [[ "$INPUT_CHECK" == 'true' ]]; then
+          args+=(-check)
+        fi
+        if [[ "$INPUT_RECURSIVE" == 'true' ]]; then
+          args+=(-recursive)
+        fi
+        if [[ -n "$INPUT_PATH" ]]; then
+          args+=("$INPUT_PATH")
+        fi
+        terraform fmt "${args[@]}"
       shell: bash

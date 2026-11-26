@@ -1,6 +1,6 @@
 {
     "name": "DVSA Terraform Static Full Workflow",
-    "description": "Runs a tflint and tf format against any and all .tf files in the repo on a scheduled basis (0600 every Monday morning). Checkov will run against the entire repo on a scheduled basis (0600 every Monday morning)",
+    "description": "Checks all Terraform files with fmt and TFLint and scans the repository with Checkov, at 06:00 UTC every Monday or manually. Validation is optional.",
     "categories": [
         "Terraform"
     ]

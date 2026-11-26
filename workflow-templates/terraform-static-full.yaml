@@ -2,7 +2,11 @@ name: terraform-static-full
 
 on:
   schedule:
-    - cron: '* 6 * * mon'
+    - cron: '0 6 * * mon'
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   terraform-static:
