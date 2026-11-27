@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.1](https://github.com/dvsa/.github/compare/v7.1.0...v7.1.1) (2026-11-27)
+
+
+### Bug Fixes
+
+* **terraform-static:** install Terraform before fmt check ([#133](https://github.com/dvsa/.github/issues/133)) ([093dd80](https://github.com/dvsa/.github/commit/093dd80ad48bb513ffeeaeae69756b27e1201324))
+
 ## [7.1.0](https://github.com/dvsa/.github/compare/v7.0.0...v7.1.0) (2026-11-10)
 
 
